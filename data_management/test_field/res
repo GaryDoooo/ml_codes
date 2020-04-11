@@ -1,0 +1,136 @@
+Done read av data in.
+['TIP_70rsi', 'TIP_14rsi', 'TIP', 'TIP_ao', 'TIP_ah', 'TIP_al', 'TIP_vol', 'TIP_100ema', 'TIP_25ema', 'TIP_5ema', '^TNX_70rsi', '^TNX_14rsi', '^TNX', '^TNX_ao', '^TNX_ah', '^TNX_al', '^TNX_vol', '^TNX_100ema', '^TNX_25ema', '^TNX_5ema', 'GOOG_70rsi', 'GOOG_14rsi', 'GOOG', 'GOOG_ao', 'GOOG_ah', 'GOOG_al', 'GOOG_vol', 'GOOG_100ema', 'GOOG_25ema', 'GOOG_5ema', 'AAPL_70rsi', 'AAPL_14rsi', 'AAPL', 'AAPL_ao', 'AAPL_ah', 'AAPL_al', 'AAPL_vol', 'AAPL_100ema', 'AAPL_25ema', 'AAPL_5ema', '^VIX_70rsi', '^VIX_14rsi', '^VIX', '^VIX_ao', '^VIX_ah', '^VIX_al', '^VIX_vol', '^VIX_100ema', '^VIX_25ema', '^VIX_5ema', 'QQQ_70rsi', 'QQQ_14rsi', 'QQQ', 'QQQ_ao', 'QQQ_ah', 'QQQ_al', 'QQQ_vol', 'QQQ_100ema', 'QQQ_25ema', 'QQQ_5ema']
+0              ^VIX
+1              ^TNX
+2          DX-Y.NYB
+3              ^IRX
+4              ^FVX
+5              ^TYX
+6              ^VXN
+7            VXNCLS
+8            RVXCLS
+9     BAMLEMCBPIOAS
+10     BAMLH0A0HYM2
+11           VXVCLS
+12           T10Y2Y
+13             DGS2
+14           T10Y3M
+15            DGS10
+16           DGS3MO
+17           T10YIE
+18           DFII10
+19           BAA10Y
+20           T10YFF
+21        HQMCB10YR
+22           DTWEXM
+23           VIXCLS
+24            VXTYN
+25           VXOCLS
+26         VXAZNCLS
+27         VXIBMCLS
+28          VXGSCLS
+29         VXGOGCLS
+30         VXAPLCLS
+31           VXDCLS
+32         VXFXICLS
+33         VXEEMCLS
+34           GVZCLS
+35           OVXCLS
+Name: Tickers, dtype: object
+set10 TIP_70rsi 50.000000 50.000000
+RSI processed TIP_70rsi
+set10 TIP_14rsi 50.000000 50.000000
+RSI processed TIP_14rsi
+set10 ^TNX_70rsi 50.000000 50.000000
+RSI processed ^TNX_70rsi
+set10 ^TNX_14rsi 50.000000 50.000000
+RSI processed ^TNX_14rsi
+set10 ^TNX 3.483990 3.696739
+Ticker in list found and processed: ^TNX
+set10 GOOG_70rsi 50.000000 50.000000
+RSI processed GOOG_70rsi
+set10 GOOG_14rsi 50.000000 50.000000
+RSI processed GOOG_14rsi
+set10 AAPL_70rsi 50.000000 50.000000
+RSI processed AAPL_70rsi
+set10 AAPL_14rsi 50.000000 50.000000
+RSI processed AAPL_14rsi
+set10 ^VIX_70rsi 50.000000 50.000000
+RSI processed ^VIX_70rsi
+set10 ^VIX_14rsi 50.000000 50.000000
+RSI processed ^VIX_14rsi
+set10 ^VIX 19.706426 25.844382
+Ticker in list found and processed: ^VIX
+set10 QQQ_70rsi 50.000000 50.000000
+RSI processed QQQ_70rsi
+set10 QQQ_14rsi 50.000000 50.000000
+RSI processed QQQ_14rsi
+Done av data col by col.
+Wrote av data output.
+Done read fred data in.
+['BAMLEMCBPIOAS_70rsi', 'BAMLEMCBPIOAS_14rsi', 'BAMLEMCBPIOAS', 'BAMLEMCBPIOAS_100ema', 'BAMLEMCBPIOAS_25ema', 'BAMLEMCBPIOAS_5ema', 'RVXCLS_70rsi', 'RVXCLS_14rsi', 'RVXCLS', 'RVXCLS_100ema', 'RVXCLS_25ema', 'RVXCLS_5ema', 'VXNCLS_70rsi', 'VXNCLS_14rsi', 'VXNCLS', 'VXNCLS_100ema', 'VXNCLS_25ema', 'VXNCLS_5ema', 'WILL5000INDFC_70rsi', 'WILL5000INDFC_14rsi', 'WILL5000INDFC', 'WILL5000INDFC_100ema', 'WILL5000INDFC_25ema', 'WILL5000INDFC_5ema', 'NASDAQ100_70rsi', 'NASDAQ100_14rsi', 'NASDAQ100', 'NASDAQ100_100ema', 'NASDAQ100_25ema', 'NASDAQ100_5ema']
+0              ^VIX
+1              ^TNX
+2          DX-Y.NYB
+3              ^IRX
+4              ^FVX
+5              ^TYX
+6              ^VXN
+7            VXNCLS
+8            RVXCLS
+9     BAMLEMCBPIOAS
+10     BAMLH0A0HYM2
+11           VXVCLS
+12           T10Y2Y
+13             DGS2
+14           T10Y3M
+15            DGS10
+16           DGS3MO
+17           T10YIE
+18           DFII10
+19           BAA10Y
+20           T10YFF
+21        HQMCB10YR
+22           DTWEXM
+23           VIXCLS
+24            VXTYN
+25           VXOCLS
+26         VXAZNCLS
+27         VXIBMCLS
+28          VXGSCLS
+29         VXGOGCLS
+30         VXAPLCLS
+31           VXDCLS
+32         VXFXICLS
+33         VXEEMCLS
+34           GVZCLS
+35           OVXCLS
+Name: Tickers, dtype: object
+set10 BAMLEMCBPIOAS_70rsi 50.000000 50.000000
+RSI processed BAMLEMCBPIOAS_70rsi
+set10 BAMLEMCBPIOAS_14rsi 50.000000 50.000000
+RSI processed BAMLEMCBPIOAS_14rsi
+set10 BAMLEMCBPIOAS 3.920873 6.000883
+Ticker in list found and processed: BAMLEMCBPIOAS
+set10 RVXCLS_70rsi 50.000000 50.000000
+RSI processed RVXCLS_70rsi
+set10 RVXCLS_14rsi 50.000000 50.000000
+RSI processed RVXCLS_14rsi
+set10 RVXCLS 23.820705 28.645815
+Ticker in list found and processed: RVXCLS
+set10 VXNCLS_70rsi 50.000000 50.000000
+RSI processed VXNCLS_70rsi
+set10 VXNCLS_14rsi 50.000000 50.000000
+RSI processed VXNCLS_14rsi
+set10 VXNCLS 24.676977 36.428853
+Ticker in list found and processed: VXNCLS
+set10 WILL5000INDFC_70rsi 50.000000 50.000000
+RSI processed WILL5000INDFC_70rsi
+set10 WILL5000INDFC_14rsi 50.000000 50.000000
+RSI processed WILL5000INDFC_14rsi
+set10 NASDAQ100_70rsi 50.000000 50.000000
+RSI processed NASDAQ100_70rsi
+set10 NASDAQ100_14rsi 50.000000 50.000000
+RSI processed NASDAQ100_14rsi
+Done fred data col by col.
+Done wrote fred output.

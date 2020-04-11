@@ -1,0 +1,11 @@
+#!/bin/bash
+ if [ "$#" -eq 1 ]; then
+	randstring=$(date '+%Y-%m-%d-%H_%M_%S')
+	filename=randstring".mp4"
+ else
+	filename=$2
+fi
+
+ link=$(curl -s $1 | xargs -d "'" -n1 | grep m3u8)
+echo $link 
+down_general_m3u8 $link $filename

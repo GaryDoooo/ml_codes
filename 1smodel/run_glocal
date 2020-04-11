@@ -1,0 +1,18 @@
+#!/bin/sh
+
+TRAIN_DATA=data/adult.data.csv
+EVAL_DATA=data/adult.test.csv
+
+JOB_NAME=census_5
+REGION=us-central1
+
+OUTPUT_PATH=$JOB_NAME
+
+gcloud ml-engine local train \
+    --module-name trainer.task \
+    --package-path trainer \
+    -- \
+    --train-files $TRAIN_DATA \
+    --eval-files $EVAL_DATA \
+    --job-dir $OUTPUT_PATH \
+    --train-steps 1000

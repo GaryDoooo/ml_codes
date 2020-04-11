@@ -1,0 +1,5 @@
+^N225_vol 607
+^NYA_vol 274
+^XOI_vol 1885
+FDN_vol 12
+OIL_vol 119

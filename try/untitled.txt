@@ -1,0 +1,23 @@
+from pyti.exponential_moving_average import exponential_moving_average as ema
+from pyti.relative_strength_index import relative_strength_index as rsi
+
+
+def add_indicators(data,ema_period=[5,25],rsi_period=[14],prefix=""):
+    result=None
+    for period in ema_period:
+        r_r = ema(data,period)
+        df=pd.DataFrame(r_r, index=data.index,columns=[prefix+"%d"%period+"ema"])
+        if result is None:
+            result=df
+        else:
+            result=pd.merge(df, result,
+                      how='outer',left_index=True, right_index=True)
+    for period in rsi_period:
+        r_r = rsi(data,period)
+        df=pd.DataFrame(r_r, index=data.index,columns=[prefix+"%d"%period+"rsi"])
+        result=pd.merge(df, result,
+                      how='outer',left_index=True, right_index=True)
+    return result
+
+result=pd.merge(data,add_indicators(data['close']))
+print(result)

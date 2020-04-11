@@ -1,0 +1,14 @@
+Done read av and fred seared data.
+Found ['QQQ', '^TNX', 'GOOG', '^VIX']
+list1  ['QQQ'] list2 ['QQQ', '^TNX', 'GOOG', 'APPL', '^VIX', 'DGS10']
+unfound ['DGS10', 'APPL']
+Found ['DGS10']
+list1  ['QQQ'] list2 ['QQQ', '^TNX', 'GOOG', 'APPL', '^VIX', 'DGS10']
+unfound ['QQQ', '^TNX', 'GOOG', '^VIX', 'APPL']
+Done trim the dataframe into the interested tickers only, and gen the unfound list.
+Found AV 4 tickers 10 col/ticker, FRED 1 tickers, 6 col/ticker.
+1 tickers not found in either fred or av data sets.
+['1962-01-02T00:00:00.000000000' '1962-01-03T00:00:00.000000000'
+ '1962-01-04T00:00:00.000000000' ... '2019-01-04T00:00:00.000000000'
+ '2019-01-07T00:00:00.000000000' '2019-01-08T00:00:00.000000000']
+1094 5445 13820

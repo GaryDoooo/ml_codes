@@ -1,0 +1,20 @@
+#!/bin/bash
+if [ $# -lt 1 ]
+  then
+    echo "No arguments supplied"
+    echo "XXXXXXX LINK [LINK2]...."
+fi  
+
+echo "$@" | xargs -n1 axel -a -n 50
+
+# filelist=$(echo "${@:2}"})
+# echo "${@:2}" all the input except the first one
+#
+# inputlist=$(cat "$1")
+#
+# for i in "${@:2}"
+# do
+	# inputlist=$(echo $inputlist | xargs -n1 | grep -v $i )
+# done
+
+

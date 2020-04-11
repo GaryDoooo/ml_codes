@@ -1,0 +1,13 @@
+#!/bin/bash
+
+echo "Deleting tmp directories..."
+rm -rf /tmp/.com.google.Chrome.*
+echo "killing Chrome proces"
+ps -ef | grep -v grep | grep chromium | awk '{print $2}' | xargs -n1 kill
+echo "killing chromedriver"
+pkill chromedriver 
+
+leftover=$(ps -ef | grep -v grep | grep chrom | grep -v killchrom)
+echo "Left over processes with chrom*: "`echo $leftover | sed '/^\s*$/d' | wc -l`
+echo $leftover
+

@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# get output from python extracting links from the input HTML codes
+list=`python3 extract_links.py`
+
+# get date and time into a string as the output filename
+output=$(date '+%Y-%m-%d-%H_%M_%S')".mp4"
+echo "output to $output"
+tmpoutput="temp_video_x"
+rm filelist
+
+while read -r line; do
+    echo "Download link: $line ..."
+    axel -a -n 500 "$line" -o $tmpoutput
+    echo "file '$tmpoutput'" >> filelist
+    tmpoutput=$tmpoutput"x"
+done <<< "$list"
+
+ffmpeg -f concat -i filelist -c copy $output
+
+rm temp_video_*

@@ -1,0 +1,63 @@
+#!/bin/bash
+
+function geturl {
+	TESTARG=$1 python3 - <<END
+from os import environ
+from time import sleep
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+import re
+
+# page_url = "http://www.bilibili.com/mobile/video/av9069110.html"
+page_url = environ.get('TESTARG')
+# test_url = "http://www.bilibili.com/mobile/ video is available
+chrome_options = Options()
+chrome_options.add_argument("--headless")
+driver = webdriver.Chrome(
+    executable_path="chromedriver",
+    options=chrome_options)
+url = "https://pv.vlogdownloader.com/"
+driver.get(url)
+
+
+def wait_for_element(input_string):
+    for _ in range(40):
+        try:
+            result = driver.find_element_by_xpath(input_string)
+            #  print(_)
+            return result
+        except BaseException:
+            sleep(0.5)
+            pass
+    return None
+
+
+input_box = wait_for_element("//input[@id='url_input']")
+if input_box is not None:
+    input_box.send_keys(page_url)
+submit_button = wait_for_element("//button[@id='url_submit_button']")
+if submit_button is not None:
+    submit_button.click()
+result = wait_for_element("//input[@id='video0']")
+try:
+    print(result.get_attribute("value"))
+except BaseException:
+    print("Element_Error")
+result = wait_for_element("//span[@class='text-danger']")
+try:
+    print(re.sub(r'[\\/\:*"<>\|\.%\$\^&£]', '',
+                 result.text.replace(" ", "")))
+except BaseException:
+    print("Element_Error")
+
+driver.close()
+END
+}
+
+if [ "$#" == 2 ]; then
+	geturl $1 | grep http | xargs -n1 bash -c 'axel ${0} -o bilibilidown_temp.mp4'
+	mv bilibilidown_temp.mp4 $2
+fi
+if [ "$#" == 1 ]; then
+	geturl $1 | xargs -n2 bash -c 'axel ${0} -o ${1}.mp4'  
+fi

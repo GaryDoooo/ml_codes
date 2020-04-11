@@ -1,0 +1,17 @@
+#!/bin/bash
+
+function geturl {
+	TESTARG=$1 python3 - <<END
+from os import environ
+import re
+
+url = environ.get('TESTARG')
+print(re.sub(r'[\\/\:*"<>\|%\$\^&£]', '',
+	     url.replace(" ", "_").replace('"','').replace("'","")))
+
+END
+}
+
+parse_result=$(geturl $1)
+echo $parse_result
+

@@ -1,0 +1,43 @@
+#!/bin/bash
+
+function geturl {
+	TESTARG=$1 LISTNUM=$2 python3 - <<END
+from bs4 import BeautifulSoup
+import requests
+from os import environ
+#  import pickle
+#  import re
+
+# url = "https://www.haiwai.tv/index.php/voddetail/31200.html"
+url = environ.get('TESTARG')
+list_number = environ.get('LISTNUM')
+reading = requests.get(url)
+soup = BeautifulSoup(reading.text, "lxml")
+#  trlist = soup.table.find_all('tr')
+#  trlist = trlist[1:]
+#  print([ _.text for _ in soup.find_all('h1')])
+#  print([ _.text for _ in soup.find_all('a',href=True)])
+season_title = soup.find_all('h1')[0].text
+# print(season_title)
+playlist1_html = soup.find("div", {"id": "play_down"+str(list_number)})
+# print(playlist1_html)
+#  list1_soup = BeautifulSoup(playlist1_html, "lxml")
+for a in playlist1_html.find_all('a', href=True):
+    t = a.text.replace('\n', '')
+    l = a['href']
+    #  if "31200" in l:
+    print(
+        "https://www.haiwai.tv" + l,
+        (season_title + t).replace(" ", "")
+    )
+    #  https://www.haiwai.tv/index.php/vodplay/31200-1-1.html
+END
+}
+
+list_number=1
+if [ "$#" == 2 ]; then
+	list_number=$2
+fi
+
+ geturl $1 $list_number | xargs -n2 -P5 downhaiwai
+

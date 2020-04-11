@@ -1,0 +1,5 @@
+2019-01-18 04:33:16,002 Done read av and fred seared data.
+2019-01-18 04:33:16,014 Done trim the dataframe into the interested tickers only, and gen the unfound list.
+2019-01-18 04:33:16,014 Found AV 4 tickers 10 col/ticker, FRED 1 tickers, 6 col/ticker.
+2019-01-18 04:33:16,015 1 tickers not found in either fred or av data sets.
+2019-01-18 04:33:16,043 Done trim data by avaible data points on time span.

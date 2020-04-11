@@ -1,0 +1,17 @@
+#!/bin/sh
+
+TICKER_LIST="../Finance/Tickers_with_good_data.p"
+SAMPLE_DIR="../Finance/samples"
+
+JOB_NAME=1smodel$(date +%s)
+REGION=us-central1
+
+OUTPUT_PATH=$JOB_NAME
+
+# gcloud ml-engine jobs submit training $JOB_NAME \
+python trainer/task.py \
+	--ticker-list $TICKER_LIST \
+	--sample-dir $SAMPLE_DIR \
+	--job-dir $OUTPUT_PATH \
+	--train-steps 1000 \
+

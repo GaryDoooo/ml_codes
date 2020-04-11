@@ -1,0 +1,28 @@
+#!/bin/bash
+if [ $# -lt 2 ]
+  then
+    echo "No arguments supplied"
+    echo "XXXXXXX LINK_LIST_FILENAME FILENAMES_TO_BE_FILTERED"
+    echo "The first arguement is the existing files to be filtered out from the list."
+    echo "The second arguement is the filename of the link list, which are expected to be http or https links." 
+fi  
+
+filelist=$(echo "${@:2}"})
+# echo "${@:2}" all the input except the first one
+
+inputlist=$(cat "$1")
+
+for i in "${@:2}"
+do
+	inputlist=$(echo $inputlist | xargs -n1 | grep -v $i )
+done 
+
+#
+# while read -r line; do
+	# filename=$(echo $line | xargs -n1 -d '/' | xargs -n1 | grep .ts)
+	# if [ ! -f $filename ]; then
+			# missinglist=$missinglist$line" "
+	# fi
+# done <<< "$inputlist"
+
+echo $inputlist | xargs -n1 

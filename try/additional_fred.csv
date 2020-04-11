@@ -1,0 +1,14 @@
+Ticker,note
+VIXCLS,CBOE VIX
+VXTYN,10 year t note vix
+VXOCLS,sp100 vix
+VXAZNCLS,amazon vix
+VXIBMCLS,ibm vix
+VXGSCLS,Goldman sachs vix
+VXGOGCLS,google vix
+VXAPLCLS,apple vix
+VXDCLS,DJIA vix
+VXFXICLS,CBOE china ETF vix
+VXEEMCLS,emerging mkt ETF vix
+GVZCLS,gold etf vix
+OVXCLS,crude oil etf vix

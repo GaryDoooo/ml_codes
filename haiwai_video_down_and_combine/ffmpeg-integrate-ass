@@ -1,0 +1,11 @@
+#!/bin/bash
+
+echo "the script will intregrate all the ass + mp4 pairs in the current directory."
+
+for f in *.ass; do
+	filename=$(echo $f | xargs -d '.' | awk '{print $1}')
+	echo "Now working with "$filename".mp4, and"$f
+	ffmpeg -threads 0 -i $filename".mp4" -vf "ass=$f" $filename"-sub.mp4" 
+done
+
+tar cvf result.tar *-sub.mp4

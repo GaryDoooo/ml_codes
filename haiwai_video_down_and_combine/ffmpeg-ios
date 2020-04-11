@@ -1,0 +1,11 @@
+#!/bin/bash
+
+ if [ "$#" -eq 1 ]; then
+	randstring=$(date '+%Y-%m-%d-%H_%M_%S')
+	filename=randstring".mp4"
+ else
+	filename=$2
+fi
+
+ffmpeg -i $1 -vcodec libx264 -acodec aac -ac 2 -ar 44100 -ab 128k -deinterlace  $filename
+

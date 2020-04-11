@@ -1,0 +1,9 @@
+#!/bin/bash
+
+list=`grep -Eo '^[^ ]+' $1`
+
+for ticker in $list
+do
+	cat $2 | grep $ticker
+done
+

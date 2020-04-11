@@ -1,0 +1,12 @@
+--- task.py	2017-10-08 20:40:22.978704665 -0500
++++ task2.py	2017-10-09 13:32:22.996778254 -0500
+@@ -51,7 +51,8 @@
+     self.steps = steps
+ 
+   def on_epoch_begin(self, epoch, logs={}):
+-    if epoch > 0 and epoch % self.eval_frequency == 0:
++    checkpoints = glob.glob(os.path.join(self.job_dir, 'checkpoint.*'))
++    if epoch > 0 and epoch % self.eval_frequency == 0 and len(checkpoints) > 1:
+       checkpoints = glob.glob(os.path.join(self.job_dir, 'checkpoint.*'))
+       checkpoints.sort()
+       census_model = load_model(checkpoints[-1])

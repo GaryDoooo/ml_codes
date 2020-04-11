@@ -1,0 +1,106 @@
+#!/bin/bash
+
+function geturl {
+	TESTARG=$1 python3 - <<END
+from urllib.parse import urlparse
+import requests
+from os import environ
+
+def iterate_url(link):
+    if link.split(".")[-1] in ['ts']:
+        print(link)
+    else:
+        o = urlparse(link)
+        urlhead = o.scheme + "://" + o.netloc
+        in_server_path = o.path[:o.path.rfind("/")+1]
+        reading = requests.get(link)
+        for each_line in reading.text.split("\n"):
+            if len(each_line) > 0:
+                if each_line[0] != "#":
+                    if each_line[0] == "/":
+                        iterate_url(urlhead+each_line)
+                    else:
+                        iterate_url(urlhead+in_server_path+each_line)
+
+try:
+    iterate_url(environ.get('TESTARG'))
+except:
+    print("An exception occurred")
+
+END
+}
+
+entrylink=$(echo "MacPlayer.PlayUrl" | chromium-browser --headless --disable-gpu --repl "$1" | xargs -d '"' -n1 | grep m3u8)
+
+# get output from python extracting links from the input HTML codes geturl $1
+linklist=$(geturl $entrylink)
+
+# get date and time into a string as the output filename
+randstring=$(date '+%Y-%m-%d-%H_%M_%S')
+output=$randstring".ts"
+
+# Decide output mp4 filename
+if [ "$#" -eq 1 ]; then
+	outputmp4=$output".mp4"
+	echo "output to $outputmp4"
+fi
+if [ "$#" -eq 2 ]; then
+	if [ ${2##*.} == "mp4" ]; then
+		outputmp4=$2
+	else
+		outputmp4=$2".mp4"
+	fi
+	echo "output to $outputmp4"
+fi
+
+# make a tmp dir and put all the downloads there
+ workingdir=$(pwd)
+ tmpdir=$(mktemp -d -t downhaiwai-XXXXXXXXXX)
+ cd $tmpdir
+
+# get all the ts filenames into a list
+filelist=$(echo $linklist | xargs -n1 -d '/' | xargs -n1 | grep .ts)
+
+for i in {1..100}
+do
+	missinglist=''
+	while read -r line; do
+		filename=$(echo $line | xargs -n1 -d '/' | xargs -n1 | grep .ts)
+		if [ ! -f $filename ]; then
+				missinglist=$missinglist$line" "
+		fi
+	done <<< "$linklist"
+	if [ "$missinglist" == '' ]; then
+		break
+	fi
+	echo $missinglist | xargs -n1 -P5 axel -a -n 20 | grep "Opening output file"
+done
+
+cat <(while read -r line; do cat $line; done <<< "$filelist") \
+	> $output \
+	&& ffmpeg -i $output -acodec copy -vcodec copy $outputmp4 \
+	&& echo "${filelist[@]}" | xargs -n1 rm \
+	 && cd $workingdir \
+	 && mv $tmpdir"/"$outputmp4 $workingdir \
+	 && rm -rf $tmpdir
+
+
+# END of script
+
+########################
+########################
+#
+#    ffmpeg has timestamp problem to combine ts files 
+#    better to use cat instead
+#
+# fileString=$(replace "${filelist[@]}")
+# ffmpeg -f concat -safe 0 -i <(for f in ./*.wav; do echo "file '$PWD/$f'"; done) -c copy output.wav
+#ffmpeg -f concat -safe 0 \
+#	   	-i <(while read -r line; do echo "file "$filepath$line; done <<< "$filelist") \
+#		-threads 0 -c copy  $output \
+#		&& echo "${filelist[@]}" | xargs -n1 | xargs -n1 rm 
+
+# rm "$tmpfile"
+
+# ffmpeg -f concat -i filelist -c copy $output \
+#	&& cat filelist | xargs -n2 bash -c 'rm ${1}'

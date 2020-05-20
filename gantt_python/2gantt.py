@@ -3,6 +3,7 @@ import datetime
 import gantt
 from pandas import read_excel
 import argparse
+import sys
 
 
 def remove_nan(input_list):
@@ -201,7 +202,8 @@ def dispatch(
         project_name,
         today,
         prefixdays,
-        suffixdays):
+        suffixdays,
+        weeklyscale):
     global resource_list
     global task_list
 
@@ -278,16 +280,27 @@ def dispatch(
 
     start_date = get_earliest_start_date(task_list)
     end_date = get_latest_end_date(task_list)
-    p.make_svg_for_tasks(
-        filename=outputfile,
-        today=string_to_date(today),
-        start=start_date - datetime.timedelta(days=prefixdays),
-        end=end_date + datetime.timedelta(days=suffixdays),
-        scale=gantt.DRAW_WITH_DAILY_SCALE)
+    if weeklyscale == "yes":
+        p.make_svg_for_tasks(
+            filename=outputfile,
+            today=string_to_date(today),
+            start=start_date - datetime.timedelta(days=prefixdays),
+            end=end_date + datetime.timedelta(days=suffixdays),
+            scale=gantt.DRAW_WITH_WEEKLY_SCALE)
+    else:
+        p.make_svg_for_tasks(
+            filename=outputfile,
+            today=string_to_date(today),
+            start=start_date - datetime.timedelta(days=prefixdays),
+            end=end_date + datetime.timedelta(days=suffixdays),
+            scale=gantt.DRAW_WITH_DAILY_SCALE)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    if len(sys.argv) == 1:
+        parser.print_help(sys.stderr)
+        sys.exit(1)
     parser.add_argument('--inputfile',
                         type=str,
                         help='The input xlsx file.')
@@ -319,5 +332,10 @@ if __name__ == "__main__":
         default=10,
         type=int,
         help='The extra days on the chart after the default end date.')
+    parser.add_argument(
+        '--weeklyscale',
+        default="no",
+        type=str,
+        help='Draw the chart with weekly scale instead of daily scale.')
     parse_args, unknown = parser.parse_known_args()
     dispatch(**parse_args.__dict__)

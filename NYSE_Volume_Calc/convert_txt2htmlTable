@@ -1,0 +1,26 @@
+#!/bin/bash 
+
+mdtmpfile=$(mktemp /tmp/NYSE_recod.XXXXXX.md)
+htmltmpfile=$(mktemp /tmp/NYSE_recod.XXXXXX.html)
+
+echo "|Time|NYSE A|NYSE D|NYSE A/(A+D)|NASDAQ A|NASDAQ D|NYSE A/(A+D)|">$mdtmpfile
+echo "|:---:|:----:|:----:|:-----:|:----:|:----:|:----:|">>$mdtmpfile
+while IFS= read -r line
+do
+    echo "Read from file a line: "$line
+    line=$(echo "$line" | sed -r 's/NYSE A/|/g')
+    line=$(echo "$line" | sed -r 's/NASDAQ A/|/g')
+    line=$(echo "$line" | sed -r 's/ D /|/g')
+    line=$(echo "$line" | sed -r 's/Ratio/|/g')
+    line="|"$line"|"
+    echo "Convert to line: "$line
+    echo $line >> $mdtmpfile
+  done < "$1"
+cat $mdtmpfile
+pandoc -s $mdtmpfile -r markdown_github -o $htmltmpfile
+echo "HTML Result Below"
+sed -e '/<table style/,/<\/colgroup>/c\<table class="tg" width=100%>' $htmltmpfile | sed 's/<style.*<\/style>/<style type="text\/css">code{white-space: pre;} .tg {border-collapse:collapse;border-color:#aaa;border-spacing:2;} .tg td{background-color:#fff;border-color:#aaa border-style:solid;border-width:1px;color:#333;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;word-break:normal;} .tg th{background-color:#f38630;border-color:#aaa;border-style:solid;border-width:1px;color:#fff;font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;} tr.even td{background-color:#FCFBE3}<\/style>/g'
+# cat $htmltmpfile
+
+rm $htmltmpfile
+rm $mdtmpfile

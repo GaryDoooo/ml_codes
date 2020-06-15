@@ -1,0 +1,4 @@
+#!/bin/bash
+
+/usr/local/bin/NYSE_record_cronrun hourlyAD
+

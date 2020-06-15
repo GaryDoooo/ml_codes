@@ -1,0 +1,8 @@
+#!/bin/bash
+
+cd /home/du/code/ml_codes/NYSE_Volume_Calc
+./recordNYSE $1
+HTMLFile=$1".html"
+html=$(./convert_txt2htmlTable $1| sed '0,/^HTML Result Below/d')
+echo $html > /home/du/http/$HTMLFile
+

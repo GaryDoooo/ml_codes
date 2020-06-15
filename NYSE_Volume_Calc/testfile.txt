@@ -1,0 +1,6 @@
+4:30 PM EDT 6/12/20 NYSE Advancing 5,329,800,412 Declining 636,634,112 Ratio 0.89
+$LineResult
+$LineResult
+NYSE Advancing 5,329,800,412 Declining 636,634,112 Ratio 0.89 4:30 PM EDT 6/12/20
+NYSE Advancing 5,329,800,42 Declining 1636,634,112 Ratio 0.39 4:30 PM EDT 6/13/20
+4:30 PM EDT 6/12/20 NYSE Advancing 5,329,800,412 Declining 636,634,112 Ratio 0.89

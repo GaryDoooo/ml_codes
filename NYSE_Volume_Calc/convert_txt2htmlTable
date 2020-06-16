@@ -3,18 +3,22 @@
 mdtmpfile=$(mktemp /tmp/NYSE_recod.XXXXXX.md)
 htmltmpfile=$(mktemp /tmp/NYSE_recod.XXXXXX.html)
 
-echo "|Time|NYSE A|NYSE D|NYSE A/(A+D)|NASDAQ A|NASDAQ D|NYSE A/(A+D)|">$mdtmpfile
+echo "|Time|NYSE A|NYSE D|NYSE A/(A+D)|NASDAQ A|NASDAQ D|NASDAQ A/(A+D)|">$mdtmpfile
 echo "|:---:|:----:|:----:|:-----:|:----:|:----:|:----:|">>$mdtmpfile
 while IFS= read -r line
 do
     echo "Read from file a line: "$line
-    line=$(echo "$line" | sed -r 's/NYSE A/|/g')
-    line=$(echo "$line" | sed -r 's/NASDAQ A/|/g')
-    line=$(echo "$line" | sed -r 's/ D /|/g')
-    line=$(echo "$line" | sed -r 's/Ratio/|/g')
-    line="|"$line"|"
-    echo "Convert to line: "$line
-    echo $line >> $mdtmpfile
+        if ((`echo -n $line | wc -m` > 40)); then
+        line=$(echo "$line" | sed -r 's/NYSE A/|/g')
+        line=$(echo "$line" | sed -r 's/NASDAQ A/|/g')
+        line=$(echo "$line" | sed -r 's/ D /|/g')
+        line=$(echo "$line" | sed -r 's/Ratio/|/g')
+        line="|"$line"|"
+        echo "Convert to line: "$line
+        echo $line >> $mdtmpfile
+    else
+        echo "ignore short line"
+    fi
   done < "$1"
 cat $mdtmpfile
 pandoc -s $mdtmpfile -r markdown_github -o $htmltmpfile

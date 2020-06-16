@@ -1,4 +1,4 @@
 #!/bin/bash
 
-/usr/local/bin/NYSE_record_cronrun dailyAD
+sudo /sbin/runuser -l du -c '/usr/local/bin/NYSE_record_cronrun dailyAD'
 

@@ -1,0 +1,175 @@
+#!/bin/bash
+
+function geturl {
+	TESTARG=$1 python3 - <<END
+from time import sleep
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from os import environ
+import re
+url = environ.get('TESTARG')
+chrome_options = Options()
+chrome_options.add_argument("--headless")
+driver = webdriver.Chrome(
+    executable_path="chromedriver",
+    options=chrome_options)
+driver.get(url)
+sleep(1)
+allImages = driver.find_elements_by_tag_name("img")
+for _ in allImages:
+    imageurl = _.get_attribute("src")
+    if imageurl is not None:
+        if ".svg?" in imageurl:
+            print(imageurl)
+        elif ".png?" in imageurl:
+            print(imageurl)
+print(re.sub(r'[\\/\:*"<>\|\.%\$\^&£]', '',
+	     driver.title.split("|")[0]).replace(" ", "_").replace('"','').replace("'",""))
+driver.close()
+
+END
+}
+
+parse_result=$(geturl $1)
+
+
+ link_result=$(echo $parse_result | xargs -n1 | grep http)
+ title=$(echo $parse_result | xargs -n1 | grep -v http)
+
+if [[ $link_result == *"svg"* ]]; then
+	 prefix=$(echo $link_result | grep http | sed s/score_0.svg/\\n/g | grep http)
+	 surfix=$(echo $link_result | grep http | sed s/score_0.svg/\\n/g | grep -v http)
+	echo $parse_result
+	echo "Link "$link_result
+	echo "Title "$title
+
+	if [[ $link_result != "http"* ]] && [[ $link_result != *"svg"* ]]; then
+		echo "No link found"
+		exit 1
+	fi
+
+	# make a tmp dir and put all the downloads there
+	 workingdir=$(pwd)
+	 tmpdir=$(mktemp -d -t musedown-XXXXXXXXXX)
+	 cd $tmpdir
+
+	 finished=0
+	index=0
+	filelist=""
+	while [ $finished -eq 0 ]
+	do
+		link=$prefix"score_"$index".svg"$surfix
+		filename=$index".svg"
+		index=$((index+1))
+		wget $link -O $filename
+		filesize=$(stat --printf="%s" $filename)
+		if [ $filesize -lt 10 ]; then
+			finished=1
+		else
+			filelist=$filelist" "$filename
+		fi
+	done
+	echo $filelist
+		
+
+	while read -r line; do
+		echo $line
+		echo "<!DOCTYPE html><html><head><style>@media print {" > page.html
+		echo "@page { margin: 0; } body { margin: 0.5cm; }}" >> page.html
+		echo "</style></head><body>" >> page.html
+		# echo $filelist | xargs -n1 bash -c '
+		echo "<img style=\"width:100%;\" src=\""$line"\"></img>" >> page.html
+		echo "</body></html>" >> page.html
+		chromium-browser --headless --disable-gpu --print-to-pdf=$line".pdf" $tmpdir/page.html
+	done <<< "`echo $filelist | xargs -n1`"
+
+	pdftk A=0.svg.pdf cat A1 output result.pdf
+	rm 0.svg.pdf 
+	if [ -f 1.svg.pdf ]; then
+		for file in [0-9].*
+		do
+			   mv "$file" "0${file}"
+		done
+		for pdf_file in *.svg.pdf
+		do
+			echo "Combining: "$pdf_file
+			pdftk A=result.pdf B=$pdf_file cat A B1 output temp.pdf
+			mv temp.pdf result.pdf
+		done
+	fi
+
+	cd $workingdir
+	mv $tmpdir/result.pdf ./$title.pdf
+	rm -rf $tmpdir
+	killchrom
+fi
+
+if [[ $link_result == *"png"* ]]; then
+
+	 prefix=$(echo $link_result | grep http | sed s/score_0.png/\\n/g | grep http)
+	 surfix=$(echo $link_result | grep http | sed s/score_0.png/\\n/g | grep -v http)
+	echo $parse_result
+	echo "Link "$link_result
+	echo "Title "$title
+
+	if [[ $link_result != "http"* ]] && [[ $link_result != *"png"* ]]; then
+		echo "No link found"
+		exit 1
+	fi
+
+	# make a tmp dir and put all the downloads there
+	 workingdir=$(pwd)
+	 tmpdir=$(mktemp -d -t musedown-XXXXXXXXXX)
+	 cd $tmpdir
+
+	 finished=0
+	index=0
+	filelist=""
+	while [ $finished -eq 0 ]
+	do
+		link=$prefix"score_"$index".png"$surfix
+		filename=$index".png"
+		index=$((index+1))
+		wget $link -O $filename
+		filesize=$(stat --printf="%s" $filename)
+		if [ $filesize -lt 10 ]; then
+			finished=1
+		else
+			filelist=$filelist" "$filename
+		fi
+	done
+	echo $filelist
+		
+
+	while read -r line; do
+		echo $line
+		echo "<!DOCTYPE html><html><head><style>@media print {" > page.html
+		echo "@page { margin: 0; } body { margin: 0.5cm; }}" >> page.html
+		echo "</style></head><body>" >> page.html
+		# echo $filelist | xargs -n1 bash -c '
+		echo "<img style=\"width:100%;\" src=\""$line"\"></img>" >> page.html
+		echo "</body></html>" >> page.html
+		chromium-browser --headless --disable-gpu --print-to-pdf=$line".pdf" $tmpdir/page.html
+	done <<< "`echo $filelist | xargs -n1`"
+
+	pdftk A=0.png.pdf cat A1 output result.pdf
+	rm 0.png.pdf 
+	if [ -f 1.png.pdf ]; then
+		for file in [0-9].*
+		do
+			   mv "$file" "0${file}"
+		done
+		for pdf_file in *.png.pdf
+		do
+			echo "Combining: "$pdf_file
+			pdftk A=result.pdf B=$pdf_file cat A B1 output temp.pdf
+			mv temp.pdf result.pdf
+		done
+	fi
+
+	cd $workingdir
+	mv $tmpdir/result.pdf ./$title.pdf
+	rm -rf $tmpdir
+	killchrom
+fi
+

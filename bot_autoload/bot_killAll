@@ -1,0 +1,8 @@
+#!/bin/bash
+while read -r line; do
+    echo "Process a line from runlist: "$line
+        filename=$(echo "$line" | sed 's/#//g')
+        echo "Kill process with "$filename
+        kill -9 `ps -ef | grep -v grep | \
+            grep "python3 "$filename | awk '{print $2}'`
+done <<< "`cat runlist`"

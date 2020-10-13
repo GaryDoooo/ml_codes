@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# echo $#
+
+# function compileAndRun {
+g++ -Wall -g -O2 -std=c++11 -o __a.out $1 && time ./__a.out
+#           }

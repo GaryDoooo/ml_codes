@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# echo $#
+
+# function compileAndRun {
+#                   g++ -Wall -g -O2 -std=c++11 $1 && ./a.out
+#           }
+
+if [ $# -eq 0 ]; then
+    g++ --version
+fi
+if [ $# -eq 1 ]; then
+    # g++ -Wall -g -O2 -std=c++11 $1 && ./a.out
+	compileAndRun $1
+fi
+if [ $# -eq 2 ]; then
+    #unbuffer g++ -Wall -g -O2 -std=c++11 $1 && ./a.out 
+    unbuffer compileAndRun $1 | tee $2
+fi

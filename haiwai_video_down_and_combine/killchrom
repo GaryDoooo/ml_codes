@@ -4,6 +4,7 @@ echo "Deleting tmp directories..."
 rm -rf /tmp/.com.google.Chrome.*
 echo "killing Chrome proces"
 ps -ef | grep -v grep | grep chromium | awk '{print $2}' | xargs -n1 kill
+ps -ef | grep -v grep | grep chrom | grep -v killchrom | awk '{print $2}' | xargs -n1 kill
 echo "killing chromedriver"
 pkill chromedriver 
 

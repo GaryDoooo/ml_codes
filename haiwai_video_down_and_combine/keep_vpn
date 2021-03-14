@@ -1,0 +1,13 @@
+#!/bin/bash
+
+count=$(docker ps | grep openvpn | wc -l)
+
+if [ "$count" -eq "0" ]; then
+	# ssh -fNT -L localhost:8888:127.0.0.1:8888 eric.vm
+	docker run -d --cap-add=NET_ADMIN --device=/dev/net/tun \
+		-v /home/du/openvpn_svr_etc/openvpn:/etc/openvpn \
+		-p 443:443 doooom/openvpn:443tcp /bin/bash -c \
+		'ufw enable && sleep 1 && service openvpn start && sleep 1 && ufw disable && sleep infinity'
+fi
+
+

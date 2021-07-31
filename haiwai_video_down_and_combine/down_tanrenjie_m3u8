@@ -1,0 +1,131 @@
+#!/bin/bash
+
+function geturl {
+	TESTARG=$1 python3 - <<END
+from urllib.parse import urlparse
+import requests
+from os import environ
+
+file_index=0
+
+def iterate_url(link):
+
+    global file_index
+
+    link=link.rstrip() # remove unwanted tail chars, like ^m
+    o = urlparse(link)
+    filename = o.path.split("/")[-1].split("?")[0]
+    if filename.split(".")[-1] in ['image']:
+        file_index = file_index +1
+        filename = "%05d____%s"%(file_index,filename)
+        print(link+" "+filename)
+    else:
+        urlhead = o.scheme + "://" + o.netloc
+        in_server_path = o.path[:o.path.rfind("/")+1]
+        reading = requests.get(link)
+        for each_line in reading.text.split("\n"):
+            if len(each_line) > 0:
+                if each_line[0] != "#":
+                    if each_line[0] == "/":
+                        iterate_url(urlhead+each_line)
+                    elif each_line.split(":")[0].lower() in ['http','https']:
+                        iterate_url(each_line)
+                    else:
+                        iterate_url(urlhead+in_server_path+each_line)
+
+try:
+    iterate_url(environ.get('TESTARG'))
+except:
+    print("An exception occurred")
+
+END
+}
+
+if [ $# -eq 0 ]
+      then
+              echo "To get the m3u8 link in Tangrenjie, find MacPlayer variabl  in console."
+              exit 1
+  fi
+
+# get output from python extracting links from the input HTML codes geturl $1
+# in a list of link" "filename
+linkpairs=$(geturl $1)
+linklist=$(echo $linkpairs | xargs -n2 bash -c 'echo $0')
+filelist=$(echo $linkpairs | xargs -n2 bash -c 'echo $1')
+echo $linklist
+
+linkpairs=$(echo $linkpairs \
+    | xargs -n2 printf "%s %s\n")
+# using python print or echo neither can print new lines clearly
+# printf in bash works better
+ echo $linkpairs
+
+# # get date and time into a string as the output filename
+randstring=$(date '+%Y-%m-%d-%H_%M_%S')
+output=$randstring".ts"
+
+# Decide output mp4 filename
+if [ "$#" -eq 1 ]; then
+	outputmp4=$output".mp4"
+	echo "output to $outputmp4"
+fi
+if [ "$#" -eq 2 ]; then
+	if [ ${2##*.} == "mp4" ]; then
+		outputmp4=$2
+	else
+		outputmp4=$2".mp4"
+	fi
+	echo "output to $outputmp4"
+fi
+
+# make a tmp dir and put all the downloads there
+ workingdir=$(pwd)
+ tmpdir=$(mktemp -d -t downhaiwai-XXXXXXXXXX)
+ cd $tmpdir
+
+for i in {1..100}
+do
+	missinglist=''
+    while read -r line; do
+	    filename=$(echo $line | xargs -n2 bash -c 'echo $1')
+        if [ ! -f $filename ]; then
+				missinglist=$missinglist$line" "
+    	fi
+	done <<< "$linkpairs"
+	if [ "$missinglist" == '' ]; then
+		break
+	fi
+	echo $missinglist \
+        | xargs -n2 -P5 bash -c 'axel -a -n 20 ${0} -o ${1}' \
+        | grep "Opening output file"
+        # some website cut one single ts file into several
+        # so we need add a new serial number to make a new name for each
+done
+
+cat <(while read -r line; do cat $line; done <<< "$filelist") \
+	> $output \
+       	&& ffmpeg -i $output -acodec copy -vcodec copy $outputmp4 \
+	&& echo "${filelist[@]}" | xargs -n1 rm \
+	 && cd $workingdir \
+	 && mv $tmpdir"/"$outputmp4 $workingdir \
+	 && rm -rf $tmpdir
+
+# # END of script
+
+# ########################
+# ########################
+# #
+# #    ffmpeg has timestamp problem to combine ts files 
+# #    better to use cat instead
+# #
+# # fileString=$(replace "${filelist[@]}")
+# # ffmpeg -f concat -safe 0 -i <(for f in ./*.wav; do echo "file '$PWD/$f'"; done) -c copy output.wav
+# #ffmpeg -f concat -safe 0 \
+# #	   	-i <(while read -r line; do echo "file "$filepath$line; done <<< "$filelist") \
+# #		-threads 0 -c copy  $output \
+# #		&& echo "${filelist[@]}" | xargs -n1 | xargs -n1 rm 
+
+# # rm "$tmpfile"
+
+# # ffmpeg -f concat -i filelist -c copy $output \
+# #	&& cat filelist | xargs -n2 bash -c 'rm ${1}'

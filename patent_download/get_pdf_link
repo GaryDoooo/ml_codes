@@ -1,0 +1,11 @@
+#!/bin/bash
+
+link=$(curl -sl "https://patents.google.com/patent/$1" | grep "\.pdf" | sed 's/\"/\ /g' | xargs -n1 | grep pdf | grep https | sed -n '1p')
+#echo $link
+len=$(echo $link | wc -c)
+
+if (( len > 20 )); then
+echo $link
+else
+echo "MISS "$1
+fi

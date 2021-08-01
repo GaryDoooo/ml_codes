@@ -5,6 +5,7 @@
 using namespace std;
 int main() {
     string one_line;
+    int line_number = 0;
     while (cin >> one_line) {
         // cout << endl << one_line << endl;
         int counter   = 0;
@@ -22,6 +23,7 @@ int main() {
             } else
                 buffer += c;
         }
+        if (++line_number % 250 == 0) cout << endl;
     }
     return 0;
 }

@@ -3,5 +3,5 @@
 # echo $#
 
 # function compileAndRun {
-g++ -Wall -g -O2 -std=c++1z -o __a.out $1 && time ./__a.out
+g++ -Wall -g -O2 -std=c++1z -o __a.out $1 && echo "Compiled successfully." && time ./__a.out
 #           }

@@ -88,7 +88,7 @@ do
 		break
 	fi
 	echo $missinglist \
-        | xargs -n2 -P5 bash -c 'axel -a -n 20 ${0} -o ${1}' \
+        | xargs -n2 -P5 bash -c 'axel -a -n 2 ${0} -o ${1}' \
         | grep "Opening output file"
         # some website cut one single ts file into several
         # so we need add a new serial number to make a new name for each

@@ -1,0 +1,23 @@
+#!/bin/bash
+
+res=$(/usr/local/bin/get_gogoanime2.org_m3u8_link $1)
+link=$(echo $res | xargs -n 1 | grep https | head -n 1)
+output=$(echo $res | xargs -n 1 | grep mp4)
+len=$(echo $link | wc -c)
+
+# echo $res
+echo $link
+echo $output
+
+if [ $len -gt 10 ] 
+then
+    if [ -f $output ]
+        then
+            echo $output" Exiting, skip."
+        else
+            /usr/local/bin/down_general_m3u8 $link $output
+    fi
+else
+    echo "Empty link, skip."
+fi 
+

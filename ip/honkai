@@ -1,0 +1,270 @@
+185.151.204.10                                                             0b   11.6Kb  3.63Kb 
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> a23-67-255-35.deploy.static.akamaitechnologies.com                         0b   11.6Kb  3.61Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 127.101.185.35.bc.googleusercontent.com                                 11.6Kb  5.56Kb  17.2Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.56.192.192                                                            160b   5.26Kb  1.64Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.49.228                                                              0b   5.24Kb  1.64Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> dns.opendns.com                                                         1.18Kb  5.23Kb  1.96Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> metadata.google.internal                                                8.64Kb  3.49Kb  2.70Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.243.26.137                                                           4.25Kb  1.65Kb   528b  
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> ec2-18-116-244-7.us-east-2.compute.amazonaws.com                           0b   1.62Kb   520b  
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> ec2-18-217-150-4.us-east-2.compute.amazonaws.com                           0b   1.62Kb   518b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> edge-star-shv-01-atl3.facebook.com                                         0b   1.24Kb  5.54Kb 
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.228                                                           1.50Kb   614b    192b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.229                                                           1.50Kb   614b    192b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.225                                                           1.50Kb   461b    144b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.230                                                           1.50Kb   461b    144b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.231                                                           1.50Kb   461b    144b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.232                                                           1.50Kb   461b    144b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.226                                                           1.50Kb   307b     96b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.227                                                           1.50Kb   307b     96b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.242.34.135 
+<=> 47.243.26.137                                                           1.00Kb  2.70Kb  2.58Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.49.229                                                              0b   1.70Kb  4.40Kb 
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.225                                                            512b   1.05Kb   896b  
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.226                                                            768b   1.05Kb   896b  
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.229                                                              0b   1.05Kb   896b  
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.230                                                              0b   1.05Kb   896b  
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.231                                                              0b   1.05Kb   896b  
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.232                                                              0b   1.05Kb   896b  
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.227                                                              0b    922b    896b  
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.228                                                              0b    922b    896b  
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> dns.opendns.com                                                            0b    726b   2.67Kb 
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.242.34.135                                                              0b    307b    299b  
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.56.192.192 
+        <=                                                                          944b   2.60Kb  1.58Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                       => vs-in-f100.1e100.net                                                       0b   2.14Kb  1.19Kb
+                                                                       <=                                                                            0b   4.43Kb  2.46Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                       => 176.111.173.218                                                            0b   2.65Kb  1.47Kb
+                                                                       <=                                                                            0b   1.46Kb   832b  
+eric.us-east1-b.c.feisty-dolphin-326219.internal                       => metadata.google.internal                                                   0b    375b    522b
+                                                                       <=                                                                            0b    710b    953b  
+eric.us-east1-b.c.feisty-dolphin-326219.internal                       => 17.248.230.30                                                              0b    260b    144b
+                                                                       <=                                                                            0b    311b    173b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                       => ec2-3-129-54-90.us-east-2.compute.amazonaws.com                            0b     83b     86b
+                                                                       <=                                                                            0b     42b     46b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                       => dns.opendns.com                                                            0b     52b     29b
+                                                                       <=                                                                            0b     52b     29b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                       => ue-in-f95.1e100.net                                                        0b     32b     18b
+                                                                       <=                                                                            0b      0b      0b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                       => 47.244.152.19                                                              0b     32b     18b
+                                                                       <=                                                                            0b      0b      0b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                       => 47.243.26.137                                                              0b      0b     57b
+                                                                       <=                                                                            0b      0b      0b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                       => 47.242.34.135                                                              0b      0b     28b
+                                                                       <=                                                                            0b      0b      0b
+<=> ec2-18-191-47-98.us-east-2.compute.amazonaws.com                        6.04Kb  11.7Kb  5.32Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 127.101.185.35.bc.googleusercontent.com                                 2.55Kb  7.17Kb  4.80Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> metadata.google.internal                                                8.38Kb  5.09Kb  2.42Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.49.230                                                              0b   5.09Kb  1.96Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> dns.opendns.com                                                            0b   3.51Kb  2.17Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.243.26.137                                                           2.00Kb  2.80Kb  1.08Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> ec2-18-116-244-7.us-east-2.compute.amazonaws.com                           0b   1.62Kb   640b  
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> ec2-18-217-150-4.us-east-2.compute.amazonaws.com                           0b   1.62Kb   638b  
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.228                                                            768b   1.05Kb   414b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.229                                                            768b   1.05Kb   414b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.230                                                            768b    973b    374b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.225                                                            768b    922b    354b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.226                                                           1.25Kb   922b    354b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.227                                                           1.50Kb   922b    354b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.231                                                            768b    922b    354b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.232                                                            768b    922b    354b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.242.34.135                                                            256b    358b    138b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.56.192.192                                                            256b    358b    138b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.49.229                                                              0b     51b     20b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 185.151.204.11                                                             0b      0b   4.49Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> a23-67-255-40.deploy.static.akamaitechnologies.com                         0b      0b   4.46Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> a23-67-255-35.deploy.static.akamaitechnologies.com                         0b      0b     50b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 185.151.204.15                                                             0b      0b     50b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> usmia1-ntp-001.aaplimg.com                                                 0b      0b     47b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> usqas2-ntp-001.aaplimg.com                                                 0b      0b     47b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> usatl4-ntp-002.aaplimg.com                                                 0b      0b     47b
+
+
+
+ec2-18-191-47-98.us-east-2.compute.amazonaws.com                           0b   12.7Kb  7.90Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 185.151.204.7                                                              0b   11.7Kb  8.97Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> a23-67-255-40.deploy.static.akamaitechnologies.com                         0b   11.5Kb  4.41Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 127.101.185.35.bc.googleusercontent.com                                 7.67Kb  6.77Kb  8.01Kb 
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.49.227                                                              0b   5.12Kb  1.97Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> metadata.google.internal                                                4.24Kb  3.05Kb  1.91Kb 
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.243.26.137                                                           3.75Kb  2.40Kb  1.04Kb 
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> dns.opendns.com                                                            0b   2.33Kb  1.31Kb 
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> ec2-3-15-134-210.us-east-2.compute.amazonaws.com                           0b   1.62Kb   640b  
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> ec2-3-138-147-181.us-east-2.compute.amazonaws.com                          0b   1.62Kb   638b  
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> edge-star-shv-01-atl3.facebook.com                                         0b   1.30Kb  6.89Kb 
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.227                                                           1.50Kb   922b    354b  
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.228                                                           1.50Kb   922b    354b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.229                                                           1.50Kb   768b    295b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.230                                                           1.50Kb   768b    295b  
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.231                                                           1.50Kb   768b    295b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.232                                                           1.50Kb   768b    295b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.225                                                           1.50Kb   614b    236b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.226                                                           1.50Kb   614b    236b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.242.34.135                                                            512b    307b    118b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.56.192.192                                                            512b    307b    118b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> usmia1-ntp-001.aaplimg.com                                                 0b    122b     47b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> usqas2-ntp-001.aaplimg.com                                                 0b    122b     47b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> usatl4-ntp-002.aaplimg.com                                                 0b    122b     47b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 205.185.121.185                                                            0b     99b     38b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 185.151.204.11                                                             0b     51b     39b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 185.151.204.15                                                             0b     51b     39b  
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.49.229                                                              0b     51b     20b  
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> ec2-3-129-54-90.us-east-2.compute.amazonaws.com                            0b      0b   33.7Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> vs-in-f101.1e100.net                                                       0b      0b   2.54Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.242.175.196                                                             0b      0b     12b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> uf-in-f95.1e100.net                                                        0b      0b     12b
+
+
+
+ 185.151.204.7                                                            256b    461b    461b
+                                                                       <=                                                                            0b      0b      0b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                       => dns.opendns.com                                                            0b    168b    168b
+                                                                       <=                                                                            0b    219b    219b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                       => 185.151.204.10                                                           256b    307b    307b
+                                                                       <=                                                                            0b      0b      0b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                       => 185.151.204.11                                                           256b    307b    307b
+                                                                       <=                                                                            0b      0b      0b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                       => 185.151.204.15                                                           256b    307b    307b
+                                                                       <=                                                                            0b      0b      0b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                       => 47.243.26.137                                                              0b    102b    102b
+                                                                       <=                                                                            0b      0b      0b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                       => 47.242.34.135                                                              0b     51b     51b
+                                                                       <=                                                                            0b      0b      0b
+
+
+
+
+<=> cpe-67-244-140-17.rochester.res.rr.com                                  1.16Mb   295Kb   247Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> server-99-84-185-76.iad89.r.cloudfront.net                              1.16Mb   238Kb   170Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> edge-star-shv-01-atl3.facebook.com                                         0b   17.6Kb  12.6Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> a23-67-255-35.deploy.static.akamaitechnologies.com                         0b   11.6Kb  8.28Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 127.101.185.35.bc.googleusercontent.com                                 5.02Kb  9.53Kb  12.0Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> ec2-18-191-47-98.us-east-2.compute.amazonaws.com                        29.8Kb  7.92Kb  8.48Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> metadata.google.internal                                                5.21Kb  7.69Kb  6.44Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> uf-in-f95.1e100.net                                                        0b   6.46Kb  4.62Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.49.232                                                           26.2Kb  5.24Kb  3.75Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> ec2-18-116-244-7.us-east-2.compute.amazonaws.com                        8.33Kb  1.70Kb  1.21Kb 
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> ec2-18-217-150-4.us-east-2.compute.amazonaws.com                        8.10Kb  1.65Kb  1.18Kb 
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> dns.opendns.com                                                         3.60Kb   863b    617b  
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.243.26.137                                                           2.00Kb   410b    439b  
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 185.151.204.7                                                           1.25Kb   410b    293b  
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 185.151.204.11                                                           512b    256b    183b  
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 185.151.204.10                                                           512b    205b    146b  
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 185.151.204.15                                                           512b    205b    146b  
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.230                                                            768b    154b    219b  
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.231                                                            768b    154b    219b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.228                                                            768b    154b    110b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.229                                                            768b    154b    110b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> ec2-3-129-54-90.us-east-2.compute.amazonaws.com                            0b    125b   17.4Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> usmia1-ntp-001.aaplimg.com                                                 0b    122b     87b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> usqas2-ntp-001.aaplimg.com                                                 0b    122b     87b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> usatl4-ntp-002.aaplimg.com                                                 0b    122b     87b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> server-99-84-185-75.iad89.r.cloudfront.net                                 0b     96b   1.27Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.242.34.135                                                            256b     51b     37b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.56.192.192                                                            256b     51b     37b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> ec2-18-188-205-220.us-east-2.compute.amazonaws.com                         0b     32b     23b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> vs-in-f102.1e100.net                                                       0b      0b   4.60Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.225                                                              0b      0b    110b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.226                                                              0b      0b    110b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.232 
+server-99-84-185-170.iad89.r.cloudfront.net                                0b    261Kb   100Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> ec2-18-191-47-98.us-east-2.compute.amazonaws.com                           0b   12.4Kb  4.77Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 185.151.204.9                                                              0b   11.7Kb  4.50Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> a23-67-255-40.deploy.static.akamaitechnologies.com                         0b   11.7Kb  4.48Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 127.101.185.35.bc.googleusercontent.com                                 5.64Kb  6.50Kb  6.38Kb 
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.49.225                                                              0b   5.12Kb  1.97Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> metadata.google.internal                                                4.24Kb  3.64Kb  1.93Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> dns.opendns.com                                                            0b   3.55Kb  2.40Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.243.26.137                                                           3.75Kb  2.40Kb   985b  
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> ec2-3-15-134-210.us-east-2.compute.amazonaws.com                           0b   1.62Kb   640b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> ec2-3-138-147-181.us-east-2.compute.amazonaws.com                          0b   1.62Kb   638b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> edge-star-shv-01-atl3.facebook.com                                         0b   1.28Kb  6.81Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.225                                                           1.50Kb   922b    354b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.226                                                           1.50Kb   922b    354b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.227                                                           1.50Kb   922b    354b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.228                                                           1.50Kb   768b    295b  
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.229                                                           1.50Kb   768b    295b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.230                                                           1.50Kb   768b    295b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.231                                                           1.50Kb   768b    295b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.232                                                           1.50Kb   666b    256b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.242.34.135                                                            512b    307b    138b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.56.192.192                                                            512b    307b    118b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> usmia1-ntp-001.aaplimg.com                                                 0b    122b     47b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> usqas2-ntp-001.aaplimg.com                                                 0b    122b     47b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> usqas2-ntp-002.aaplimg.com                                                 0b    122b     47b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 185.151.204.11                                                             0b     51b     20b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> vu-in-f95.1e100.net                                                        0b      0b   2.44Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> smtp15.walkertexas.de                                                      0b      0b     39b
+
+
+
+ec2-18-191-47-98.us-east-2.compute.amazonaws.com                        15.0Kb  12.1Kb  10.1Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 185.151.204.13                                                             0b   11.7Kb  9.73Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> a23-64-141-67.deploy.static.akamaitechnologies.com                         0b   11.6Kb  9.70Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 127.101.185.35.bc.googleusercontent.com                                 10.1Kb  7.25Kb  7.05Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.49.226                                                              0b   5.28Kb  4.40Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> metadata.google.internal                                                4.24Kb  4.19Kb  3.49Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> dns.opendns.com                                                          544b   2.11Kb  1.76Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.243.26.137                                                           4.25Kb  1.65Kb  1.38Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> ec2-18-116-244-7.us-east-2.compute.amazonaws.com                           0b   1.62Kb  1.35Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> ec2-18-217-150-4.us-east-2.compute.amazonaws.com                           0b   1.62Kb  1.35Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> edge-star-shv-01-atl3.facebook.com                                         0b   1.21Kb  9.20Kb
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.225                                                           1.50Kb   614b    512b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.227                                                           1.50Kb   614b    512b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.228                                                           1.50Kb   614b    512b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 17.36.196.7                                                             2.84Kb   581b    484b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.226                                                           2.25Kb   461b    384b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.229                                                           1.50Kb   461b    384b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.230                                                           1.50Kb   461b    384b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.231                                                           1.50Kb   461b    384b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.246.24.232                                                           1.50Kb   461b    384b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.242.34.135                                                            512b    205b    171b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 47.56.192.192                                                            512b    205b    171b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> usmia1-ntp-001.aaplimg.com                                                 0b    122b    101b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> usqas2-ntp-001.aaplimg.com                                                 0b    122b    101b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> usqas2-ntp-002.aaplimg.com                                                 0b    122b    101b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 185.151.204.9                                                              0b     51b     43b
+eric.us-east1-b.c.feisty-dolphin-326219.internal                      <=> 185.151.204.11     
+
+35.185.101.127                                                          1.20Kb  1.90Kb  3.86Kb
+                                                            <=> 169.254.169.254                                                            0b   1.04Kb  1.07Kb                                                            <=> 67.244.140.17                                                              0b    434b   2.02Kb
+                                                            <=> 3.129.54.90                                                                0b    114b    242b
+                                                            <=> 18.191.47.98                                                               0b      0b    501b
+                                                            <=> 47.243.26.137                                                              0b      0b    102b
+                                                            <=> 208.67.222.222                                                             0b      0b     34b
+                                                            <=> 47.242.34.135                                                              0b      0b     13b
+
+
+
+
+
+67.244.140.17                                                           1.04Mb   396Kb   128Kb
+10.142.0.5                                                            <=> 13.32.196.87                                                             898Kb   261Kb  81.6Kb 
+10.142.0.5                                                            <=> 31.13.65.1                                                                 0b   17.6Kb  5.50Kb 
+10.142.0.5                                                            <=> 185.151.204.14                                                             0b   11.8Kb  3.68Kb
+10.142.0.5                                                            <=> 23.67.255.35                                                               0b   11.7Kb  3.64Kb 
+10.142.0.5                                                            <=> 35.185.101.127                                                          6.72Kb  7.76Kb  4.70Kb
+10.142.0.5                                                            <=> 74.125.141.95                                                              0b   6.60Kb  2.06Kb
+10.142.0.5                                                            <=> 208.67.220.220                                                             0b   6.15Kb  1.92Kb
+10.142.0.5                                                            <=> 8.48.85.230                                                                0b   5.11Kb  1.60Kb
+10.142.0.5                                                            <=> 3.15.134.210                                                               0b   1.62Kb   520b
+10.142.0.5                                                            <=> 18.217.150.4                                                               0b   1.62Kb   518b
+10.142.0.5                                                            <=> 47.243.26.137                                                           4.00Kb  1.20Kb   384b
+10.142.0.5                                                            <=> 47.246.24.225                                                           1.50Kb   461b    144b
+10.142.0.5                                                            <=> 47.246.24.226                                                           1.50Kb   461b    144b  
+10.142.0.5                                                            <=> 47.246.24.232                                                           1.50Kb   461b    144b
+10.142.0.5                                                            <=> 18.191.47.98                                                             512b    410b    128b
+10.142.0.5                                                            <=> 47.246.24.227                                                           1.50Kb   307b     96b
+10.142.0.5                                                            <=> 47.246.24.228                                                           1.50Kb   307b     96b
+10.142.0.5                                                            <=> 47.246.24.229                                                           1.50Kb   307b     96b
+10.142.0.5                                                            <=> 47.246.24.230                                                           1.50Kb   307b     96b
+10.142.0.5                                                            <=> 47.242.34.135                                                            512b    154b     48b
+10.142.0.5                                                            <=> 47.56.192.192                                                            512b    154b     48b
+10.142.0.5                                                            <=> 47.246.24.231                                                            768b    154b     48b
+10.142.0.5                                                            <=> 17.253.12.125                                                              0b    122b     38b
+10.142.0.5                                                            <=> 17.253.20.125                                                              0b    122b     38b
+10.142.0.5                                                            <=> 17.253.6.253                                                               0b    122b     38b
+10.142.0.5                                                            <=> 208.67.222.222                                                             0b    102b    630b
+10.142.0.5                                                            <=> 185.151.204.15                                                             0b     51b     16b
+10.142.0.5                                                            <=> 169.254.169.254                                                            0b      0b    826b
+10.142.0.5                                                            <=> 17.36.196.133    

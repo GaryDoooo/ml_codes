@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cat $1 | xargs -n1 | grep "\." | grep "^[0-9]" | grep -v "b" | grep -v "B" | sort | uniq | sed -z 's/\n/\/32,/g'
+

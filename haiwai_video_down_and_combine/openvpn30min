@@ -1,0 +1,23 @@
+#!/bin/bash
+
+hasconnections=$(cat /home/du/openvpn_svr_etc/log/openvpn.log | grep "n Init" | wc -l)
+hascountdown=$(ps -ef | grep -v grep | grep "sleep 1811" | wc -l)
+running=$(docker ps | grep "openvpn:443" | wc -l)
+
+if [ $running -eq 0 ]
+then
+    exit 0
+fi
+
+if [ $hasconnections -ne 0 ]
+    then
+        if [ $hascountdown -eq 0 ]
+            then
+                sleep 1811
+                container=$(docker ps | grep "openvpn:443" | xargs -n1 | tail -n1)
+            docker stop $container
+            sleep 1811 
+            sleep 1811
+            /usr/local/bin/keep_vpn
+        fi
+    fi

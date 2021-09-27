@@ -1,0 +1,8 @@
+#!/usr/bin/expect
+spawn telnet 172.17.0.2 7505
+set timeout 10
+expect "OpenVPN Management Interface"
+send "status 3\r"
+expect "END"
+send "exit\r"
+

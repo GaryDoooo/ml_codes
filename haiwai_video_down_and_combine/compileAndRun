@@ -1,7 +1,13 @@
 #!/bin/bash
 
-# echo $#
-
 # function compileAndRun {
-g++ -Wall -g -O2 -std=c++1z -o __a.out $1 && echo "Compiled successfully." && time ./__a.out
+flags="-D__ALGORITHM__=OBLKIO_OPT -D__AUTO__ \
+    -O3 -std=c++14 -m64 \
+    -ffast-math -fassociative-math \
+    -ftree-vectorize -ftree-vectorizer-verbose=0 \
+    -fopenmp -fopenmp-simd \
+    -march=broadwell -Wall  
+"
+
+g++ $flags -std=c++11 -o __a.out $1 && echo "Compiled successfully." && time ./__a.out
 #           }

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+template="/home/du/code/template.cpp"
+
+cp $template ./$1.cpp

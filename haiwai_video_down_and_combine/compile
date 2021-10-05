@@ -1,0 +1,9 @@
+#!/bin/bash
+
+g++  -D__ALGORITHM__=OBLKIO_OPT -D__AUTO__ \
+    -O3 -std=c++14 -m64 \
+    -ffast-math -fassociative-math \
+    -ftree-vectorize -ftree-vectorizer-verbose=0 \
+    -fopenmp -fopenmp-simd \
+    -fopt-info-all=sfComp.o.gnurpt \
+    -march=broadwell $1 -o ./b.out

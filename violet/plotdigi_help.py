@@ -44,19 +44,23 @@ def dispatch(input_xlsx,
              step,
              output_fig
              ):
+    #  print("open ", input_xlsx)
     input_x = []
     input_y = []
     with open(input_xlsx, newline='') as csvfile:
         for r in csv.reader(csvfile, delimiter=',', quotechar='|'):
             #  print([float(_) for _ in r])
-            input_x.append(float(r[0]))
-            input_y.append(float(r[1]))
+            try:
+                input_x.append(float(r[0]))
+                input_y.append(float(r[1]))
+            except BaseException:
+                pass
     #  df = read_excel(input_xlsx)  # , sheet_name="Data")
     #  input_y = df["Y"]
     #  input_x = df["X"]
     #  x_result = []
     #  y_result = []
-    print("X,Y,")
+    #  print("X,Y,")
     for x in range(start, end + step, step):
         y = get_y_from_known_discrete_XY(
             x, input_x, input_y)

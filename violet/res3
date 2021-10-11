@@ -1,0 +1,171 @@
+[ 0.33112123  0.40397311]
+V power X2 [ 0.30345096  0.34509222]
+V power X3 [ 0.28503781  0.30591001]
+V power X4 [ 0.27190203  0.27795776]
+V power X5 [ 0.26205919  0.2570127 ]
+V power X6 [ 0.25440896  0.24073343]
+V power X7 [ 0.24829213  0.22771713]
+V power X8 [ 0.24328966  0.21707215]
+V power X9 [ 0.23912246  0.20820456]
+V after LCD B haz 0.21620139909853117
+V power X0.1 [ 0.30867006  0.35875109]
+V power X0.2 [ 0.27235232  0.28281837]
+V power X0.3 [ 0.24988888  0.23585205]
+V power X0.4 [ 0.23462201  0.20393225]
+V power X0.5 [ 0.22357087  0.18082664]
+V power X0.6 [ 0.21520113  0.16332728]
+V power X0.7 [ 0.20864247  0.14961451]
+V power X0.8 [ 0.20336445  0.13857927]
+V power X0.9 [ 0.19902534  0.12950711]
+B after LCD B haz 0.07683465705759278
+try other specturm
+Lambda 403.4 power_X 2.02 x,y [ 0.29931644  0.33480146] B_haz 0.2382
+Lambda 403.8 power_X 2.02 x,y [ 0.2993933   0.33489337] B_haz 0.2382
+Lambda 404.2 power_X 1.83 x,y [ 0.29995986  0.33478388] B_haz 0.2371
+Lambda 404.6 power_X 1.83 x,y [ 0.30002854  0.33486781] B_haz 0.2371
+Lambda 405.0 power_X 1.66 x,y [ 0.30042333  0.33433346] B_haz 0.2361
+Lambda 405.4 power_X 1.67 x,y [ 0.30028855  0.33414049] B_haz 0.2370
+Lambda 405.8 power_X 1.62 x,y [ 0.30063237  0.33460755] B_haz 0.2327
+Lambda 406.2 power_X 1.52 x,y [ 0.3008562   0.33424672] B_haz 0.2356
+Lambda 406.6 power_X 1.51 x,y [ 0.30098521  0.33448802] B_haz 0.2345
+Lambda 407.0 power_X 1.38 x,y [ 0.30116377  0.33373304] B_haz 0.2338
+Lambda 407.4 power_X 1.38 x,y [ 0.30136357  0.33427355] B_haz 0.2330
+Lambda 407.8 power_X 1.3 x,y [ 0.30145589  0.33385914] B_haz 0.2282
+Lambda 408.2 power_X 1.26 x,y [ 0.30167209  0.33396265] B_haz 0.2307
+Lambda 408.6 power_X 1.24 x,y [ 0.30148013  0.33345424] B_haz 0.2290
+Lambda 409.0 power_X 1.14 x,y [ 0.30209556  0.33394046] B_haz 0.2270
+Lambda 409.4 power_X 1.14 x,y [ 0.3020432  0.3339379] B_haz 0.2262
+Lambda 409.9 power_X 1.06 x,y [ 0.30212395  0.33339038] B_haz 0.2226
+Lambda 410.3 power_X 1.05 x,y [ 0.30204825  0.33316536] B_haz 0.2241
+Lambda 410.7 power_X 1.01 x,y [ 0.30226214  0.33342452] B_haz 0.2197
+Lambda 411.1 power_X 0.95 x,y [ 0.30252592  0.33345219] B_haz 0.2193
+Lambda 411.5 power_X 0.94 x,y [ 0.30253424  0.33351821] B_haz 0.2169
+Lambda 411.9 power_X 0.88 x,y [ 0.30246194  0.33275379] B_haz 0.2150
+Lambda 412.3 power_X 0.87 x,y [ 0.30254015  0.33294086] B_haz 0.2139
+Lambda 412.7 power_X 0.83 x,y [ 0.30270132  0.3330438 ] B_haz 0.2098
+Lambda 413.1 power_X 0.79 x,y [ 0.3030941   0.33359525] B_haz 0.2086
+Lambda 413.5 power_X 0.78 x,y [ 0.30288553  0.33313904] B_haz 0.2064
+Lambda 413.9 power_X 0.73 x,y [ 0.30302044  0.33297386] B_haz 0.2042
+Lambda 414.3 power_X 0.72 x,y [ 0.3032229   0.33348846] B_haz 0.2014
+Lambda 414.7 power_X 0.69 x,y [ 0.30298604  0.33270781] B_haz 0.1992
+Lambda 415.1 power_X 0.66 x,y [ 0.30350292  0.3336868 ] B_haz 0.1970
+Lambda 415.5 power_X 0.65 x,y [ 0.30310555  0.33279185] B_haz 0.1949
+Lambda 415.9 power_X 0.61 x,y [ 0.30360003  0.33357451] B_haz 0.1919
+Lambda 416.3 power_X 0.61 x,y [ 0.30301534  0.3323235 ] B_haz 0.1914
+Lambda 416.7 power_X 0.58 x,y [ 0.30307424  0.33222069] B_haz 0.1885
+Lambda 417.1 power_X 0.56 x,y [ 0.30339584  0.33287849] B_haz 0.1864
+Lambda 417.5 power_X 0.54 x,y [ 0.30379829  0.33379375] B_haz 0.1813
+Lambda 417.9 power_X 0.52 x,y [ 0.30342265  0.33271087] B_haz 0.1815
+Lambda 418.3 power_X 0.51 x,y [ 0.30362166  0.33325183] B_haz 0.1779
+Lambda 418.7 power_X 0.49 x,y [ 0.30333568  0.33243078] B_haz 0.1765
+Lambda 419.1 power_X 0.48 x,y [ 0.30316016  0.33199881] B_haz 0.1761
+Lambda 419.5 power_X 0.46 x,y [ 0.30378632  0.33343803] B_haz 0.1703
+Lambda 419.9 power_X 0.44 x,y [ 0.30391593  0.33361208] B_haz 0.1688
+Lambda 420.3 power_X 0.44 x,y [ 0.3030831  0.331777 ] B_haz 0.1684
+Lambda 420.7 power_X 0.42 x,y [ 0.30331725  0.33222914] B_haz 0.1655
+Lambda 421.1 power_X 0.41 x,y [ 0.30330779  0.33220756] B_haz 0.1644
+Lambda 421.5 power_X 0.4 x,y [ 0.30323021  0.33208883] B_haz 0.1612
+Lambda 421.9 power_X 0.38 x,y [ 0.30385607  0.33343699] B_haz 0.1582
+Lambda 422.3 power_X 0.38 x,y [ 0.30293966  0.33143248] B_haz 0.1580
+Lambda 422.7 power_X 0.36 x,y [ 0.30367241  0.33306955] B_haz 0.1539
+Lambda 423.2 power_X 0.35 x,y [ 0.30397935  0.33380871] B_haz 0.1520
+Lambda 423.6 power_X 0.34 x,y [ 0.30388433  0.33365434] B_haz 0.1490
+Lambda 424.0 power_X 0.33 x,y [ 0.30391867  0.33371138] B_haz 0.1479
+Lambda 424.4 power_X 0.33 x,y [ 0.30298552  0.33171022] B_haz 0.1482
+Lambda 424.8 power_X 0.31 x,y [ 0.30416261  0.33438861] B_haz 0.1428
+Lambda 425.2 power_X 0.31 x,y [ 0.30321816  0.33230248] B_haz 0.1443
+Lambda 425.6 power_X 0.3 x,y [ 0.30334339  0.33266861] B_haz 0.1411
+Lambda 426.0 power_X 0.29 x,y [ 0.30372991  0.33359066] B_haz 0.1390
+Lambda 426.4 power_X 0.29 x,y [ 0.30272312  0.33141105] B_haz 0.1396
+Lambda 426.8 power_X 0.28 x,y [ 0.3028511   0.33174843] B_haz 0.1373
+Lambda 427.2 power_X 0.27 x,y [ 0.30356769  0.33348973] B_haz 0.1344
+Lambda 427.6 power_X 0.26 x,y [ 0.30408921  0.33478226] B_haz 0.1310
+Lambda 428.0 power_X 0.26 x,y [ 0.3029677  0.3323051] B_haz 0.1324
+Lambda 428.4 power_X 0.25 x,y [ 0.30388094  0.33454293] B_haz 0.1286
+Lambda 428.8 power_X 0.25 x,y [ 0.30248505  0.33143496] B_haz 0.1302
+Lambda 429.2 power_X 0.24 x,y [ 0.30350337  0.33387751] B_haz 0.1267
+Lambda 429.6 power_X 0.24 x,y [ 0.30242796  0.33156851] B_haz 0.1273
+Lambda 430.0 power_X 0.23 x,y [ 0.30321736  0.33347821] B_haz 0.1243
+Lambda 430.4 power_X 0.23 x,y [ 0.30213588  0.33114412] B_haz 0.1254
+Lambda 430.8 power_X 0.22 x,y [ 0.30321795  0.33375125] B_haz 0.1215
+Lambda 431.2 power_X 0.22 x,y [ 0.30233975  0.33190412] B_haz 0.1223
+Lambda 431.6 power_X 0.21 x,y [ 0.3033977   0.33447531] B_haz 0.1185
+Lambda 432.0 power_X 0.21 x,y [ 0.30245646  0.33248537] B_haz 0.1193
+Lambda 432.4 power_X 0.2 x,y [ 0.30361386  0.33525005] B_haz 0.1157
+Lambda 432.8 power_X 0.2 x,y [ 0.30278539  0.33357425] B_haz 0.1161
+Lambda 433.2 power_X 0.2 x,y [ 0.30194149  0.33181701] B_haz 0.1168
+Lambda 433.6 power_X 0.19 x,y [ 0.30334173  0.33517413] B_haz 0.1127
+Lambda 434.0 power_X 0.19 x,y [ 0.30251845  0.3334945 ] B_haz 0.1133
+Lambda 434.4 power_X 0.19 x,y [ 0.30152277  0.33142843] B_haz 0.1142
+Lambda 434.8 power_X 0.18 x,y [ 0.30327811  0.3355994 ] B_haz 0.1096
+Lambda 435.2 power_X 0.18 x,y [ 0.3024509   0.33390934] B_haz 0.1103
+Lambda 435.6 power_X 0.18 x,y [ 0.30143667  0.33186867] B_haz 0.1110
+Lambda 436.0 power_X 0.17 x,y [ 0.30346706  0.33662471] B_haz 0.1064
+Lambda 436.4 power_X 0.17 x,y [ 0.3024338   0.33453663] B_haz 0.1073
+Lambda 436.9 power_X 0.17 x,y [ 0.30178675  0.3333157 ] B_haz 0.1074
+Lambda 437.3 power_X 0.17 x,y [ 0.30087561  0.33149122] B_haz 0.1082
+Lambda 437.7 power_X 0.16 x,y [ 0.30307651  0.33665647] B_haz 0.1033
+Lambda 438.1 power_X 0.16 x,y [ 0.30238539  0.33535236] B_haz 0.1037
+Lambda 438.5 power_X 0.16 x,y [ 0.30155512  0.33375235] B_haz 0.1043
+Lambda 438.9 power_X 0.16 x,y [ 0.3008327   0.33240814] B_haz 0.1047
+Lambda 439.3 power_X 0.16 x,y [ 0.30023407  0.33135599] B_haz 0.1049
+Lambda 439.7 power_X 0.15 x,y [ 0.30257768  0.33681997] B_haz 0.1000
+Lambda 440.1 power_X 0.15 x,y [ 0.30194512  0.33567973] B_haz 0.1004
+Lambda 440.5 power_X 0.15 x,y [ 0.30105737  0.33397928] B_haz 0.1011
+Lambda 440.9 power_X 0.15 x,y [ 0.30051632  0.33310435] B_haz 0.1011
+Lambda 441.3 power_X 0.15 x,y [ 0.29970896  0.3315879 ] B_haz 0.1018
+Lambda 441.7 power_X 0.15 x,y [ 0.29927302  0.33098538] B_haz 0.1017
+Lambda 442.1 power_X 0.14 x,y [ 0.30199047  0.33724776] B_haz 0.0966
+Lambda 442.5 power_X 0.14 x,y [ 0.30131659  0.33606636] B_haz 0.0970
+Lambda 442.9 power_X 0.14 x,y [ 0.30093036  0.33555348] B_haz 0.0969
+Lambda 443.3 power_X 0.14 x,y [ 0.29998467  0.33385375] B_haz 0.0976
+Lambda 443.7 power_X 0.14 x,y [ 0.29945668  0.33300747] B_haz 0.0979
+Lambda 444.1 power_X 0.14 x,y [ 0.29894909  0.33226093] B_haz 0.0980
+Lambda 444.5 power_X 0.14 x,y [ 0.29822924  0.33101688] B_haz 0.0985
+Lambda 444.9 power_X 0.14 x,y [ 0.29795814  0.33082635] B_haz 0.0983
+Lambda 445.3 power_X 0.13 x,y [ 0.30095313  0.33764093] B_haz 0.0931
+Lambda 445.7 power_X 0.13 x,y [ 0.3006217   0.33731757] B_haz 0.0930
+Lambda 446.1 power_X 0.13 x,y [ 0.30013283  0.33667596] B_haz 0.0931
+Lambda 446.5 power_X 0.13 x,y [ 0.2993983   0.33545937] B_haz 0.0936
+Lambda 446.9 power_X 0.13 x,y [ 0.29911997  0.33528288] B_haz 0.0934
+Lambda 447.3 power_X 0.13 x,y [ 0.29873766  0.33487373] B_haz 0.0934
+Lambda 447.7 power_X 0.13 x,y [ 0.2982401   0.33422839] B_haz 0.0936
+Lambda 448.1 power_X 0.13 x,y [ 0.29768845  0.33352945] B_haz 0.0938
+Lambda 448.5 power_X 0.13 x,y [ 0.2971293   0.33273499] B_haz 0.0941
+Lambda 448.9 power_X 0.13 x,y [ 0.29702611  0.33300466] B_haz 0.0937
+Lambda 449.3 power_X 0.13 x,y [ 0.29627844  0.33184454] B_haz 0.0942
+Lambda 449.7 power_X 0.13 x,y [ 0.29609744  0.3319941 ] B_haz 0.0939
+Lambda 450.2 power_X 0.12 x,y [ 0.29971869  0.34003568] B_haz 0.0883
+Lambda 450.6 power_X 0.12 x,y [ 0.29929832  0.3395846 ] B_haz 0.0884
+Lambda 451.0 power_X 0.12 x,y [ 0.29908205  0.33969081] B_haz 0.0882
+Lambda 451.4 power_X 0.12 x,y [ 0.2986679   0.33931085] B_haz 0.0883
+Lambda 451.8 power_X 0.12 x,y [ 0.29842156  0.33928266] B_haz 0.0882
+Lambda 452.2 power_X 0.12 x,y [ 0.29796905  0.33884875] B_haz 0.0883
+Lambda 452.6 power_X 0.12 x,y [ 0.29755241  0.33850917] B_haz 0.0884
+Lambda 453.0 power_X 0.12 x,y [ 0.29742116  0.33879022] B_haz 0.0881
+Lambda 453.4 power_X 0.12 x,y [ 0.29706861  0.33853437] B_haz 0.0882
+Lambda 453.8 power_X 0.12 x,y [ 0.29688221  0.33885269] B_haz 0.0878
+Lambda 454.2 power_X 0.12 x,y [ 0.29660108  0.3388219 ] B_haz 0.0878
+Lambda 454.6 power_X 0.12 x,y [ 0.29628549  0.33874154] B_haz 0.0878
+Lambda 455.0 power_X 0.12 x,y [ 0.29596711  0.3387429 ] B_haz 0.0877
+Lambda 455.4 power_X 0.12 x,y [ 0.29566543  0.33867556] B_haz 0.0877
+Lambda 455.8 power_X 0.12 x,y [ 0.29570639  0.33945454] B_haz 0.0872
+Lambda 456.2 power_X 0.12 x,y [ 0.29547384  0.33964122] B_haz 0.0870
+Lambda 456.6 power_X 0.12 x,y [ 0.29520066  0.33969671] B_haz 0.0870
+Lambda 457.0 power_X 0.12 x,y [ 0.29496395  0.33994938] B_haz 0.0868
+Lambda 457.4 power_X 0.12 x,y [ 0.29466227  0.33999016] B_haz 0.0868
+Lambda 457.8 power_X 0.12 x,y [ 0.29438568  0.34008321] B_haz 0.0868
+Lambda 458.2 power_X 0.12 x,y [ 0.2944344   0.34095142] B_haz 0.0863
+Lambda 458.6 power_X 0.12 x,y [ 0.29430025  0.34136494] B_haz 0.0861
+Lambda 459.0 power_X 0.12 x,y [ 0.29434857  0.34228677] B_haz 0.0855
+Lambda 459.4 power_X 0.12 x,y [ 0.29421483  0.34281255] B_haz 0.0853
+Lambda 459.8 power_X 0.12 x,y [ 0.29374126  0.34253979] B_haz 0.0856
+Lambda 460.2 power_X 0.12 x,y [ 0.29383368  0.34362745] B_haz 0.0850
+Traceback (most recent call last):
+  File "color_point.py", line 144, in <module>
+    main()
+  File "color_point.py", line 108, in main
+    bLED = sp_X_magnify(fvLED, ratio)
+  File "color_point.py", line 47, in sp_X_magnify
+    res[x] = sp1[int(x / ratio)]
+KeyError: 349

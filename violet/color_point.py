@@ -44,7 +44,10 @@ def sp_Y_magnify(sp1, ratio):
 def sp_X_magnify(sp1, ratio):
     res = {}
     for x in range(400, 701):
-        res[x] = sp1[int(x / ratio)]
+        try:
+            res[x] = sp1[int(x / ratio)]
+        except BaseException:
+            res[x] = 0
     return res
 
 
@@ -103,11 +106,11 @@ def main():
                                         bLED, 0.1))))))
     print("try other specturm")
     fvLED = read_400_700_sp('v_LED_full.csv')
-    for r in range(1, 117):
-        ratio = 1 + r / 100
+    for r in range(1, 327):
+        ratio = 1 + r / 1000
         bLED = sp_X_magnify(fvLED, ratio)
         res = []
-        for powerX in range(1, 100):
+        for powerX in range(1, 300):
             res.append(
                 (powerX / 100,
                  sp2xy(
@@ -121,13 +124,11 @@ def main():
                                  bLED,
                                  powerX / 100))))))
         pick_ratio = min(res, key=lambda x: (
-            (x[1][0] - .3)**2 + (x[1][1] - .33)**2))[0]
+            (x[1][0] - .31)**2 + (x[1][1] - .33)**2))
         print(
-            "Lambda",
-            403 * ratio,
-            "power X",
-            pick_ratio,
-            "B haz",
+            "Lambda %.1f" % (403 * ratio),
+            "power_X", pick_ratio[0], "x,y", pick_ratio[1],
+            "B_haz %.4f" %
             integration(
                 sp_product(
                     bhaz,
@@ -139,7 +140,7 @@ def main():
                                 rLED),
                             sp_Y_magnify(
                                 bLED,
-                                pick_ratio))))))
+                                pick_ratio[0]))))))
 
 
 if __name__ == "__main__":

@@ -1,0 +1,20 @@
+#!/bin/bash
+randstring=$(date '+%Y-%m-%d-%H_%M_%S')
+output=$randstring".mkv"
+
+# Decide output mkv filename
+if [ "$#" -eq 1 ]; then
+        outputmp4=$output
+        echo "output to $outputmp4"
+fi
+if [ "$#" -eq 2 ]; then
+        if [ ${2##*.} == "mkv" ]; then
+                outputmp4=$2
+        else
+                outputmp4=$2".mkv"
+        fi
+        echo "output to $outputmp4"
+fi
+
+ffmpeg -i $1 -threads 0 -map 0 -c:v copy -c:a:0 ac3 -b:a:0 640k -c:s copy $outputmp4
+

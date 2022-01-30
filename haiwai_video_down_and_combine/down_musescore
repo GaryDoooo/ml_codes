@@ -19,9 +19,9 @@ allImages = driver.find_elements_by_tag_name("img")
 for _ in allImages:
     imageurl = _.get_attribute("src")
     if imageurl is not None:
-        if ".svg?" in imageurl:
+        if ".svg" in imageurl:
             print(imageurl)
-        elif ".png?" in imageurl:
+        elif ".png" in imageurl:
             print(imageurl)
 print(re.sub(r'[\\/\:*"<>\|\.%\$\^&£]', '',
 	     driver.title.split("|")[0]).replace(" ", "_").replace('"','').replace("'",""))

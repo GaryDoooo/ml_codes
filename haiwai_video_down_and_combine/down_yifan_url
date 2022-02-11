@@ -1,0 +1,28 @@
+#!/bin/bash
+
+if [ "$#" -eq 0 ]; then
+    echo "Usage: input with the webpage link of the YIFAN page."
+    exit 1
+fi
+
+# get output from python extracting links from the input HTML codes geturl $1
+# in a list of link" "filename
+link=$(TESTARG=$1 python3 /home/du/code/ml_codes/haiwai_video_down_and_combine/get_yifan_url.py )
+# link=$(echo $link | xargs -n1)
+# echo $link;
+# if [ `echo $link | wc -l` -eq 1 ]; then
+#     echo "Did not get the ts link."
+#     exit 1
+# fi
+
+# link=$(echo $link |  sed 's/chunk.*$//' | sed 'N;s/\n//')
+link2=$(echo $link | sed 's/chunk.*\ //' )
+echo "Link "$link2
+echo "start with down_if_ts"
+
+if [ "$#" -eq 1 ]; then
+    /usr/local/bin/down_if_ts $link2
+fi
+if [ "$#" -eq 2 ]; then
+    /usr/local/bin/down_if_ts $link2 $2
+fi

@@ -1,0 +1,19 @@
+#!/bin/bash
+
+cd /home/du/code/ml_codes/Dividend
+echo "Moved to dir: "`pwd`
+restmpfile=$(mktemp /tmp/dividend_recod.XXXXXX)
+echo "Made temp file: "$restmpfile
+
+if [ $1 == "1" ]; then
+    echo "Running for next day..."
+    /usr/bin/python3 dividend_ranking.py > $restmpfile
+    ./md2html $restmpfile /home/du/http/Next_day_Dividend.html && echo "Success!"
+else
+    echo "Running for 6 days..."
+    /usr/bin/python3 dividend_ranking6d.py > $restmpfile
+    ./md2html $restmpfile /home/du/http/Six_day_Dividend.html && echo "Success!"
+fi
+
+rm $restmpfile
+echo "Deleted temp file: "$restmpfile

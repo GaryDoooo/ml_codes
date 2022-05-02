@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>test</title>
+  <style type="text/css">
+*{
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+body{
+    font-family: Helvetica;
+    -webkit-font-smoothing: antialiased;
+    background: rgba( 71, 147, 227, 1);
+}
+h2{
+    text-align: center;
+    font-size: 18px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: white;
+    padding: 30px 0;
+}
+
+/* Table Styles */
+
+.table-wrapper{
+    margin: 10px 70px 70px;
+    box-shadow: 0px 35px 50px rgba( 0, 0, 0, 0.2 );
+}
+
+.fl-table {
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: normal;
+    border: none;
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 100%;
+    white-space: nowrap;
+    background-color: white;
+}
+
+.fl-table td, .fl-table th {
+    text-align: center;
+    padding: 8px;
+}
+
+.fl-table td {
+    border-right: 1px solid #f8f8f8;
+    font-size: 12px;
+}
+
+.fl-table thead th {
+    color: #ffffff;
+    background: #4FC3A1;
+}
+
+
+.fl-table thead th:nth-child(odd) {
+    color: #ffffff;
+    background: #324960;
+}
+
+.fl-table tr:nth-child(even) {
+    background: #F8F8F8;
+}
+
+/* Responsive */
+
+@media (max-width: 767px) {
+    .fl-table {
+        display: block;
+        width: 100%;
+    }
+    .table-wrapper:before{
+        content: "Scroll horizontally >";
+        display: block;
+        text-align: right;
+        font-size: 11px;
+        color: white;
+        padding: 0 0 10px;
+    }
+    .fl-table thead, .fl-table tbody, .fl-table thead th {
+        display: block;
+    }
+    .fl-table thead th:last-child{
+        border-bottom: none;
+    }
+    .fl-table thead {
+        float: left;
+    }
+    .fl-table tbody {
+        width: auto;
+        position: relative;
+        overflow-x: auto;
+    }
+    .fl-table td, .fl-table th {
+        padding: 20px .625em .625em .625em;
+        height: 60px;
+        vertical-align: middle;
+        box-sizing: border-box;
+        overflow-x: hidden;
+        overflow-y: auto;
+        width: 120px;
+        font-size: 13px;
+        text-overflow: ellipsis;
+    }
+    .fl-table thead th {
+        text-align: left;
+        border-bottom: 1px solid #f7f7f9;
+    }
+    .fl-table tbody tr {
+        display: table-cell;
+    }
+    .fl-table tbody tr:nth-child(odd) {
+        background: none;
+    }
+    .fl-table tr:nth-child(even) {
+        background: transparent;
+    }
+    .fl-table tr td:nth-child(odd) {
+        background: #F8F8F8;
+        border-right: 1px solid #E6E4E4;
+    }
+    .fl-table tr td:nth-child(even) {
+        border-right: 1px solid #E6E4E4;
+    }
+    .fl-table tbody td {
+        display: block;
+        text-align: center;
+    }
+}
+
+  </style>
+  <link rel="stylesheet" href="pandoc.css" />
+</head>
+<body>
+<h3 id="section">2022-04-29</h3>
+<table class="fl-table" style="width:100%;">
+<colgroup>
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Ticker</th>
+<th style="text-align: center;">Rate%</th>
+<th style="text-align: center;">Dividend</th>
+<th style="text-align: center;">Price</th>
+<th style="text-align: center;">ex-date</th>
+<th style="text-align: center;">record</th>
+<th style="text-align: center;">Full name</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">ELP</td>
+<td style="text-align: center;">7.40</td>
+<td style="text-align: center;">0.537</td>
+<td style="text-align: center;">7.26</td>
+<td style="text-align: center;">05/02/2022</td>
+<td style="text-align: center;">05/03/2022</td>
+<td style="text-align: center;">Companhia Paranaense de Energia (COPEL)</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">CIG</td>
+<td style="text-align: center;">3.60</td>
+<td style="text-align: center;">0.109</td>
+<td style="text-align: center;">3.03</td>
+<td style="text-align: center;">05/02/2022</td>
+<td style="text-align: center;">N/A</td>
+<td style="text-align: center;">Comp En De Mn Cemig ADS</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">CAPL</td>
+<td style="text-align: center;">2.52</td>
+<td style="text-align: center;">0.525</td>
+<td style="text-align: center;">20.81</td>
+<td style="text-align: center;">05/02/2022</td>
+<td style="text-align: center;">05/03/2022</td>
+<td style="text-align: center;">CrossAmerica Partners LP</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">SHLX</td>
+<td style="text-align: center;">2.12</td>
+<td style="text-align: center;">0.3</td>
+<td style="text-align: center;">14.13</td>
+<td style="text-align: center;">05/02/2022</td>
+<td style="text-align: center;">05/03/2022</td>
+<td style="text-align: center;">Shell Midstream Partners, L.P.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">SPH</td>
+<td style="text-align: center;">1.93</td>
+<td style="text-align: center;">0.325</td>
+<td style="text-align: center;">16.8</td>
+<td style="text-align: center;">05/02/2022</td>
+<td style="text-align: center;">05/03/2022</td>
+<td style="text-align: center;">Suburban Propane Partners, L.P.</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">CFG</td>
+<td style="text-align: center;">0.99</td>
+<td style="text-align: center;">0.39</td>
+<td style="text-align: center;">39.4</td>
+<td style="text-align: center;">05/02/2022</td>
+<td style="text-align: center;">05/03/2022</td>
+<td style="text-align: center;">Citizens Financial Group, Inc.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">FAM</td>
+<td style="text-align: center;">0.86</td>
+<td style="text-align: center;">0.06</td>
+<td style="text-align: center;">6.96</td>
+<td style="text-align: center;">05/02/2022</td>
+<td style="text-align: center;">05/03/2022</td>
+<td style="text-align: center;">First Trust/Aberdeen Global Opportunity Income Fund</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">BANR</td>
+<td style="text-align: center;">0.82</td>
+<td style="text-align: center;">0.44</td>
+<td style="text-align: center;">53.7</td>
+<td style="text-align: center;">05/02/2022</td>
+<td style="text-align: center;">05/03/2022</td>
+<td style="text-align: center;">Banner Corporation</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">FSD</td>
+<td style="text-align: center;">0.82</td>
+<td style="text-align: center;">0.105</td>
+<td style="text-align: center;">12.83</td>
+<td style="text-align: center;">05/02/2022</td>
+<td style="text-align: center;">05/03/2022</td>
+<td style="text-align: center;">First Trust High Income Long Short Fund</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">FTHY</td>
+<td style="text-align: center;">0.81</td>
+<td style="text-align: center;">0.134</td>
+<td style="text-align: center;">16.54</td>
+<td style="text-align: center;">05/02/2022</td>
+<td style="text-align: center;">05/03/2022</td>
+<td style="text-align: center;">First Trust High Yield Opportunities 2027 Term Fund</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">SRCE</td>
+<td style="text-align: center;">0.72</td>
+<td style="text-align: center;">0.31</td>
+<td style="text-align: center;">43.27</td>
+<td style="text-align: center;">05/02/2022</td>
+<td style="text-align: center;">05/03/2022</td>
+<td style="text-align: center;">1st Source Corporation</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">IDA</td>
+<td style="text-align: center;">0.71</td>
+<td style="text-align: center;">0.75</td>
+<td style="text-align: center;">105.18</td>
+<td style="text-align: center;">05/02/2022</td>
+<td style="text-align: center;">05/03/2022</td>
+<td style="text-align: center;">IDACORP, Inc.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">IGD</td>
+<td style="text-align: center;">0.70</td>
+<td style="text-align: center;">0.04</td>
+<td style="text-align: center;">5.75</td>
+<td style="text-align: center;">05/02/2022</td>
+<td style="text-align: center;">05/03/2022</td>
+<td style="text-align: center;">Voya Global Equity Dividend and Premium Opportunity Fund</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">FCCO</td>
+<td style="text-align: center;">0.66</td>
+<td style="text-align: center;">0.13</td>
+<td style="text-align: center;">19.82</td>
+<td style="text-align: center;">05/02/2022</td>
+<td style="text-align: center;">05/03/2022</td>
+<td style="text-align: center;">First Community Corporation</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">ASML</td>
+<td style="text-align: center;">0.63</td>
+<td style="text-align: center;">3.562</td>
+<td style="text-align: center;">563.77</td>
+<td style="text-align: center;">05/02/2022</td>
+<td style="text-align: center;">N/A</td>
+<td style="text-align: center;">ASML Holding N.V.</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">FPF</td>
+<td style="text-align: center;">0.63</td>
+<td style="text-align: center;">0.127</td>
+<td style="text-align: center;">20.11</td>
+<td style="text-align: center;">05/02/2022</td>
+<td style="text-align: center;">05/03/2022</td>
+<td style="text-align: center;">First Trust Intermediate Duration Preferred &amp; Income Fund</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">FPL</td>
+<td style="text-align: center;">0.62</td>
+<td style="text-align: center;">0.038</td>
+<td style="text-align: center;">6.09</td>
+<td style="text-align: center;">05/02/2022</td>
+<td style="text-align: center;">05/03/2022</td>
+<td style="text-align: center;">First Trust New Opportunities MLP &amp; Energy Fund</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">FEI</td>
+<td style="text-align: center;">0.62</td>
+<td style="text-align: center;">0.05</td>
+<td style="text-align: center;">8.02</td>
+<td style="text-align: center;">05/02/2022</td>
+<td style="text-align: center;">05/03/2022</td>
+<td style="text-align: center;">First Trust MLP and Energy Income Fund</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">FCT</td>
+<td style="text-align: center;">0.57</td>
+<td style="text-align: center;">0.072</td>
+<td style="text-align: center;">12.71</td>
+<td style="text-align: center;">05/02/2022</td>
+<td style="text-align: center;">05/03/2022</td>
+<td style="text-align: center;">First Trust Senior Floating Rate Income Fund II</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">MAIN</td>
+<td style="text-align: center;">0.53</td>
+<td style="text-align: center;">0.215</td>
+<td style="text-align: center;">40.24</td>
+<td style="text-align: center;">05/02/2022</td>
+<td style="text-align: center;">05/03/2022</td>
+<td style="text-align: center;">Main Street Capital Corporation</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">CRS</td>
+<td style="text-align: center;">0.52</td>
+<td style="text-align: center;">0.2</td>
+<td style="text-align: center;">38.18</td>
+<td style="text-align: center;">05/02/2022</td>
+<td style="text-align: center;">05/03/2022</td>
+<td style="text-align: center;">Carpenter Technology Corporation</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">FDEU</td>
+<td style="text-align: center;">0.50</td>
+<td style="text-align: center;">0.06</td>
+<td style="text-align: center;">12.1</td>
+<td style="text-align: center;">05/02/2022</td>
+<td style="text-align: center;">05/03/2022</td>
+<td style="text-align: center;">First Trust Dynamic Europe Equity Income Fund</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">FMY</td>
+<td style="text-align: center;">0.47</td>
+<td style="text-align: center;">0.055</td>
+<td style="text-align: center;">11.68</td>
+<td style="text-align: center;">05/02/2022</td>
+<td style="text-align: center;">05/03/2022</td>
+<td style="text-align: center;">First Trust</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">FIF</td>
+<td style="text-align: center;">0.45</td>
+<td style="text-align: center;">0.063</td>
+<td style="text-align: center;">14.13</td>
+<td style="text-align: center;">05/02/2022</td>
+<td style="text-align: center;">05/03/2022</td>
+<td style="text-align: center;">First Trust Energy Infrastructure Fund</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">WSR</td>
+<td style="text-align: center;">0.33</td>
+<td style="text-align: center;">0.04</td>
+<td style="text-align: center;">12.15</td>
+<td style="text-align: center;">05/02/2022</td>
+<td style="text-align: center;">05/03/2022</td>
+<td style="text-align: center;">Whitestone REIT</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">APLE</td>
+<td style="text-align: center;">0.28</td>
+<td style="text-align: center;">0.05</td>
+<td style="text-align: center;">17.69</td>
+<td style="text-align: center;">05/02/2022</td>
+<td style="text-align: center;">05/03/2022</td>
+<td style="text-align: center;">Apple Hospitality REIT, Inc.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">SAFM</td>
+<td style="text-align: center;">0.23</td>
+<td style="text-align: center;">0.44</td>
+<td style="text-align: center;">189.37</td>
+<td style="text-align: center;">05/02/2022</td>
+<td style="text-align: center;">05/03/2022</td>
+<td style="text-align: center;">Sanderson Farms, Inc.</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">VIV</td>
+<td style="text-align: center;">0.15</td>
+<td style="text-align: center;">0.016</td>
+<td style="text-align: center;">10.6</td>
+<td style="text-align: center;">05/02/2022</td>
+<td style="text-align: center;">05/03/2022</td>
+<td style="text-align: center;">Telefonica Brasil S.A.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">ITUB</td>
+<td style="text-align: center;">0.06</td>
+<td style="text-align: center;">0.003</td>
+<td style="text-align: center;">4.79</td>
+<td style="text-align: center;">05/02/2022</td>
+<td style="text-align: center;">05/03/2022</td>
+<td style="text-align: center;">Itau Unibanco Banco Holding SA</td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

@@ -1,0 +1,32 @@
+### 2022-04-29 
+| Ticker | Rate% | Dividend | Price | ex-date | record | Full name |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| ELP | 7.40 | 0.537 | 7.26 | 05/02/2022 | 05/03/2022 | Companhia Paranaense de Energia (COPEL) |
+| CIG | 3.60 | 0.109 | 3.03 | 05/02/2022 | N/A | Comp En De Mn Cemig ADS |
+| CAPL | 2.52 | 0.525 | 20.81 | 05/02/2022 | 05/03/2022 | CrossAmerica Partners LP |
+| SHLX | 2.12 | 0.3 | 14.13 | 05/02/2022 | 05/03/2022 | Shell Midstream Partners, L.P. |
+| SPH | 1.93 | 0.325 | 16.8 | 05/02/2022 | 05/03/2022 | Suburban Propane Partners, L.P. |
+| CFG | 0.99 | 0.39 | 39.4 | 05/02/2022 | 05/03/2022 | Citizens Financial Group, Inc. |
+| FAM | 0.86 | 0.06 | 6.96 | 05/02/2022 | 05/03/2022 | First Trust/Aberdeen Global Opportunity Income Fund |
+| BANR | 0.82 | 0.44 | 53.7 | 05/02/2022 | 05/03/2022 | Banner Corporation |
+| FSD | 0.82 | 0.105 | 12.83 | 05/02/2022 | 05/03/2022 | First Trust High Income Long Short Fund |
+| FTHY | 0.81 | 0.134 | 16.54 | 05/02/2022 | 05/03/2022 | First Trust High Yield Opportunities 2027 Term Fund |
+| SRCE | 0.72 | 0.31 | 43.27 | 05/02/2022 | 05/03/2022 | 1st Source Corporation |
+| IDA | 0.71 | 0.75 | 105.18 | 05/02/2022 | 05/03/2022 | IDACORP, Inc. |
+| IGD | 0.70 | 0.04 | 5.75 | 05/02/2022 | 05/03/2022 | Voya Global Equity Dividend and Premium Opportunity Fund |
+| FCCO | 0.66 | 0.13 | 19.82 | 05/02/2022 | 05/03/2022 | First Community Corporation |
+| ASML | 0.63 | 3.562 | 563.77 | 05/02/2022 | N/A | ASML Holding N.V. |
+| FPF | 0.63 | 0.127 | 20.11 | 05/02/2022 | 05/03/2022 | First Trust Intermediate Duration Preferred & Income Fund |
+| FPL | 0.62 | 0.038 | 6.09 | 05/02/2022 | 05/03/2022 | First Trust New Opportunities MLP & Energy Fund |
+| FEI | 0.62 | 0.05 | 8.02 | 05/02/2022 | 05/03/2022 | First Trust MLP and Energy Income Fund |
+| FCT | 0.57 | 0.072 | 12.71 | 05/02/2022 | 05/03/2022 | First Trust Senior Floating Rate Income Fund II |
+| MAIN | 0.53 | 0.215 | 40.24 | 05/02/2022 | 05/03/2022 | Main Street Capital Corporation |
+| CRS | 0.52 | 0.2 | 38.18 | 05/02/2022 | 05/03/2022 | Carpenter Technology Corporation |
+| FDEU | 0.50 | 0.06 | 12.1 | 05/02/2022 | 05/03/2022 | First Trust Dynamic Europe Equity Income Fund |
+| FMY | 0.47 | 0.055 | 11.68 | 05/02/2022 | 05/03/2022 | First Trust |
+| FIF | 0.45 | 0.063 | 14.13 | 05/02/2022 | 05/03/2022 | First Trust Energy Infrastructure Fund |
+| WSR | 0.33 | 0.04 | 12.15 | 05/02/2022 | 05/03/2022 | Whitestone REIT |
+| APLE | 0.28 | 0.05 | 17.69 | 05/02/2022 | 05/03/2022 | Apple Hospitality REIT, Inc. |
+| SAFM | 0.23 | 0.44 | 189.37 | 05/02/2022 | 05/03/2022 | Sanderson Farms, Inc. |
+| VIV | 0.15 | 0.016 | 10.6 | 05/02/2022 | 05/03/2022 | Telefonica Brasil S.A. |
+| ITUB | 0.06 | 0.003 | 4.79 | 05/02/2022 | 05/03/2022 | Itau Unibanco Banco Holding SA |

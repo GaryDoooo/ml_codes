@@ -1,0 +1,29 @@
+#!/bin/bash
+
+if [ $# -eq 0 ]; then
+    echo "Feed the m3u8 link to this script."
+    exit 0
+fi
+
+workingdir=$(pwd) 
+# tmpdir=$(mktemp -d -t downhaiwai-XXXXXXXXXX)
+tmpfile=$(mktemp /tmp/downGenM3U8.XXXXXX)
+website=$(echo $1 | xargs -d/ | awk '{ print $1 "//"  $2 }' | head -n 1)
+
+
+echo "Working directory: "$workingdir
+echo "Made temporary file: "$tmpfile
+echo "Website: "$website
+ 
+curl -sl $1 | sed  's,^\/,'"$website"'\/,g' >> $tmpfile
+
+echo "===Modified m3u8=== "
+cat $tmpfile
+echo " "
+
+randstring=$(date '+%Y-%m-%d-%H_%M_%S')
+output=$randstring".ts"
+echo "Output: "$output
+
+ffmpeg -threads 0 -protocol_whitelist file,http,https,tcp,tls,crypto -i $tmpfile -c copy  $output && rm $tmpfile
+

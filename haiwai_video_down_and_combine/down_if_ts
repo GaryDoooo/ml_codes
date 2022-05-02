@@ -68,7 +68,7 @@ for i in {1..100000}
 do
     link=$prefix$i".ts"$suffix
     filename=$i".ts"
-    for j in {1..5}
+    for j in {1..50}
     do
         axel -a $link -o $filename
          if test -f "$filename"; then

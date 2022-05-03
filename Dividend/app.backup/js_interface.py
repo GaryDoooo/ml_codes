@@ -1,5 +1,5 @@
 import sys
-from math_gen import dispatch  # , html_output
+from math_gen import dispatch, html_output
 
 #  problem_num = int(sys.argv[1])
 #  first_num_min = int(sys.argv[2])
@@ -15,13 +15,13 @@ problem_list = dispatch()
 #  question_type_list_string, problem_num,
 #  page_key
 
-#  problem_output = html_output(problem_list)
+problem_output = html_output(problem_list)
 # result={
 # 	"problem_list":problem_output,
 # 	"answer_list":answer_output
 # }
 
-print(repr(problem_list))
+print(problem_output)
 # repr(STR) prints the raw string, ingnore \t \n formatting things
 #  print(repr(answer_output))
 # print(page_key)

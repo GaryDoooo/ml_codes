@@ -70,7 +70,7 @@ server_io.on("connection", function(socket) {
                     // console.log("Converted latex to svg finished");
                     cb_function({
                         done: true,
-                        problem_list: results[1]
+                        problem_list: results[results.length - 1]
                         // answer_list: results[1]
                         // 'page_key': results[2]
                     });

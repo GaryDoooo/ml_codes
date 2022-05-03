@@ -15,8 +15,10 @@ var current_display = 0;
 
 var output = document.getElementById("output"); //,
 // swap = document.getElementById("swap");
+// console.log(problem_list.replace("<br>", "\n"));
+var content = marked.parse(problem_list.replaceAll("<br>", "\n"));
 
-output.innerHTML = problem_list;
+output.innerHTML = content.replaceAll("<table", '<table class="fl-table" ');
 
 // Emit events
 // Detect the click event on send key

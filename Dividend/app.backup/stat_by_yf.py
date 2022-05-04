@@ -1,6 +1,7 @@
 import yfinance as yf
 from github_correlation import CorrelationCoefficient
 import datetime
+from math import isnan
 
 
 def avg(alist):
@@ -22,6 +23,11 @@ def volume_change(tickers="^SPX SPY QQQ", period="1y"):
         period=period,
         interval="1h",
         group_by="ticker")
+    data_d = yf.download(
+        tickers=tickers,
+        period=period,
+        interval="1d",
+        group_by="ticker")
     ticker_list = tickers.split()
     #  new_hour=data_h[ticker_list[0]]['Volume'].index[-1].hour
     for ticker in ticker_list:
@@ -34,7 +40,7 @@ def volume_change(tickers="^SPX SPY QQQ", period="1y"):
             if vol > 0:
                 res[i.hour].append(vol)
             #  cnt += (i.hour == 9)
-        output += "### " + ticker + " Hourly Volume change" + "\n\n"
+        output += "### " + ticker + " Hourly Volume change" + "\n"
         today = data_h[ticker]['Volume'].index[-1].day
         top, mid, bottom = "|", "|", "|"
         for i in range(-20, 0):
@@ -47,34 +53,45 @@ def volume_change(tickers="^SPX SPY QQQ", period="1y"):
                     (data_h[ticker]['Volume'][index] /
                      avg(res[index.hour]) * 100 - 100)) + "|"
                 mid += ":---:|"
-        output += top + "\n" + mid + "\n" + bottom + \
-            "\n\n### " + ticker + " Daily Volume change \n"
+        output += top + "\n" + mid + "\n" + bottom + "\n"
         #  for i in res:
         #      print(len(i), avg(i))
-        avg_dayly_vol = sum([avg(_) for _ in res])
-        cnt, today = 0, -1
-        for i in range(1, 100):
-            index = data_h[ticker]['Volume'].index[-i]
-            if index.day != today:
-                today = index.day
-                cnt += 1
-            if cnt == 10 and index.hour == 9 and index.minute == 30:
-                start_i = i
-                break
-        today = -1
-        top, mid, bottom = "|", "|", "|"
-        for i in range(-start_i, 0):
-            index = data_h[ticker]['Volume'].index[i]
-            if index.day != today:
-                daily_vol = 0
-                today = index.day
-            daily_vol += data_h[ticker]['Volume'][index]
-            if i == -1 or today != data_h[ticker]['Volume'].index[i + 1].day:
-                top += (" %02d/%02d |" % (index.month, index.day))
-                bottom += parantheses((daily_vol /
-                                       avg_dayly_vol * 100 - 100)) + "|"
-                mid += ":---:|"
-        output += top + "\n" + mid + "\n" + bottom + "\n"
+        #  avg_dayly_vol = sum([avg(_) for _ in res])
+        avg_dayly_vol = avg(list(data_d[ticker]['Volume']))
+        #  cnt, today = 0, -1
+        #  for i in range(1, 100):
+        #      index = data_h[ticker]['Volume'].index[-i]
+        #      if index.day != today:
+        #          today = index.day
+        #          cnt += 1
+        #      if cnt == 10 and index.hour == 9 and index.minute == 30:
+        #          start_i = i
+        #          break
+        #  today = -1
+        top, mid, bottom, bottom2 = "|", "|", "|", "|"
+        nan_count = 0
+        for i in range(-10, 0):
+            index = data_d[ticker]['Volume'].index[i]
+            ystd_close = data_d[ticker]['Close'][data_d[ticker].index[i - 1]]
+            #  if index.day != today:
+            #      daily_vol = 0
+            #      today = index.day
+            daily_vol = data_d[ticker]['Volume'][index]
+            # if i == -1 or today != data_h[ticker]['Volume'].index[i + 1].day:
+            top += (" %02d/%02d |" % (index.month, index.day))
+            temp = (daily_vol / avg_dayly_vol * 100 - 100)
+            if isnan(temp):
+                nan_count += 1
+            bottom += parantheses(temp) + "|"
+            mid += ":---:|"
+            temp2 = (data_d[ticker]['High'][index] -
+                     data_d[ticker]['Low'][index]) / ystd_close
+            temp2 = temp2 * 100 / (daily_vol / avg_dayly_vol)
+            bottom2 += parantheses(temp2) + "|"
+        if nan_count > 8:
+            continue
+        output += "### " + ticker + " Daily Volume change \n" + \
+            top + "\n" + mid + "\n" + bottom + "\n" + bottom2 + "\n"
     return output + "\n"
 
 
@@ -97,11 +114,27 @@ def correlation_vix_uvxy(
             interval=interval,
             group_by="ticker",
             auto_adjust=True)
-        vix = list(data['^VIX']['Close'])
-        uvxy = list(data['UVXY']['Close'])
-        spx = list(data['SPY']['Close'])
-        #  print(spx)
-        top, mid, bottom1, bottom2 = "| <!-- --> |", "|:---:|", "| VIX |", "| UVXY |"
+        time1 = []
+        for index in data['^VIX']['Close'].index:
+            time1.append("%02d/%02d-%02d%02d" %
+                         (index.month, index.day, index.hour, index.minute))
+        vix1 = list(data['^VIX']['Close'])
+        uvxy1 = list(data['UVXY']['Close'])
+        spx1 = list(data['SPY']['Close'])
+        i, spx, vix, uvxy, time = 1, [], [], [], []
+        for _ in range(20):
+            while(isnan(vix1[-i] * uvxy1[-i] * spx1[-i])):
+                i += 1
+            vix.append(vix1[-i])
+            uvxy.append(uvxy1[-i])
+            spx.append(spx1[-i])
+            time.append(time1[-i])
+            i += 1
+        vix = vix[::-1]
+        uvxy = uvxy[::-1]
+        spx = spx[::-1]
+        print(spx, vix, uvxy)
+        top, mid, bottom1, bottom2, bottom3 = "| <!-- --> |", "|:---:|", "| VIX |", "| UVXY |", "| Inter |"
         for ticker in ['^VIX', 'UVXY']:
             l = vix if ticker == "^VIX" else uvxy
             #  output += "SPY to" + ticker + "\n"
@@ -110,13 +143,17 @@ def correlation_vix_uvxy(
                 temp2 = corr(l[-11 - back:-1 - back], grow_list_of_10) > 0
                 #  output += ("%.2f" % temp) + " " + temp2 + " "
                 if ticker == "UVXY":
-                    top += " <!-- --> |"
+                    top += " " + time[-1 - back] + " |"
                     mid += ":---:|"
                     bold = "**" if temp > 0 and temp2 else ""
                     bottom2 += " " + bold + parantheses(temp) + bold
                     if not temp2:
                         bottom2 += "f"
                     bottom2 += " |"
+                    temp3 = corr(l[-11 - back:-1 - back],
+                                 vix[-11 - back:-1 - back])
+                    bold = "**" if temp3 < 0.5 else ""
+                    bottom3 += " " + bold + parantheses(temp3) + bold + " |"
                 else:
                     bold = "**" if temp > 0 and temp2 else ""
                     bottom1 += " " + bold + parantheses(temp) + bold
@@ -125,7 +162,8 @@ def correlation_vix_uvxy(
                     bottom1 += " |"
 
             #  output += "\n"
-        output += top + "\n" + mid + "\n" + bottom1 + "\n" + bottom2 + "\n"
+        output += top + "\n" + mid + "\n" + bottom1 + \
+            "\n" + bottom2 + "\n" + bottom3 + "\n"
     return output
 
 
@@ -162,9 +200,9 @@ def question_gen():
 
 
 if __name__ == '__main__':
-    #  volume_change()
+    print(volume_change(tickers="^SPX SPY"))
     #  correlation_vix_uvxy(spans=(('1mo', "1d"),))
-    #  correlation_vix_uvxy()
+    #  print(correlation_vix_uvxy())
     #  vix_uvxy_ratio()
-    print(question_gen().replace("\n", "\n").replace("\n", "\n"))
+    #  print(question_gen())
     pass

@@ -60,7 +60,7 @@ fi
 # done
 
 prefix=$(echo $1 |  sed 's/?.*//' | sed 's/[0-9]*.ts$//')
-suffix=$(echo $1 | 's/^.*?/?/')
+suffix=$(echo $1 | sed 's/^.*?/?/')
 
 filelist=""
 

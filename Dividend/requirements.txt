@@ -62,7 +62,7 @@ mpmath==1.1.0
 multidict==4.7.6
 multitasking==0.0.10
 netifaces==0.10.4
-numpy==1.19.2
+numpy==1.22.0
 oauthlib==3.1.0
 olefile==0.46
 pandas==1.4.2

@@ -1,0 +1,101 @@
+#!/bin/bash
+
+function geturl {
+	TESTARG=$1 python3 - <<END
+import sys
+import re
+from playwright.sync_api import sync_playwright
+# url = sys.argv[1]
+from os import environ
+
+inp=environ.get('TESTARG')
+url=inp.split(' ')[0].replace('\'','').replace(' ','')
+s=' '.join(inp.split(' ')[1:])
+print("get url:",url)
+print("get episodes selections:",s)
+with sync_playwright() as p:
+    browser = p.chromium.launch()
+    page = browser.new_page()
+    page.goto(url)
+    #  ua = page.query_selector("01")
+    atxt = page.eval_on_selector_all(
+        "a", "elements => elements.map(element => element.text)")
+    aurl = page.eval_on_selector_all(
+        "a", "elements => elements.map(element => element.href)")
+    links = set()
+    for i in range(len(atxt)):
+        if "play?id=" not in aurl[i]:
+            continue
+        try:
+            e = int(atxt[i].replace(' ', ''))
+            #  print(e, aurl[i])
+            links.add((e, aurl[i]))
+        except BaseException:
+            pass
+    #  print(ua)
+    print("Found these episodes links:\n")
+    links = sorted(list(links), key=lambda x: x[0])
+    #  print(links)
+    for e, l in links:
+        print(e, l)
+    browser.close()
+
+# s = input("Select episodes(e.g. 1,2,5-9 10 11):\n")
+picked = set()
+sl = re.split(r'; |, |\*|\n|,|;|\ ', s)
+for i in sl:
+    try:
+        if '-' in i:
+            [a, b] = list(map(int, i.split('-')))
+            if (a < b):
+                a, b = b, a
+            for j in range(a, b + 1):
+                picked.add(j)
+        else:
+            picked.add(int(i))
+    except BaseException:
+        print("Invalid episode", i)
+        pass
+
+print("Download")
+for i in links:
+    if i[0] in picked:
+        print( i[0], i[1])
+END
+}
+
+# get output from python extracting links from the input HTML codes geturl $1
+# in a list of link" "filename
+str="$*"
+pyout=$(geturl "$str")
+echo "Input: "$str
+linkpairs=$(echo $pyout | sed 's/^.*Download//g' | sed 's/Download//g')
+# echo "To be downloaded link pairs: "$linkpairs
+linklist=$(echo $linkpairs | xargs -n2 bash -c 'echo $1')
+filelist=$(echo $linkpairs | xargs -n2 bash -c 'echo $0')
+linkpairs=$(echo $linkpairs \
+    | xargs -n2 printf "%s.mp4 %s\n")
+# using python print or echo neither can print new lines clearly
+# printf in bash works better
+echo $linkpairs
+
+
+for i in {1..100}
+do
+	missinglist=''
+    while read -r line; do
+	    filename=$(echo $line | xargs -n2 bash -c 'echo $0')
+        if [ ! -f $filename ]; then
+				missinglist=$missinglist$line" "
+    	fi
+	done <<< "$linkpairs"
+	if [ "$missinglist" == '' ]; then
+		break
+	fi
+	echo $missinglist \
+        | xargs -n2 bash -c '/usr/local/bin/down_if_link "${1}" ${0}' \
+        | grep "Opening output file"
+        # some website cut one single ts file into several
+        # so we need add a new serial number to make a new name for each
+done
+

@@ -1,7 +1,7 @@
 #!/bin/bash
 if [ "$#" -eq 1 ]; then
         randstring=$(date '+%Y-%m-%d-%H_%M_%S')
-        filename=randstring".mp4"
+        filename=$randstring".mp4"
  else
         filename=$2
 fi

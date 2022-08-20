@@ -32,11 +32,13 @@ with sync_playwright() as p:
 s = input("Select episodes(e.g. 1,2,5-9 10 11):\n")
 picked = set()
 sl = re.split(r'; |, |\*|\n|,|;|\ ', s)
+#  print(sl)
 for i in sl:
     try:
         if '-' in i:
             [a, b] = list(map(int, i.split('-')))
-            if (a < b):
+            print(a, b)
+            if (a > b):
                 a, b = b, a
             for j in range(a, b + 1):
                 picked.add(j)

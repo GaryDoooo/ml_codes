@@ -16,7 +16,7 @@ def parantheses(num):
         num) if num >= 0 else ' ({0:.2f}) '.format(abs(num))
 
 
-def volume_change(tickers="^SPX SPY QQQ", period="1y"):
+def volume_change(tickers="^SPX SPY QQQ UVXY", period="1y"):
     output = ""
     data_h = yf.download(
         tickers=tickers,

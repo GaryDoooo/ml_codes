@@ -4,3 +4,4 @@ requests>=2.26
 multitasking>=0.0.7
 lxml>=4.5.1
 yfinance>=0.1.70
+scipy>=1.4.1

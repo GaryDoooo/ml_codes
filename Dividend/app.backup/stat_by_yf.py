@@ -2,6 +2,8 @@ import yfinance as yf
 from github_correlation import CorrelationCoefficient
 import datetime
 from math import isnan
+from speed_stat import speed_stat
+from font_tools import parantheses, red_highlight
 
 
 def avg(alist):
@@ -11,9 +13,9 @@ def avg(alist):
         return 0
 
 
-def parantheses(num):
-    return ' {0:.2f} '.format(
-        num) if num >= 0 else ' ({0:.2f}) '.format(abs(num))
+def corr(listA, listB):
+    t = CorrelationCoefficient()
+    return t.compute_r(listA, listB)
 
 
 def volume_change(tickers="^SPX SPY QQQ UVXY", period="1y"):
@@ -95,11 +97,6 @@ def volume_change(tickers="^SPX SPY QQQ UVXY", period="1y"):
     return output + "\n"
 
 
-def corr(listA, listB):
-    t = CorrelationCoefficient()
-    return t.compute_r(listA, listB)
-
-
 def correlation_vix_uvxy(
     spans=(("1mo", "1d"), ("5d", "1h"), ("5d", "15m"), ("5d", "5m"))
 ):
@@ -134,7 +131,8 @@ def correlation_vix_uvxy(
         uvxy = uvxy[::-1]
         spx = spx[::-1]
         print(spx, vix, uvxy)
-        top, mid, bottom1, bottom2, bottom3 = "| <!-- --> |", "|:---:|", "| VIX |", "| UVXY |", "| Inter |"
+        top, mid, bottom1, bottom2, bottom3 = \
+            "| <!-- --> |", "|:---:|", "| VIX |", "| UVXY |", "| Inter |"
         for ticker in ['^VIX', 'UVXY']:
             l = vix if ticker == "^VIX" else uvxy
             #  output += "SPY to" + ticker + "\n"
@@ -145,18 +143,26 @@ def correlation_vix_uvxy(
                 if ticker == "UVXY":
                     top += " " + time[-1 - back] + " |"
                     mid += ":---:|"
-                    bold = "**" if temp > 0 and temp2 else ""
-                    bottom2 += " " + bold + parantheses(temp) + bold
+                    #  bold = "**" if temp > 0 and temp2 else ""
+                    #  bottom2 += " " + bold + parantheses(temp) + bold
+                    bottom2 += red_highlight(parantheses(temp)
+                                             ) if temp > 0 and temp2 else parantheses(temp)
                     if not temp2:
                         bottom2 += "f"
                     bottom2 += " |"
                     temp3 = corr(l[-11 - back:-1 - back],
                                  vix[-11 - back:-1 - back])
-                    bold = "**" if temp3 < 0.5 else ""
-                    bottom3 += " " + bold + parantheses(temp3) + bold + " |"
+                    #  bold = "**" if temp3 < 0.5 else ""
+                    #  bottom3 += " " + bold + parantheses(temp3) + bold + " |"
+                    bottom3 += red_highlight(parantheses(temp3)
+                                             ) if temp3 < 0.5 else parantheses(temp3)
+                    bottom3 += " |"
                 else:
-                    bold = "**" if temp > 0 and temp2 else ""
-                    bottom1 += " " + bold + parantheses(temp) + bold
+                    #  bold = "**" if temp > 0 and temp2 else ""
+                    #  bottom1 += " " + bold + parantheses(temp) + bold
+                    bottom1 += red_highlight(parantheses(temp)
+                                             ) if temp > 0 and temp2 else parantheses(temp)
+                    bottom1 += " |"
                     if not temp2:
                         bottom1 += "f"
                     bottom1 += " |"
@@ -196,7 +202,8 @@ def vix_uvxy_ratio():
 
 def question_gen():
     time = "##### Update time " + str(datetime.datetime.today()) + "\n"
-    return volume_change() + correlation_vix_uvxy() + vix_uvxy_ratio() + time
+    return volume_change() + speed_stat() + correlation_vix_uvxy() + \
+        vix_uvxy_ratio() + time
 
 
 if __name__ == '__main__':

@@ -145,8 +145,8 @@ def correlation_vix_uvxy(
                     mid += ":---:|"
                     #  bold = "**" if temp > 0 and temp2 else ""
                     #  bottom2 += " " + bold + parantheses(temp) + bold
-                    bottom2 += red_highlight(parantheses(temp)
-                                             ) if temp > 0 and temp2 else parantheses(temp)
+                    bottom2 += " " + red_highlight(parantheses(temp)
+                                                   ) if temp > 0 and temp2 else parantheses(temp)
                     if not temp2:
                         bottom2 += "f"
                     bottom2 += " |"
@@ -154,15 +154,15 @@ def correlation_vix_uvxy(
                                  vix[-11 - back:-1 - back])
                     #  bold = "**" if temp3 < 0.5 else ""
                     #  bottom3 += " " + bold + parantheses(temp3) + bold + " |"
-                    bottom3 += red_highlight(parantheses(temp3)
-                                             ) if temp3 < 0.5 else parantheses(temp3)
+                    bottom3 += " " + red_highlight(parantheses(temp3)
+                                                   ) if temp3 < 0.5 else parantheses(temp3)
                     bottom3 += " |"
                 else:
                     #  bold = "**" if temp > 0 and temp2 else ""
                     #  bottom1 += " " + bold + parantheses(temp) + bold
-                    bottom1 += red_highlight(parantheses(temp)
-                                             ) if temp > 0 and temp2 else parantheses(temp)
-                    bottom1 += " |"
+                    bottom1 += " " + red_highlight(parantheses(temp)
+                                                   ) if temp > 0 and temp2 else parantheses(temp)
+                    #  bottom1 += " |"
                     if not temp2:
                         bottom1 += "f"
                     bottom1 += " |"
@@ -207,9 +207,9 @@ def question_gen():
 
 
 if __name__ == '__main__':
-    print(volume_change(tickers="^SPX SPY"))
+    #  print(volume_change(tickers="^SPX SPY"))
     #  correlation_vix_uvxy(spans=(('1mo', "1d"),))
-    #  print(correlation_vix_uvxy())
+    print(correlation_vix_uvxy())
     #  vix_uvxy_ratio()
     #  print(question_gen())
     pass

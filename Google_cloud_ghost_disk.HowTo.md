@@ -3,7 +3,7 @@
 
 The Google Cloud VM I am using is Ubuntu 20 LTS. Shrank the boot disk with Boot and EFI. Google system itself doesn't support make a disk smaller. But you always can make it bigger. Easier to spend more but no way to cost down.
 
-This method can be down hot machines. No need to turn of it. 
+This method does not need to turn of the VM.
 
 ### First make a smaller disk, and mount to your VM (with the disk to shrink)
 

@@ -8,7 +8,13 @@ if [ "$count" -eq "0" ]; then
 	#     -v /home/du/openvpn_svr_etc/openvpn:/etc/openvpn \
 	#     -p 443:443 doooom/openvpn:443tcp /bin/bash -c \
 	#     'ufw enable && sleep 1 && service openvpn start && sleep 1 && ufw disable && sleep infinity'
-    docker run -dit -p 80:80 -v /home/du/http:/usr/local/apache2/htdocs/ httpd:2.4
+#    docker run -dit -p 80:80 -v /home/du/http:/usr/local/apache2/htdocs/ httpd:2.4	
+    docker run -dit -p 80:80 \
+	-v /home/du/http:/usr/local/apache2/htdocs/ \
+	-v /home/du/Documents/my-httpd.conf:/usr/local/apache2/conf/httpd.conf \
+	-v /home/du/archive_download/http_download:/usr/local/apache2/download/ \
+	httpd:2.4
+
 fi
 
 

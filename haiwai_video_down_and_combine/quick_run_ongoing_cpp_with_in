@@ -1,0 +1,4 @@
+#!/bin/bash
+cd $PWD
+workingFile=$(ls -l g | awk '{print $NF}')
+cat in | g $workingFile

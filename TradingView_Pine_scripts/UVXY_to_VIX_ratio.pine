@@ -1,0 +1,62 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © GarryDu
+//@version=4
+study("UVXY:VIX COHL")
+
+uvxysym=input(title="Default Value is UVXY", defval="UVXY")
+vixsym = input(title="Default Value is VIX", defval="VIX")
+time_period=timeframe.period
+// time_len = input(20,"Previous days for average ratio")
+
+// vixc1 = security(vixsym, time_period, close[1])
+vixc=security(vixsym,time_period,close)
+vixh=security(vixsym,time_period,high)
+vixo=security(vixsym,time_period,open)
+vixl=security(vixsym,time_period,low)
+
+// uvxyc1=security(uvxysym,time_period,close[1])
+uvxyc=security(uvxysym,time_period,close)
+uvxyo=security(uvxysym,time_period,open)
+uvxyh=security(uvxysym,time_period,high)
+uvxyl=security(uvxysym,time_period,low)
+
+// sum_ratio=uvxyc[1]/vixc[1]
+// for i = 2 to time_len
+//     sum_ratio+=uvxyc[i]/vixc[i]
+// avg_ratio=sum_ratio/time_len
+
+rclose=(uvxyc/uvxyc[1])/(vixc/vixc[1])*100
+ropen=(uvxyo/uvxyc[1])/(vixo/vixc[1])*100
+rhigh=(uvxyh/uvxyc[1])/(vixh/vixc[1])*100
+rlow=(uvxyl/uvxyc[1])/(vixl/vixc[1])*100
+r_avg=(rclose+ropen+rhigh+rlow)/4
+
+barcolor=color.rgb(0,0,0,80)
+
+plot(r_avg-100,title="Avg")
+plot(rclose-100,color=barcolor,style=plot.style_circles, linewidth=1,title="Close")
+plot(ropen-100,color=barcolor,style=plot.style_circles, linewidth=1,title="Open")
+plot(rhigh-100,color=barcolor,style=plot.style_circles, linewidth=1,title="High")
+plot(rlow-100,color=barcolor,style=plot.style_circles, linewidth=1,title="Low")
+
+// clip(x)=>x>5?5:x>0?x:0
+// rclose=clip((uvxyc/uvxyc1-1)/(vixc/vixc1-1))
+// rhigh=clip((uvxyh/uvxyc1-1)/(vixh/vixc1-1))
+// sq_color=rclose>=1.3 or rhigh>=1.3?color.black:rclose>1 or rhigh>1?color.red:color.green
+
+// plot(rclose,"close",color=color.black)
+// plot(clip((uvxyo/uvxyc1-1)/(vixo/vixc1-1)),"open",color=color.green)
+// plot(rhigh,"high",color=color.maroon)
+// plot(clip((uvxyl/uvxyc1-1)/(vixl/vixc1-1)),"low",color=color.gray)
+
+// plot(5, title='Ratio>1', color=sq_color, style=plot.style_circles, linewidth=2)
+// // corrlen = input(15, title="Length")
+
+// vixcorr = correlation(close, symprice, corrlen)
+// vixcolor = vixcorr > 0 ? color.red : color.green
+// plot(vixcorr, color=vixcolor, style=plot.style_histogram)
+
+// corrthresh = input(0.2, title="Thresh Hold")
+
+
+// barcolor(vixcorr > corrthresh ? color.red : color.green)

@@ -1,0 +1,28 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © GarryDu
+
+//@version=5
+indicator("volume change %")
+time_period=timeframe.period
+step= time_period=="D" or time_period=="5D" or time_period=="W" or time_period=="M" ?1:
+      time_period=="3M" or time_period=="12M" or time_period=="S" or time_period=="5S" ?1:
+      time_period=="15S" or time_period=="30S"? 1: 
+      math.ceil(390/str.tonumber(time_period))
+plotchar(step,"STEP to compare","",location=location.top)
+use_diff_ticker = input.bool(title="Use a different ticker", defval=false)
+diff_ticker=input.symbol("SPY","The different Ticker")
+
+// Read data
+ticker=use_diff_ticker?diff_ticker:syminfo.tickerid
+vvolume=request.security(ticker,time_period,volume)
+
+day_range=input(title="Back avarage dayds",defval=5)
+sum_volume=vvolume
+for i = 2 to day_range
+    sum_volume+=vvolume[step*i]
+    
+vol_change=(vvolume/sum_volume*day_range-1)*100
+palette=math.abs(vol_change)<=10?color.gray:vol_change>=10 and vol_change<20?color.green:vol_change<=-10 and vol_change >-20?color.red:color.black
+
+plot(vol_change, style=plot.style_histogram,linewidth=2,title="Vol % to X days",color=palette)
+

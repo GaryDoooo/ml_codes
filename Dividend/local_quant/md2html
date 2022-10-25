@@ -1,0 +1,23 @@
+#!/bin/bash
+
+templatefile="/home/du/code/ml_codes/Dividend/template.html"
+htmltmpfile=$(mktemp /tmp/dividend_recod.XXXXXX.html)
+mdtmpfile=$(mktemp /tmp/dividend_recod.XXXXXX.md)
+year=$(date +%Y)
+now=$(date)
+
+# sed -e '/###/,$!d' $1 > $mdtmpfile
+cat $1 |  sed -n -e '/^\(|\|#\)/p' > $mdtmpfile 
+echo " " >> $mdtmpfile
+echo "Updated at $now" >> $mdtmpfile
+pandoc -s $mdtmpfile -o $htmltmpfile
+sed -e '/<h3/,$d' $templatefile > $2
+sed -e '/<h3/,$!d' $htmltmpfile | sed -e "s/\/$year//g" | \
+sed -e 's/<table/<table\ class=\"fl-table\"/g' | \
+sed -e 's/SPACE/<!-- -->-/g' | \
+sed -e 's/RED_START/<font color="red">/g' | \
+sed -e 's/RED_END/<\/font>/g' >> $2
+
+rm $htmltmpfile
+rm $mdtmpfile
+

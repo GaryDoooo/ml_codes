@@ -1,0 +1,16 @@
+#!/bin/bash
+
+cd /home/du/code/ml_codes/Dividend/local_quant
+echo "Moved to dir: "`pwd` 
+restmpfile=$(mktemp 
+/tmp/quant_recod.XXXXXX) 
+echo "Made temp file: "$restmpfile
+
+    echo "Running python3..."
+    /usr/bin/python3 local_run.py \
+     | sed -n '/breakhere/,$p' | sed 's/breakhere//g' \
+    > $restmpfile
+    ./md2html $restmpfile /home/du/http/quant.html && echo "Success!"
+
+rm $restmpfile
+echo "Deleted temp file: "$restmpfile

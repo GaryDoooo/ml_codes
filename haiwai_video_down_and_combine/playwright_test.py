@@ -20,7 +20,7 @@ def main2(linkURL):
 
 async def main(linkURL):
     async with async_playwright() as p:
-        browser = await p.chromium.launch()
+        browser = await p.firefox.launch()
         page = await browser.new_page()
         page.on("request", lambda request: print("Request: " + request.url))
         #  await page.goto("http://playwright.dev")
@@ -29,5 +29,6 @@ async def main(linkURL):
         print(await page.title())
         await browser.close()
 
-asyncio.run(main2(environ.get("TESTARG")))
+#  main2(environ.get("TESTARG"))
+asyncio.run(main(environ.get("TESTARG")))
 #  iterate_url(environ.get('TESTARG'))

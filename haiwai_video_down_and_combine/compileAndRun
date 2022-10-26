@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# function compileAndRun {
 flags="-D__ALGORITHM__=OBLKIO_OPT -D__AUTO__ \
     -O3 -std=c++14 -m64 \
     -ffast-math -fassociative-math \
@@ -8,6 +7,10 @@ flags="-D__ALGORITHM__=OBLKIO_OPT -D__AUTO__ \
     -fopenmp -fopenmp-simd \
     -march=broadwell -Wall  
 "
-
-g++ $flags -std=c++11 -o __a.out $1 && echo "Compiled successfully." && time ./__a.out
-#           }
+# RED='\[\033[01;32m\]'
+# NC='\[\033[00m\]' # No Color
+GREEN=$'\e[0;32m'
+NC=$'\e[0m'
+g++ $flags -std=c++11 -o __a.out $1 && \
+	echo "${GREEN}Compiled successfully.${NC}" >> /dev/stderr \
+	&& time ./__a.out

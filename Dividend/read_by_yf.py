@@ -28,6 +28,7 @@ def read_current_price(ticker="SPY"):
 
 
 if __name__ == "__main__":
+    print(read_current_price())
     pass
 
 

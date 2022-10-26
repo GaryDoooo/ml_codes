@@ -1,0 +1,25 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © GarryDu
+
+//@version=5
+indicator("Outstanding SPX")
+time_period=timeframe.period
+spx=request.security("SPX",time_period,close)
+dji=request.security("DJI",time_period,close)
+ndx=request.security("IXIC",time_period,close)
+
+rspx=spx/spx[1]
+rdji=dji/dji[1]
+rndx=ndx/ndx[1]
+// avg=(rdji+rndx)/2
+
+// r=rspx/avg
+// nr=rndx/avg
+// dr=rdji/avg
+palette=rspx>math.max(rdji,rndx) or rspx<math.min(rdji,rndx)?color.red:color.blue
+
+plot((rndx-1)*100,title="IXIC",style=plot.style_columns, linewidth=3,color=color.gray)
+plot((rdji-1)*100,title="DJI",style=plot.style_columns, linewidth=3,color=color.gray)
+plot((rspx-1)*100,title="SPX",style=plot.style_cross,linewidth=2,color=palette)
+
+

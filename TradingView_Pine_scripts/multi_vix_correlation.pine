@@ -1,0 +1,63 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+
+//@version=4
+study("VIX Correlation")
+
+sym1 = input(title="Default Value is VIX, change this to VVIX to compare to SPY or also to VIX", defval="VIX")
+sym2=input(title="Default Value is UVXY", defval="UVXY")
+sym3=input(title="Default Value is UVXY", defval="VVIX")
+reglen=input(title="Direction fit cover range.",type=input.integer,defval=30)
+malen=input(title="Moving avg len of fit.",type=input.integer,defval=5)
+symprice1 = security(sym1, timeframe.period, close)
+symprice2 = security(sym2, timeframe.period, close)
+symprice3 = security(sym3, timeframe.period, close)
+spx=security("SPX",timeframe.period,close)
+
+corrthresh = input(0.2, title="Thresh Hold")
+corrlen = input(16, title="Corr. Length")
+
+vixcorr1 = correlation(close, symprice1, corrlen)
+vixcorr2 = correlation(close, symprice2, corrlen)
+vixcorr3 = correlation(close, symprice3, corrlen)
+count=(vixcorr1>=corrthresh?1:0) + (vixcorr2>=corrthresh?1:0) + (vixcorr3>=corrthresh?1:0)
+// palette=vixcorr1>=corrthresh and vixcorr2>=corrthresh and vixcorr3>=corrthresh?color.orange:
+//         vixcorr1>=corrthresh or vixcorr2>=corrthresh or vixcorr3?color.red:
+//         vixcorr1>=0 or vixcorr2>=0?color.black:color.green
+palette=count==3?color.orange:count==2?color.red:count==1?color.black:color.green
+///// Regression for line direction
+// increasing=cum(1)
+// reg1=correlation(increasing,symprice1,reglen)
+// reg2=correlation(increasing,symprice2,reglen)
+slope(x)=>
+    reg=linreg(x,reglen,0)
+    sma((reg-reg[1])/reg[1]*10,malen)
+capTo1(x)=>x>1?1:x
+// reg1=linreg(symprice1,reglen,0)
+// reg2=linreg(symprice2,reglen,0)
+// reg3=linreg(spx,reglen,0)
+// reg_slope1=(reg1-reg1[1])/reg1[1]*10
+// reg_slope2=(reg2-reg2[1])/reg2[1]*10
+
+// Standard Deviation 
+threshold_std1=input(title="Ticker1 (VIX) stdev threshold",defval=0.86)
+threshold_std2=input(title="Ticker3 (VVIX) stdev threshold",defval=3.16)
+stdlen=input(title="Stdev length", defval=20)
+std1=stdev(symprice1,stdlen)
+std2=stdev(symprice3,stdlen)
+palette2=std1<=threshold_std1 and std2<=threshold_std2?#0000ff77:std1<=threshold_std1 or std2<=threshold_std2?#ff000077:#ffffff00
+plot(-0.1,title="Tsunami",style=plot.style_circles,linewidth=5,color=palette2)
+// end standard deviation
+
+plot(capTo1(vixcorr1),title="Corr 1")
+plot(capTo1(vixcorr2),title="Corr 2",color=color.lime)
+plot(capTo1(vixcorr3),title="Corr 3",color=color.aqua)
+plot(slope(symprice1),title="Slope 1",color=color.red)
+plot(slope(symprice2),title="Slope 2",color=color.orange)
+// plot(slope(spx)*10,title="Slope SPX",color=color.black)
+plot(0,title="> threshold",style=plot.style_circles,linewidth=1,color=palette)
+// vixcolor = vixcorr > 0 ? color.red : color.green
+// plot(vixcorr, color=vixcolor, style=plot.style_histogram)
+
+
+
+// barcolor(vixcorr > corrthresh ? color.red : color.green)

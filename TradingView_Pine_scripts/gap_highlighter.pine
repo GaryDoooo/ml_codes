@@ -1,0 +1,29 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © GarryDu
+
+//@version=5
+
+indicator('Gap highlighter', shorttitle='Gap', overlay=false, precision=2)
+time_period=timeframe.period
+use_diff_ticker = input.bool(title="Use a different ticker", defval=false)
+diff_ticker=input.symbol("VIX","The different Ticker")
+
+// length = input.int(20, "TTM Squeeze Length")
+
+// Read data
+ticker=use_diff_ticker?diff_ticker:syminfo.tickerid
+// vclose=request.security(ticker,time_period,close)
+// vtatr=request.security(ticker,time_period,ta.tr)
+vhigh=request.security(ticker,time_period,high)
+vlow=request.security(ticker,time_period,low)
+vhigh1=vhigh[1]
+// request.security(ticker,time_period,high[1])
+vlow1=vlow[1]
+// request.security(ticker,time_period,low[1])
+
+// height=vhigh1>=vlow and vlow1 <=vhigh?0:vhigh1<vlow?(vlow-vhigh1)/vhigh1*100:vlow1>vhigh?(vhigh-vlow1)/vlow1*100
+height=vhigh1<vlow?(vlow-vhigh1)/vhigh1*100:vlow1>vhigh?(vhigh-vlow1)/vlow1*100:0
+colors=height>0?color.green:height<0?color.red:color.gray
+
+plot(height, style=plot.style_histogram,linewidth=2,title="Gap Highlighter",color=colors)
+

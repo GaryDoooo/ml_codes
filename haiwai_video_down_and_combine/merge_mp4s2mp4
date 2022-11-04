@@ -1,0 +1,7 @@
+#!/bin/bash
+
+randstring=$(date '+%Y-%m-%d-%H_%M_%S')
+output=$randstring".mp4"
+echo "Output: "$output
+
+ffmpeg -f concat -safe 0 -i <(for f in ./*.mp4; do echo "file '$PWD/$f'"; done) -c copy $output

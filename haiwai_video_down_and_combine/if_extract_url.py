@@ -13,7 +13,7 @@ with sync_playwright() as p:
         "a", "elements => elements.map(element => element.href)")
     links = set()
     for i in range(len(atxt)):
-        if "play?id=" not in aurl[i]:
+        if "?id=" not in aurl[i]:
             continue
         try:
             e = int(atxt[i].replace(' ', ''))

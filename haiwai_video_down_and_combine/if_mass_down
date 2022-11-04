@@ -9,6 +9,7 @@ from playwright.sync_api import sync_playwright
 from os import environ
 
 inp=environ.get('TESTARG')
+print("from env",inp)
 url=inp.split(' ')[0].replace('\'','').replace(' ','')
 s=' '.join(inp.split(' ')[1:])
 print("get url:",url)
@@ -24,7 +25,7 @@ with sync_playwright() as p:
         "a", "elements => elements.map(element => element.href)")
     links = set()
     for i in range(len(atxt)):
-        if "play?id=" not in aurl[i]:
+        if "?id=" not in aurl[i]:
             continue
         try:
             e = int(atxt[i].replace(' ', ''))
@@ -70,7 +71,7 @@ str="$*"
 pyout=$(geturl "$str")
 echo "Input: "$str
 linkpairs=$(echo $pyout | sed 's/^.*Download//g' | sed 's/Download//g')
-# echo "To be downloaded link pairs: "$linkpairs
+echo "To be downloaded link pairs: "$linkpairs
 linklist=$(echo $linkpairs | xargs -n2 bash -c 'echo $1')
 filelist=$(echo $linkpairs | xargs -n2 bash -c 'echo $0')
 linkpairs=$(echo $linkpairs \
@@ -78,7 +79,7 @@ linkpairs=$(echo $linkpairs \
 # using python print or echo neither can print new lines clearly
 # printf in bash works better
 echo $linkpairs
-
+# exit 0
 
 for i in {1..100}
 do

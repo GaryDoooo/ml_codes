@@ -1,0 +1,121 @@
+[0;32mCompiled successfully.[0m
+|        |
+|[]      | Score: 0
+|[]      |
+|[]      |
+|[]      |
+----------
+
+Total episode: 1	Played 3 steps.
+
+|        |
+|[]      | Score: 0
+|[]      |
+|[]      |
+|[]      |
+----------
+
+Total episode: 2	Played 3 steps.
+
+|        |
+|[]      | Score: 0
+|[]      |
+|[]      |
+|[]      |
+----------
+
+Total episode: 4	Played 3 steps.
+
+|        |
+|[]      | Score: 0
+|[]      |
+|[]      |
+|[]      |
+----------
+
+Total episode: 8	Played 3 steps.
+
+|        |
+|[]      | Score: 0
+|[]      |
+|[]      |
+|[]      |
+----------
+
+Total episode: 16	Played 3 steps.
+
+|        |
+|[]      | Score: 0
+|[]      |
+|[]      |
+|[]      |
+----------
+
+Total episode: 32	Played 3 steps.
+
+|[]      |
+|[]      | Score: 2
+|[]      |
+|[][]    |
+|[][]  []|
+----------
+
+Total episode: 64	Played 7 steps.
+
+|        |
+|[]      | Score: 0
+|[]      |
+|[]      |
+|[]  [][]|
+----------
+
+Total episode: 128	Played 4 steps.
+
+|[]    []|
+|[]    []| Score: 46
+|[]    []|
+|[]    []|
+|[]    []|
+----------
+
+Total episode: 256	Played 52 steps.
+
+|[]      |
+|[]  []  | Score: 6
+|[]  [][]|
+|[]  [][]|
+|[]  [][]|
+----------
+
+Total episode: 512	Played 13 steps.
+
+|        |
+|[]      | Score: 0
+|[]      |
+|[][]    |
+|[][]    |
+----------
+
+Total episode: 1024	Played 4 steps.
+
+|[][]    |
+|[][]    | Score: 68
+|[][]    |
+|[]  []  |
+|[]  []  |
+----------
+
+Total episode: 2048	Played 62 steps.
+
+|        |
+|[]      | Score: 1236
+|[]      |
+|[]      |
+|[]      |
+----------
+
+Total episode: 2758
+
+real	0m0.016s
+user	0m0.012s
+sys	0m0.000s

@@ -1,0 +1,157 @@
+[0;32mCompiled successfully.[0m
+|        |
+|[]      | Score: -2
+|[]      |
+|[]      |
+|[]      |
+----------
+
+Total episode: 1	Played 3 steps.
+
+|        |
+|[]      | Score: -3
+|[]      |
+|[][]    |
+|[][]    |
+----------
+
+Total episode: 2	Played 4 steps.
+
+|        |
+|[]      | Score: -3
+|[]      |
+|[]    []|
+|[]    []|
+----------
+
+Total episode: 4	Played 4 steps.
+
+|        |
+|[][]    | Score: -4
+|[][]    |
+|[][]    |
+|[][]    |
+----------
+
+Total episode: 8	Played 5 steps.
+
+|        |
+|[]  []  | Score: -5
+|[]  []  |
+|[][][]  |
+|[][][]  |
+----------
+
+Total episode: 16	Played 6 steps.
+
+|[]      |
+|[]      | Score: -5
+|[][]    |
+|[][]  []|
+|[][]  []|
+----------
+
+Total episode: 32	Played 6 steps.
+
+|        |
+|[]  []  | Score: 115
+|[]  []  |
+|[][][]  |
+|[]  [][]|
+----------
+
+Total episode: 64	Played 246 steps.
+
+|[]      |
+|[]  []  | Score: 53
+|[]  []  |
+|[]  [][]|
+|[]  []  |
+----------
+
+Total episode: 128	Played 122 steps.
+
+|[]      |
+|[][]    | Score: 1330
+|[][][]  |
+|[][]    |
+|[][]    |
+----------
+
+Total episode: 256	Played 2676 steps.
+
+|        |
+|[]      | Score: 44
+|[]      |
+|[]      |
+|[][][]  |
+----------
+
+Total episode: 512	Played 98 steps.
+
+|        |
+|  []    | Score: 333
+|  []    |
+|[][]  []|
+|[][]  []|
+----------
+
+Total episode: 1024	Played 679 steps.
+
+|        |
+|[]      | Score: 955
+|[]      |
+|[]      |
+|[]      |
+----------
+
+Total episode: 2048	Played 1917 steps.
+
+|        |
+|  [][]  | Score: 1456
+|  []    |
+|  []    |
+|[][]    |
+----------
+
+Total episode: 4096	Played 2922 steps.
+
+|        |
+|    [][]| Score: 522
+|      []|
+|[]    []|
+|[][]  []|
+----------
+
+Total episode: 8192	Played 1057 steps.
+
+|  [][]  |
+|    []  | Score: 3441
+|    []  |
+|    []  |
+|    []  |
+----------
+
+Total episode: 16384	Played 6892 steps.
+
+|        |
+|  [][]  | Score: 2993
+|[][]    |
+|[]      |
+|[][]  []|
+----------
+
+Total episode: 32768	Played 5999 steps.
+
+|        |
+|        | Score: 50000
+|        |
+|        |
+|        |
+----------
+
+Total episode: 52876
+
+real	0m14.739s
+user	0m14.730s
+sys	0m0.008s

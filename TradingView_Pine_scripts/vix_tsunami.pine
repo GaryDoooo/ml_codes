@@ -1,0 +1,29 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © GarryDu
+
+//@version=4
+// indicator("Tsunami")
+// Standard Deviation 
+study("VIX Tsunami")
+
+sym1 = input(title="Default Value is VIX, change this to VVIX to compare to SPY or also to VIX", defval="VIX")
+// sym2=input(title="Default Value is UVXY", defval="UVXY")
+sym3=input(title="Default Value is VVIX", defval="VVIX")
+// reglen=input(title="Direction fit cover range.",type=input.integer,defval=30)
+// malen=input(title="Moving avg len of fit.",type=input.integer,defval=5)
+symprice1 = security(sym1, timeframe.period, close)
+// symprice2 = security(sym2, timeframe.period, close)
+symprice3 = security(sym3, timeframe.period, close)
+
+threshold_std1=input(title="Ticker1 (VIX) stdev threshold",defval=0.86)
+threshold_std2=input(title="Ticker3 (VVIX) stdev threshold",defval=3.16)
+stdlen=input(title="Stdev length", defval=20)
+std1=stdev(symprice1,stdlen)
+std2=stdev(symprice3,stdlen)
+palette2=std1<=threshold_std1 and std2<=threshold_std2?#0000ff77:std1<=threshold_std1 or std2<=threshold_std2?#ff000077:#ffffff00
+plot(-0.1,title="Tsunami",style=plot.style_circles,linewidth=5,color=palette2)
+plot(std1,"VIXstd",color = color.aqua)
+plot(std2,"VVIXstd",color = color.green)
+// plotchar(std1, "VIXstd", "", location = location.top,color=color.green)
+// plotchar(std2, "VVIXstd", "", location = location.top,color = color.aqua)
+// end standard deviation

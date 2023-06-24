@@ -14,6 +14,7 @@ url=inp.split(' ')[0].replace('\'','').replace(' ','')
 s=' '.join(inp.split(' ')[1:])
 print("get url:",url)
 print("get episodes selections:",s)
+
 with sync_playwright() as p:
     browser = p.chromium.launch()
     page = browser.new_page()
@@ -69,6 +70,7 @@ END
 # in a list of link" "filename
 str="$*"
 pyout=$(geturl "$str")
+echo $pyout
 echo "Input: "$str
 linkpairs=$(echo $pyout | sed 's/^.*Download//g' | sed 's/Download//g')
 echo "To be downloaded link pairs: "$linkpairs

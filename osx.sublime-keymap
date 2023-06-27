@@ -1,0 +1,533 @@
+[
+    ////////// Just move cursor without selection
+    // move cursor around 
+    // delete_word {"forward": false}
+    {
+        "keys": ["super+9"],
+        "command": "delete_word",
+        "args":
+        {        "forward":false}
+    },{
+        "keys": ["super+0"],
+        "command": "delete_word",
+        "args":
+        {        "forward":false}
+    },{
+        "keys": ["super+p"],
+        "command": "paste",
+        "args":
+        {        }
+    },{
+        "keys": ["super+y"],
+        "command": "copy",
+        "args":
+        {}
+    },{
+        "keys": ["super+j"],
+        "command": "move",
+        "args":
+        {
+            "by": "lines",
+            "forward": true
+        }
+    },
+    {
+        "keys": ["super+h"],
+        "command": "move",
+        "args":
+        {
+            "by": "characters",
+            "forward": false
+        }
+    },
+    {
+        "keys": ["super+k"],
+        "command": "move",
+        "args":
+        {
+            "by": "lines",
+            "forward": false
+        }
+    },
+    {
+        "keys": ["super+l"],
+        "command": "move",
+        "args":
+        {
+            "by": "characters",
+            "forward": true
+        }
+    },
+    {
+        "keys": ["super+,"],
+        "command": "move",
+        "args":
+        {
+            "by": "words",
+            "forward": false
+        }
+    },
+    {
+        "keys": ["super+."],
+        "command": "move",
+        "args":
+        {
+            "by": "words",
+            "forward": true
+        }
+    },
+    {
+        "keys": ["super+i"],
+        "command": "move_to",
+        "args":
+        {
+            "to": "bol",
+            "extend": false
+        }
+    },
+    {
+        "keys": ["super+o"],
+        "command": "move_to",
+        "args":
+        {
+            "to": "eol",
+            "extend": false
+        }
+    },
+    {
+        "keys": ["super+f"],
+        "command": "move",
+        "args":
+        {
+            "by": "pages",
+            "forward": true
+        }
+    },
+    {
+        "keys": ["super+b"],
+        "command": "move",
+        "args":
+        {
+            "by": "pages",
+            "forward": false
+        }
+    },
+    //Jump 5 lines a time
+    {
+        "keys": ["super+;"],
+        "command": "chain",
+        "args":
+        {
+            "commands": [
+                ["move",
+                {
+                    "by": "lines",
+                    "forward": false
+                }],
+                ["move",
+                {
+                    "by": "lines",
+                    "forward": false
+                }],
+                ["move",
+                {
+                    "by": "lines",
+                    "forward": false
+                }],
+                ["move",
+                {
+                    "by": "lines",
+                    "forward": false
+                }],
+                ["move",
+                {
+                    "by": "lines",
+                    "forward": false
+                }]
+            ]
+        }
+    },
+    {
+        "keys": ["super+/"],
+        "command": "chain",
+        "args":
+        {
+            "commands": [
+                ["move",
+                {
+                    "by": "lines",
+                    "forward": true
+                }],
+                ["move",
+                {
+                    "by": "lines",
+                    "forward": true
+                }],
+                ["move",
+                {
+                    "by": "lines",
+                    "forward": true
+                }],
+                ["move",
+                {
+                    "by": "lines",
+                    "forward": true
+                }],
+                ["move",
+                {
+                    "by": "lines",
+                    "forward": true
+                }]
+            ]
+        }
+    },
+    ///////////////////////Move cursor with selection
+    // move cursor around
+    {
+        "keys": ["super+shift+j"],
+        "command": "move",
+        "args":
+        {
+            "by": "lines",
+            "forward": true,
+            "extend": true
+        }
+    },
+    {
+        "keys": ["super+shift+h"],
+        "command": "move",
+        "args":
+        {
+            "by": "characters",
+            "forward": false,
+            "extend": true
+        }
+    },
+    {
+        "keys": ["super+shift+k"],
+        "command": "move",
+        "args":
+        {
+            "by": "lines",
+            "forward": false,
+            "extend": true
+        }
+    },
+    {
+        "keys": ["super+shift+l"],
+        "command": "move",
+        "args":
+        {
+            "by": "characters",
+            "forward": true,
+            "extend": true
+        }
+    },
+    {
+        "keys": ["super+shift+,"],
+        "command": "move",
+        "args":
+        {
+            "by": "words",
+            "forward": false,
+            "extend": true
+        }
+    },
+    {
+        "keys": ["super+shift+."],
+        "command": "move",
+        "args":
+        {
+            "by": "words",
+            "forward": true,
+            "extend": true
+        }
+    },
+    {
+        "keys": ["super+shift+i"],
+        "command": "move_to",
+        "args":
+        {
+            "to": "bol",
+            "extend": false,
+            "extend": true
+        }
+    },
+    {
+        "keys": ["super+shift+o"],
+        "command": "move_to",
+        "args":
+        {
+            "to": "eol",
+            "extend": false,
+            "extend": true
+        }
+    },
+    {
+        "keys": ["super+shift+f"],
+        "command": "move",
+        "args":
+        {
+            "by": "pages",
+            "forward": true,
+            "extend": true
+        }
+    },
+    {
+        "keys": ["super+shift+b"],
+        "command": "move",
+        "args":
+        {
+            "by": "pages",
+            "forward": false,
+            "extend": true
+        }
+    },
+    //Jump 5 lines a time
+    {
+        "keys": ["super+shift+;"],
+        "command": "chain",
+        "args":
+        {
+            "commands": [
+                ["move",
+                {
+                    "by": "lines",
+                    "forward": false,
+                    "extend": true
+                }],
+                ["move",
+                {
+                    "by": "lines",
+                    "forward": false,
+                    "extend": true
+                }],
+                ["move",
+                {
+                    "by": "lines",
+                    "forward": false,
+                    "extend": true
+                }],
+                ["move",
+                {
+                    "by": "lines",
+                    "forward": false,
+                    "extend": true
+                }],
+                ["move",
+                {
+                    "by": "lines",
+                    "forward": false,
+                    "extend": true
+                }]
+            ]
+        }
+    },
+    {
+        "keys": ["super+shift+/"],
+        "command": "chain",
+        "args":
+        {
+            "commands": [
+                ["move",
+                {
+                    "by": "lines",
+                    "forward": true,
+                    "extend": true
+                }],
+                ["move",
+                {
+                    "by": "lines",
+                    "forward": true,
+                    "extend": true
+                }],
+                ["move",
+                {
+                    "by": "lines",
+                    "forward": true,
+                    "extend": true
+                }],
+                ["move",
+                {
+                    "by": "lines",
+                    "forward": true,
+                    "extend": true
+                }],
+                ["move",
+                {
+                    "by": "lines",
+                    "forward": true,
+                    "extend": true
+                }]
+            ]
+        }
+    },
+    // some functions
+    {
+        "keys": ["super+u"],
+        "command": "undo"
+    },
+    {
+        "keys": ["super+d"],
+        "command": "right_delete"
+    },
+    {
+        "keys": ["super+s"],
+        "command": "save"
+    },
+    {
+        "keys": ["super+8"],
+        "command": "toggle_comment"
+    },
+    {
+        "keys": ["super+t"],
+        "command": "next_view_in_stack"
+    },
+    //indent
+    {
+        "keys": ["super+-"],
+        "command": "unindent"
+    },
+    {
+        "keys": ["super+="],
+        "command": "indent"
+    },
+    // delte a whole line
+    {
+        "keys": ["super+r"],
+        "command": "run_macro_file",
+        "args":
+        {
+            "file": "res://Packages/Default/Delete Line.sublime-macro"
+        }
+    },
+    // Switch original useful super key shortcuts to option key
+    {
+        "keys": ["option+o"],
+        "command": "prompt_open"
+    },
+    {
+        "keys": ["option+shift+l"],
+        "command": "split_selection_into_lines"
+    },
+    {
+        "keys": ["option+l"],
+        "command": "expand_selection",
+        "args":
+        {
+            "to": "line"
+        }
+    },
+    {
+        "keys": ["option+d"],
+        "command": "find_under_expand"
+    },
+
+    {
+        "keys": ["option+t"],
+        "command": "show_overlay",
+        "args":
+        {
+            "overlay": "goto",
+            "show_files": true
+        }
+    },
+    {
+        "keys": ["option+r"],
+        "command": "show_overlay",
+        "args":
+        {
+            "overlay": "goto",
+            "text": "@"
+        }
+    },
+
+    {
+        "keys": ["option+i"],
+        "command": "show_panel",
+        "args":
+        {
+            "panel": "incremental_find",
+            "reverse": false
+        }
+    },
+    {
+        "keys": ["option+shift+i"],
+        "command": "show_panel",
+        "args":
+        {
+            "panel": "incremental_find",
+            "reverse": true
+        }
+    },
+    {
+        "keys": ["option+f"],
+        "command": "show_panel",
+        "args":
+        {
+            "panel": "find",
+            "reverse": false
+        }
+    },
+    {
+        "keys": ["option+alt+f"],
+        "command": "show_panel",
+        "args":
+        {
+            "panel": "replace",
+            "reverse": false
+        }
+    },
+    {
+        "keys": ["option+alt+e"],
+        "command": "replace_next"
+    },
+    {
+        "keys": ["option+g"],
+        "command": "find_next"
+    },
+    {
+        "keys": ["option+shift+g"],
+        "command": "find_prev"
+    },
+    {
+        "keys": ["option+e"],
+        "command": "slurp_find_string"
+    },
+    {
+        "keys": ["option+shift+e"],
+        "command": "slurp_replace_string"
+    },
+
+    {
+        "keys": ["option+shift+f"],
+        "command": "show_panel",
+        "args":
+        {
+            "panel": "find_in_files"
+        }
+    },
+
+    {
+        "keys": ["option+j"],
+        "command": "join_lines"
+    },
+    {
+        "keys": ["option+shift+d"],
+        "command": "duplicate_line"
+    },
+
+    {
+        "keys": ["option+b"],
+        "command": "build"
+    },
+    {
+        "keys": ["option+shift+b"],
+        "command": "build",
+        "args":
+        {
+            "select": true
+        }
+    }
+
+]

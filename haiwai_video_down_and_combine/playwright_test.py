@@ -29,9 +29,9 @@ async def main(linkURL):
         print(await page.title())
         await browser.close()
 
-<<<<<<< HEAD
-#  main2(environ.get("TESTARG"))
-=======
->>>>>>> 2fb1565caf279f56f0e6adb034a0c79f84c7dd86
-asyncio.run(main(environ.get("TESTARG")))
+#  <<<<<<< HEAD
+main2(environ.get("TESTARG"))
+#  =======
+#  >>>>>>> 2fb1565caf279f56f0e6adb034a0c79f84c7dd86
+#  asyncio.run(main(environ.get("TESTARG")))
 #  iterate_url(environ.get('TESTARG'))

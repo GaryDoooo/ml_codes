@@ -44,8 +44,13 @@ threshold_std2=input(title="Ticker3 (VVIX) stdev threshold",defval=3.16)
 stdlen=input(title="Stdev length", defval=20)
 std1=stdev(symprice1,stdlen)
 std2=stdev(symprice3,stdlen)
-palette2=std1<=threshold_std1 and std2<=threshold_std2?#0000ff77:std1<=threshold_std1 or std2<=threshold_std2?#ff000077:#ffffff00
+//palette2=std1<=threshold_std1 and std2<=threshold_std2?#0000ff77:std1<=threshold_std1 or std2<=threshold_std2?#ff000077:#ffffff00
+//plot(-0.1,title="Tsunami",style=plot.style_circles,linewidth=5,color=palette2)
+palette2=std1<=threshold_std1?#ff000077:#ffffff00
 plot(-0.1,title="Tsunami",style=plot.style_circles,linewidth=5,color=palette2)
+palette3=std2<=threshold_std2?#ff000077:#ffffff00
+plot(-0.2,title="Tsunami",style=plot.style_circles,linewidth=5,color=palette3)
+
 // end standard deviation
 
 plot(capTo1(vixcorr1),title="Corr 1")

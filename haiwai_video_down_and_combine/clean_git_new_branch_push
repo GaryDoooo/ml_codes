@@ -1,0 +1,141 @@
+#!/bin/bash
+
+# command description in how to at the end
+
+if [ $# -eq 1 ]
+      then
+      if cd $1 ; then 
+          echo "Change directory to $1"
+      else
+          echo "Cant change directory to $1"
+          exit 1
+         fi
+fi
+
+if tmpdir=$(mktemp -d -t "git_clean_XXXXXXXX"); then
+    echo "Made temporary directory"
+else
+    echo "Not made temporary directory failed"
+    exit 1
+fi
+
+git_url=$(cat .git/config | grep url | xargs -n1 | grep git)
+
+OK=true
+
+if [ -n "$git_url" ]
+then
+    echo "Successfully got git url: $git_url"
+else
+    echo "Error while getting git url. Got: $git_url"
+    OK=false  
+fi
+
+if $OK ; then
+    if [ -d ".git" ] && mv .git $tmpdir ; then
+        echo "Moved .git to $tmpdir."
+    else
+        echo "Error moving .git to $tmpdir"
+        OK=false
+    fi
+fi
+
+branch_name=$(date | sed 's/\ /_/g' | sed 's/:/_/g')
+
+if $OK && git init && git checkout -b $branch_name ; then
+    echo "Successfully initial checked to $branch_name"
+else
+    echo "Error while initial git and checked to $branch_name"
+    OK=false
+fi
+
+if $OK && git add . && git commit -m "initial commit" ; then
+    echo "Successfully added and committed."
+else
+    echo "Error while adding and COMMIT."
+    OK=false
+fi
+
+if $OK && git remote add $branch_name $git_url ; then
+    echo "Successfully added remote new branch $branch_name"
+else
+    echo "Error while adding remote new branch remote $git_url"
+    OK=false
+fi
+
+if $OK && git push --set-upstream $branch_name $branch_name ; then
+    echo "Successfully pushed to $branch_name remote new branch."
+else
+    echo "Error while pushing to $branch_name remote new branch"
+    OK=false
+fi
+
+if $OK && rm -rf $tmpdir ; then
+    echo "Successfully deleted temporary directory."
+    exit 0
+fi
+
+### Below is to put the original .git back
+### When process failed somewhere
+
+if mv $tmpdir"/.git" . ; then
+    echo "Moved .git back."
+else
+    echo "Error moving .git back."
+fi
+
+if [ -z "$(ls -A $tmpdir)" ]; then
+       echo "Empty $tmpdir"
+    if rm -r $tmpdir; then
+        echo "Successfully removed temporary directory"
+    else
+        echo "Failed to remove temporary directory, maybe not empty."
+    fi
+   else
+      echo "Not Empty $tmpdir"
+      rm -rf ".git"
+        if mv $tmpdir"/.git" . ; then
+            echo "Moved .git back."
+        else
+            echo "Error moving .git back."
+        fi
+        if rm -r $tmpdir; then
+            echo "Successfully removed temporary directory"
+        else
+            echo "Failed to remove temporary directory, maybe not empty."
+        fi
+fi
+
+
+# Doing this all the remote history is still there.
+# So, no need to backup
+#
+# -- Remove the history from
+#
+# rm -rf .git
+#
+# -- recreate the repos from the current content only
+#
+# git init
+#
+# here is to switch all the future push to a new branch
+#
+# git checkout -b NEW_BRANCH_NAME
+#
+# all the gpush or other commands are same as before
+#
+# git add .
+# git commit -m "Initial commit"
+#
+# -- push to the github remote repos ensuring you overwrite history
+#
+#
+# push it to the new branch
+# the git URL is in config (.git/config)
+#
+# git remote add NEW_BRANCH_NAME git@github.com:<YOUR ACCOUNT>/<YOUR REPOS>.git
+#
+# git will promote this command
+#
+# git push --set-upstream NEW_BRANCH_NAME NEW_BRANCH_NAME
+#

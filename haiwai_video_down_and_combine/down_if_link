@@ -21,22 +21,33 @@ from os import environ
 
 async def main(linkURL):
     async with async_playwright() as p:
-        browser = await p.chromium.launch()
+        browser = await p.webkit.launch()
         page = await browser.new_page()
+        # req=[]
         page.on("request", lambda request: print("Request: " + request.url))
+        # req.append(request.url))
         #  await page.goto("http://playwright.dev")
         #  await page.goto("https://www.iyf.tv/play?id=nmVPxY64z3F")
-        await page.goto(linkURL)
-        print(await page.title())
+        await page.goto(linkURL, wait_until="networkidle", timeout=10000)
+        # while True:
+        #     video_link=[_ for _ in req if "m3u8" in _]
+        #     if len(video_link)>0:
+        #         break
+        await page.wait_for_selector("video[id='video_player']")
         await browser.close()
+        # print(video_link)
 
 asyncio.run(main(environ.get("TESTARG")))
 
 END
 }
 linkpairs=$(geturl $1)
+echo "$linkpairs" | grep m3u8
+# exit 0
+
 # linklist=$(echo $linkpairs | xargs -n2 bash -c 'echo $0')
 m3u8link=$(echo $linkpairs | xargs -n1 | grep list.m3u8) # | xargs -n2 bash -c 'echo $1')
+m3u8link=$(echo $m3u8link | xargs -n1 | head -n1)
 if [ "$#" -eq 1 ]; then
         randstring=$(date '+%Y-%m-%d-%H_%M_%S')
         filename=$randstring".mp4"
@@ -45,6 +56,7 @@ if [ "$#" -eq 1 ]; then
 fi
 echo "Downloading link"
 echo $m3u8link
+echo $filename
 echo "====== Downloading with ffmpeg directly======"
 ffmpeg -i $m3u8link -c copy -bsf:a aac_adtstoasc $filename
 

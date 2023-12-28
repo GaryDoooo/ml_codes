@@ -54,7 +54,7 @@ except BaseException:
 #  url = "https://www.tangrenjie.tv/vod/play/id/119053/sid/4/nid/7.html"
 #  url = "https://www.baidu.com"
 # url = "https://www.iyf.tv/watch?v=tZA37MHEha6bCoJ0dp5wy7"
-#  url = "https://www.iyf.tv/play?id=S2vxMv8wt82"
-#  s = get_resources(url)
-#  print(s)
+url = "https://www.iyf.tv/play?id=S2vxMv8wt82"
+s = get_resources(url)
+print(s)
 #  print([_ for _ in s if ".m3u8" in _])

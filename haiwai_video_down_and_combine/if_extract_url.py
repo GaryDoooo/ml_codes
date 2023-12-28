@@ -3,9 +3,10 @@ import re
 from playwright.sync_api import sync_playwright
 url = sys.argv[1]
 with sync_playwright() as p:
-    browser = p.chromium.launch()
+    browser = p.webkit.launch()
     page = browser.new_page()
-    page.goto(url)
+    page.goto(url,
+              wait_until="networkidle", timeout=10000)
     #  ua = page.query_selector("01")
     atxt = page.eval_on_selector_all(
         "a", "elements => elements.map(element => element.text)")

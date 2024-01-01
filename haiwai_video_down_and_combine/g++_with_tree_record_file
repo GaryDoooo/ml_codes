@@ -9,6 +9,14 @@
 
 if [ $# -eq 0 ]; then
     g++ --version
+    echo " "
+	echo "How to use this script: g"
+	echo " "
+	echo "g foo.cpp"
+	echo "Compile the cpp file with c++14 and run."
+	echo " "
+	echo "g foo.cpp output.txt"
+	echo "Compile the cpp file with c++14, run and record the output to the output.txt file in the meanwhile."
 fi
 if [ $# -eq 1 ]; then
     # g++ -Wall -g -O2 -std=c++11 $1 && ./a.out

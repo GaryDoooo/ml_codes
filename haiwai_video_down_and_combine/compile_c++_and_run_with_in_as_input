@@ -1,6 +1,10 @@
 #!/bin/bash
 cd $PWD
-workingFile=$(ls -l g | awk '{print $NF}')
+if [ $# -eq 1 ]; then
+        workingFile=$1
+else
+	workingFile=$(ls -l g | awk '{print $NF}')
+fi
 input1="in"
 input2="test_input.txt"
 if [[ $input1 -nt $input2 ]]; then

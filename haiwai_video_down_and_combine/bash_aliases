@@ -1,0 +1,20 @@
+alias lynx='lynx -use_mouse'
+alias sr='screen -r -d'
+alias rm_containers="docker ps -aq --no-trunc | xargs docker rm"
+alias df='df -h'
+alias du='du -h'
+alias free='free -h'
+alias top='htop'
+alias psg='ps -ef | grep -v grep | grep '
+alias pip_update='sudo pip freeze --local | grep -v '^\-e' | cut -d = -f 1  | sudo xargs -n1 pip install -U'
+alias cd..='cd ..'
+alias tmux='TERM=xterm-256color tmux'
+alias bc='bc -l'
+alias rm_none_images='docker rmi $(docker images | grep "^<none>" | awk "{print $3}")'
+alias cronlog='grep CRON /var/log/syslog'
+alias pandocgit="pandoc -r markdown_github "
+alias py="/usr/local/bin/py"
+alias pip="pip3"
+alias d0='du -h -d 0'
+alias d1='du -h -d 1'
+

@@ -71,6 +71,7 @@ if [ $# -eq 3 ]; then
         echo "Change offset to "$time_offset
 fi
 
+video_file_no_extension=$(echo $video_file | grep -Po '.*(?=\.)' )
 outfile="sub_"$video_file_no_extension".mp4"
 
 while [ -f $outfile ]; do
@@ -82,6 +83,9 @@ new_subtitle_file=$subtitle_file".srt"
 
 ffmpeg -i $subtitle_file -c:s text $new_subtitle_file
 
-ffmpeg -itsoffset $time_offset -i $video_file -threads 0 -i $new_subtitle_file -vf "subtitles=$new_subtitle_file:force_style='FontSize=18,FontName=PingFang SC,MarginV=45'" -map 0:v -map 0:a -map 1:s -f matroska - | ffmpeg -i - -vcodec libx264 -acodec aac $outfile
+# ffmpeg -itsoffset $time_offset -i $video_file -threads 0 -i $new_subtitle_file -vf "subtitles=$new_subtitle_file:force_style='FontSize=18,FontName=PingFang SC,MarginV=45'" -map 0:v -map 0:a -map 1:s -f matroska - | ffmpeg -i - -vcodec libx264 -acodec aac $outfile
+
+ffmpeg -itsoffset $time_offset -i $video_file -threads 0 -vf "subtitles=$new_subtitle_file:force_style='FontSize=18,FontName=PingFang SC,MarginV=45'" -vcodec libx264 -acodec aac $outfile
 
 rm $new_subtitle_file
+

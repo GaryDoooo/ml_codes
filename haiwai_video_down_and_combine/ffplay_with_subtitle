@@ -72,6 +72,7 @@ if [ $# -eq 3 ]; then
 fi
 
 # ffplay -vf "subtitles=$subtitle_file:force_style='FontSize=18,FontName=PingFang SC,MarginV=45'" $video_file
-ffmpeg -itsoffset $time_offset -i $video_file -threads 0 -i $subtitle_file -c:s text -vf "subtitles=$subtitle_file:force_style='FontSize=18,FontName=PingFang SC,MarginV=45'" -map 0:v -map 0:a -map 1:s -f matroska - | ffplay -
+# ffmpeg -itsoffset $time_offset -i $video_file -threads 0 -i $subtitle_file -c:s text -vf "subtitles=$subtitle_file:force_style='FontSize=18,FontName=PingFang SC,MarginV=45'" -map 0:v -map 0:a -map 1:s -f matroska - | ffplay -
 
 
+ffmpeg -itsoffset $time_offset -i $video_file -threads 0 -vf "subtitles=$subtitle_file:force_style='FontSize=18,FontName=PingFang SC,MarginV=45'" -f matroska - | ffplay -

@@ -35,6 +35,11 @@ struct cut_line {
 
 cut_line c[N + 5];
 
+template <typename T>
+int sgn(T val) {
+    return (T(0) < val) - (val < T(0));
+}
+
 double ring_radius(double d)  // radius of the ring slice,
                               // d is the distance on sphere surface from the
                               // north pole to the ring
@@ -113,7 +118,8 @@ double move_pieces() {  // return the max movement from all pieces
         if (static_friction >= abs(net_force_out_sagittal))
             move = 0;
         else
-            move = (net_force_out_sagittal -
+            move = sign(net_force_out_sagittal) *
+                   (abs(net_force_out_sagittal) -
                     static_friction * Friction_motion_to_static_ratio) /
                    c[i].l0 * Mass_Time_factor;
         max_move = max(max_move, abs(move));

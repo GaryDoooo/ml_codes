@@ -1,9 +1,11 @@
 #define PI 3.14159265358979323846
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
+#include <bits/stdc++.h>
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
 #include "./pressing_parameters.h"
+using namespace std;
 
 const double R0               = MEMBERANCE_RADIUS;  // the radius of flat circle
 const double R                = DOME_RADIUS;        // the radius of the dome
@@ -183,26 +185,22 @@ void print_c() {
     for (int i = 1; i < N; i++)
         printf("%f,", (c[i].d - c[i - 1].d) / (c[i].d0 - c[i - 1].d0));
     printf("%f\n", (c[N].d - c[N - 1].d) / (c[N].d0 - c[N - 1].d0));
-    for (int i = 1; i < N; i++)
-        printf("%f,", (c[i].l + c[i - 1].l) / (c[i].l0 + c[i - 1].l0));
-    printf("%f\n", (c[N].l + c[N - 1].l) / (c[N].l0 + c[N - 1].l0));
-    for (int i = 1; i < N; i++) printf("%f,", (c[i].d));
-    printf("%f\n", (c[N].d));
 }
 
 int main() {
     init();
+    for (int i = 1; i < N; i++) cout << c[i].d << ",";
+    cout << c[N].d << endl;
+    for (int i = 1; i < N; i++) cout << c[i].l << ",";
+    cout << c[N].l << endl;
+
     // cout << "Dome degree: " << 2 * asin(R0 / R) / 2 / PI * 360 << endl;
-    double d;
-    int i;
-    for (d = Dome_Height, i = 0; d >= 0;
-         i++, d -= Dome_Height / PRESSING_STEPS) {
-        while (1) {
-            double max_move = move_pieces(d);
-            // cout << max_move << endl;
-            if (max_move < MOVE_THRESHOLD) break;
-        }
-        if (i % PRINT_EVERY_X_STEPS == 0) print_c();
-    }
-    print_c();
+    // for (double d = Dome_Height; d >= 0; d -= Dome_Height / PRESSING_STEPS) {
+    //     while (1) {
+    //         double max_move = move_pieces(d);
+    //         // cout << max_move << endl;
+    //         if (max_move < MOVE_THRESHOLD) break;
+    //     }
+    //     print_c();
+    // }
 }

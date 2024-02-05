@@ -1,0 +1,20 @@
+[0;32mCompiled successfully.[0m
+Avg score: 996		EPSILON 0.0010		Rounds: 2583821
+Avg score: 997		EPSILON 0.0015		Rounds: 913416
+Avg score: 996		EPSILON 0.0023		Rounds: 630875
+Avg score: 997		EPSILON 0.0034		Rounds: 244621
+Avg score: 996		EPSILON 0.0051		Rounds: 76070
+Avg score: 1047		EPSILON 0.0076		Rounds: 52901
+Avg score: 997		EPSILON 0.0114		Rounds: 13324
+Avg score: 1095		EPSILON 0.0171		Rounds: 15988
+Avg score: 1097		EPSILON 0.0256		Rounds: 5255
+Avg score: 1093		EPSILON 0.0384		Rounds: 5272
+Avg score: 1186		EPSILON 0.0577		Rounds: 6781
+Avg score: 1237		EPSILON 0.0865		Rounds: 4025
+Avg score: 1233		EPSILON 0.1297		Rounds: 5310
+Avg score: 1229		EPSILON 0.1946		Rounds: 12350
+Avg score: 1220		EPSILON 0.2919		Rounds: 5066413
+
+real	1m22.918s
+user	1m22.886s
+sys	0m0.012s

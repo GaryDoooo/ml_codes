@@ -120,53 +120,59 @@ def correlation_vix_uvxy(
         spx1 = list(data['SPY']['Close'])
         i, spx, vix, uvxy, time = 1, [], [], [], []
         for _ in range(20):
-            while(isnan(vix1[-i] * uvxy1[-i] * spx1[-i])):
+            try:
+                while(isnan(vix1[-i] * uvxy1[-i] * spx1[-i])):
+                    i += 1
+                vix.append(vix1[-i])
+                uvxy.append(uvxy1[-i])
+                spx.append(spx1[-i])
+                time.append(time1[-i])
                 i += 1
-            vix.append(vix1[-i])
-            uvxy.append(uvxy1[-i])
-            spx.append(spx1[-i])
-            time.append(time1[-i])
-            i += 1
+            except BaseException:
+                pass
         vix = vix[::-1]
         uvxy = uvxy[::-1]
         spx = spx[::-1]
         print(spx, vix, uvxy)
-        top, mid, bottom1, bottom2, bottom3 = \
-            "| <!-- --> |", "|:---:|", "| VIX |", "| UVXY |", "| Inter |"
-        for ticker in ['^VIX', 'UVXY']:
-            l = vix if ticker == "^VIX" else uvxy
-            #  output += "SPY to" + ticker + "\n"
-            for back in range(10):
-                temp = corr(l[-11 - back:-1 - back], spx[-11 - back:-1 - back])
-                temp2 = corr(l[-11 - back:-1 - back], grow_list_of_10) > 0
-                #  output += ("%.2f" % temp) + " " + temp2 + " "
-                if ticker == "UVXY":
-                    top += " " + time[-1 - back] + " |"
-                    mid += ":---:|"
-                    #  bold = "**" if temp > 0 and temp2 else ""
-                    #  bottom2 += " " + bold + parantheses(temp) + bold
-                    bottom2 += " " + red_highlight(parantheses(temp)
-                                                   ) if temp > 0 and temp2 else parantheses(temp)
-                    if not temp2:
-                        bottom2 += "f"
-                    bottom2 += " |"
-                    temp3 = corr(l[-11 - back:-1 - back],
-                                 vix[-11 - back:-1 - back])
-                    #  bold = "**" if temp3 < 0.5 else ""
-                    #  bottom3 += " " + bold + parantheses(temp3) + bold + " |"
-                    bottom3 += " " + red_highlight(parantheses(temp3)
-                                                   ) if temp3 < 0.5 else parantheses(temp3)
-                    bottom3 += " |"
-                else:
-                    #  bold = "**" if temp > 0 and temp2 else ""
-                    #  bottom1 += " " + bold + parantheses(temp) + bold
-                    bottom1 += " " + red_highlight(parantheses(temp)
-                                                   ) if temp > 0 and temp2 else parantheses(temp)
-                    #  bottom1 += " |"
-                    if not temp2:
-                        bottom1 += "f"
-                    bottom1 += " |"
-
+        try:
+            top, mid, bottom1, bottom2, bottom3 = \
+                "| <!-- --> |", "|:---:|", "| VIX |", "| UVXY |", "| Inter |"
+            for ticker in ['^VIX', 'UVXY']:
+                l = vix if ticker == "^VIX" else uvxy
+                #  output += "SPY to" + ticker + "\n"
+                for back in range(10):
+                    temp = corr(l[-11 - back:-1 - back],
+                                spx[-11 - back:-1 - back])
+                    temp2 = corr(l[-11 - back:-1 - back], grow_list_of_10) > 0
+                    #  output += ("%.2f" % temp) + " " + temp2 + " "
+                    if ticker == "UVXY":
+                        top += " " + time[-1 - back] + " |"
+                        mid += ":---:|"
+                        #  bold = "**" if temp > 0 and temp2 else ""
+                        #  bottom2 += " " + bold + parantheses(temp) + bold
+                        bottom2 += " " + red_highlight(parantheses(temp)
+                                                       ) if temp > 0 and temp2 else parantheses(temp)
+                        if not temp2:
+                            bottom2 += "f"
+                        bottom2 += " |"
+                        temp3 = corr(l[-11 - back:-1 - back],
+                                     vix[-11 - back:-1 - back])
+                        #  bold = "**" if temp3 < 0.5 else ""
+                        #  bottom3 += " " + bold + parantheses(temp3) + bold + " |"
+                        bottom3 += " " + red_highlight(parantheses(temp3)
+                                                       ) if temp3 < 0.5 else parantheses(temp3)
+                        bottom3 += " |"
+                    else:
+                        #  bold = "**" if temp > 0 and temp2 else ""
+                        #  bottom1 += " " + bold + parantheses(temp) + bold
+                        bottom1 += " " + red_highlight(parantheses(temp)
+                                                       ) if temp > 0 and temp2 else parantheses(temp)
+                        #  bottom1 += " |"
+                        if not temp2:
+                            bottom1 += "f"
+                        bottom1 += " |"
+        except BaseException:
+            pass
             #  output += "\n"
         output += top + "\n" + mid + "\n" + bottom1 + \
             "\n" + bottom2 + "\n" + bottom3 + "\n"

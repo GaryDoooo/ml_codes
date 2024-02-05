@@ -1,0 +1,12 @@
+ffplay -vf "subtitles=522.srt:force_style='FontSize=24,FontName=PingFang SC,MarginV=45'" 522.mp4
+ffmpeg -i 522.mp4 -threads 0 -vf "subtitles=522.srt:force_style='FontSize=20,FontName=PingFang SC'" -f matroska - | ffplay -
+ffmpeg -i 522.mp4 -threads 0 -vf "subtitles=522.srt:force_style='FontSize=24,FontName=PingFang SC,MarginV=45'" -f matroska - | ffplay -
+
+ffmpeg -itsoffset -15 -i 522.ass 522.srt
+
+
+ffmpeg -itsoffset -1.5 -i 522.mp4 -threads 0 -i 522.ass -vf "subtitles=522.srt:force_style='FontSize=24,FontName=PingFang SC,MarginV=45'" -map 0:v -map 0:a -map 1:s  -f matroska - | ffplay -
+
+
+ffmpeg -itsoffset 15 -i 522.mp4 -i 522.ass -vf "subtitles=522.ass:force_style='FontSize=24,FontName=PingFang SC,MarginV=45'" -map 0:v -map 0:a -map 1:s -threads 1 -f matroska - | ffplay -
+

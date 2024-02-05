@@ -1,0 +1,91 @@
+#!/bin/bash
+
+function geturl {
+	TESTARG=$1 python3 - <<END
+import sys
+from playwright.sync_api import sync_playwright
+from os import environ
+
+inp=environ.get('TESTARG')
+print("from env",inp)
+url=inp.split(' ')[0].replace('\'','').replace(' ','')
+print("get url:",url)
+
+with sync_playwright() as p:
+    browser = p.webkit.launch()
+    page = browser.new_page()
+    page.goto(url, wait_until="networkidle", timeout=10000)
+    #  ua = page.query_selector("01")
+    atxt = page.eval_on_selector_all(
+        "a", "elements => elements.map(element => element.text)")
+    aurl = page.eval_on_selector_all(
+        "a", "elements => elements.map(element => element.href)")
+    links = set()
+    for i in range(len(atxt)):
+        if "?id=" not in aurl[i]:
+            continue
+        if "play" not in aurl[i]:
+            continue
+        try:
+            print(atxt[i], aurl[i])
+            #  e = int(atxt[i].replace(' ', ''))
+            #  print(e, aurl[i])
+            links.add((atxt[i], aurl[i]))
+        except BaseException:
+            pass
+    #  print(ua)
+    #  print(links)
+    print("Found these episodes links:\n")
+    #  links = sorted(list(links), key=lambda x: x[0])
+    #  print(links)
+    for e, l in links:
+        print(e, l)
+    browser.close()
+
+print("Download")
+for i in links:
+    print( i[0], i[1])
+END
+}
+
+# get output from python extracting links from the input HTML codes geturl $1
+# in a list of link" "filename
+str="$*"
+pyout=$(geturl "$str")
+# echo $pyout
+echo "Input: "$str
+linkpairs=$(echo $pyout | sed 's/^.*Download//g' | sed 's/Download//g')
+# echo "To be downloaded link pairs: "$linkpairs
+linklist=$(echo $linkpairs | xargs -n2 bash -c 'echo $1')
+filelist=$(echo $linkpairs | xargs -n2 bash -c 'echo $0')
+linkpairs=$(echo $linkpairs \
+    | xargs -n2 printf "%s.mp4 %s\n" )
+# using python print or echo neither can print new lines clearly
+# printf in bash works better
+echo $linkpairs | xargs -n2 printf "%s \t\t%s\n"
+echo " "
+echo "Download? type y to proceed."
+read answer
+if [[ $answer != "y" ]]; then
+    exit 0
+fi
+
+for i in {1..100}
+do
+    missinglist=''
+    while read -r line; do
+        filename=$(echo $line | xargs -n2 bash -c 'echo $0')
+        if [ ! -f $filename ]; then
+                missinglist=$missinglist$line" "
+        fi
+    done <<< "$linkpairs"
+    if [ "$missinglist" == '' ]; then
+        break
+    fi
+    echo $missinglist \
+        | xargs -n2 bash -c '/usr/local/bin/down_if_link "${1}" ${0}' \
+        | grep "Opening output file"
+        # some website cut one single ts file into several
+        # so we need add a new serial number to make a new name for each
+done
+

@@ -1,0 +1,43 @@
+[0;32mCompiled successfully.[0m
+Avg score: 1115		alpha 0.0010		Rounds: 117219
+Avg score: 1084		alpha 0.0012		Rounds: 66334
+Avg score: 1127		alpha 0.0014		Rounds: 65017
+Avg score: 1081		alpha 0.0017		Rounds: 28764
+Avg score: 1169		alpha 0.0021		Rounds: 110864
+Avg score: 1100		alpha 0.0025		Rounds: 153425
+Avg score: 1109		alpha 0.0030		Rounds: 52305
+Avg score: 1160		alpha 0.0036		Rounds: 32120
+Avg score: 1162		alpha 0.0043		Rounds: 36794
+Avg score: 1161		alpha 0.0052		Rounds: 23071
+Avg score: 1159		alpha 0.0062		Rounds: 9207
+Avg score: 1205		alpha 0.0074		Rounds: 70994
+Avg score: 1198		alpha 0.0089		Rounds: 27075
+Avg score: 1155		alpha 0.0107		Rounds: 32042
+Avg score: 1198		alpha 0.0128		Rounds: 10176
+Avg score: 1158		alpha 0.0154		Rounds: 11318
+Avg score: 1136		alpha 0.0185		Rounds: 37729
+Avg score: 1213		alpha 0.0222		Rounds: 24128
+Avg score: 1209		alpha 0.0266		Rounds: 22872
+Avg score: 1164		alpha 0.0319		Rounds: 12212
+Avg score: 1220		alpha 0.0383		Rounds: 23021
+Avg score: 1211		alpha 0.0460		Rounds: 7888
+Avg score: 1205		alpha 0.0552		Rounds: 13233
+Avg score: 1220		alpha 0.0662		Rounds: 11336
+Avg score: 1221		alpha 0.0795		Rounds: 7225
+Avg score: 1222		alpha 0.0954		Rounds: 6396
+Avg score: 1222		alpha 0.1145		Rounds: 12121
+Avg score: 1226		alpha 0.1374		Rounds: 5657
+Avg score: 1227		alpha 0.1648		Rounds: 6859
+Avg score: 1232		alpha 0.1978		Rounds: 8821
+Avg score: 1229		alpha 0.2374		Rounds: 5375
+Avg score: 1231		alpha 0.2849		Rounds: 4163
+Avg score: 1228		alpha 0.3418		Rounds: 3035
+Avg score: 1232		alpha 0.4102		Rounds: 6385
+Avg score: 1235		alpha 0.4922		Rounds: 3680
+Avg score: 1232		alpha 0.5907		Rounds: 3588
+Avg score: 1235		alpha 0.7088		Rounds: 4286
+Avg score: 1239		alpha 0.8506		Rounds: 3765
+
+real	0m13.206s
+user	0m13.185s
+sys	0m0.016s

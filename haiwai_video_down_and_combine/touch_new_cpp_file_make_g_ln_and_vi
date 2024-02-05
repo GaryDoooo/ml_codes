@@ -1,0 +1,15 @@
+#!/bin/bash
+
+cd $PWD
+
+if [ $# -eq 1 ]; then
+	if [[ "$1" == *.cpp ]]; then
+		filename=$1
+	else
+		filename=$1".cpp"
+	fi
+	touch $filename
+	ln -sf $filename g
+fi
+workingFile=$(ls -l g | awk '{print $NF}')
+docker run --rm -v /usr/share/zoneinfo:/usr/share/zoneinfo -v $(pwd):/root/mnt -v /home/du/.local/share/TabNin.local/share/TabNine -it --user root codevi startvi $workingFile

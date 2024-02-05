@@ -1,0 +1,14 @@
+[0;32mCompiled successfully.[0m
+Best score: 1244		EPSILON 0.0100		Rounds: 13754
+Best score: 1243		EPSILON 0.0150		Rounds: 13419
+Best score: 1243		EPSILON 0.0225		Rounds: 4630
+Best score: 1241		EPSILON 0.0338		Rounds: 4105
+Best score: 1237		EPSILON 0.0506		Rounds: 4838
+Best score: 1240		EPSILON 0.0759		Rounds: 3357
+Best score: 1236		EPSILON 0.1139		Rounds: 3126
+Best score: 1230		EPSILON 0.1709		Rounds: 6216
+Best score: 1227		EPSILON 0.2563		Rounds: 145566
+
+real	0m3.114s
+user	0m3.098s
+sys	0m0.016s

@@ -1,0 +1,184 @@
+[0;32mCompiled successfully.[0m
+|        |
+|[]      | Score: 0
+|[]      |
+|[][]    |
+|  [][]  |
+----------
+
+Total episode: 1	Played 4 steps.
+
+|        |
+|[]      | Score: 0
+|[]      |
+|[]      |
+|[]      |
+----------
+
+Total episode: 2	Played 3 steps.
+
+|        |
+|[]      | Score: 0
+|[]      |
+|[]  []  |
+|[]  []  |
+----------
+
+Total episode: 4	Played 4 steps.
+
+|        |
+|[]      | Score: 0
+|[]      |
+|[]      |
+|[]      |
+----------
+
+Total episode: 8	Played 3 steps.
+
+|        |
+|[]      | Score: 0
+|[]      |
+|[]      |
+|[]      |
+----------
+
+Total episode: 16	Played 3 steps.
+
+|        |
+|[]      | Score: 0
+|[]      |
+|[]      |
+|[]      |
+----------
+
+Total episode: 32	Played 3 steps.
+
+|        |
+|[]      | Score: 0
+|[]      |
+|[]      |
+|[]      |
+----------
+
+Total episode: 64	Played 3 steps.
+
+|        |
+|[]      | Score: 0
+|[]      |
+|[]      |
+|[]      |
+----------
+
+Total episode: 128	Played 3 steps.
+
+|[]      |
+|[]      | Score: 2
+|[]    []|
+|[]    []|
+|[]    []|
+----------
+
+Total episode: 256	Played 7 steps.
+
+|        |
+|[]      | Score: 48
+|[]      |
+|[]      |
+|[][]  []|
+----------
+
+Total episode: 512	Played 52 steps.
+
+|  []    |
+|[][]    | Score: 66
+|[][][]  |
+|[][]    |
+|[][]    |
+----------
+
+Total episode: 1024	Played 60 steps.
+
+|[][]    |
+|  [][]  | Score: 880
+|  [][]  |
+|[][][]  |
+|[][][]  |
+----------
+
+Total episode: 2048	Played 715 steps.
+
+|[]      |
+|[]      | Score: 617
+|[][]    |
+|[][][]  |
+|[][][]  |
+----------
+
+Total episode: 4096	Played 502 steps.
+
+|    []  |
+|[]  []  | Score: 214
+|[][][]  |
+|[][]  []|
+|[][]  []|
+----------
+
+Total episode: 8192	Played 179 steps.
+
+|        |
+|  []    | Score: 343
+|  []    |
+|[][][]  |
+|[][][]  |
+----------
+
+Total episode: 16384	Played 281 steps.
+
+|  [][]  |
+|  []    | Score: 894
+|  [][][]|
+|[][][]  |
+|[][][]  |
+----------
+
+Total episode: 32768	Played 725 steps.
+
+|    []  |
+|  [][]  | Score: 242
+|[][][]  |
+|[][]  []|
+|[][]  []|
+----------
+
+Total episode: 65536	Played 203 steps.
+
+|        |
+|[][][]  | Score: 7
+|[][][]  |
+|[]  [][]|
+|[]  [][]|
+----------
+
+Total episode: 131072	Played 13 steps.
+
+|        |
+|[]      | Score: 459
+|[]      |
+|[][]    |
+|[][]    |
+----------
+
+Total episode: 262144	Played 372 steps.
+
+|        |
+|        | Score: 12429
+|        |
+|        |
+|        |
+----------
+
+Total episode: 325721
+
+real	0m8.479s
+user	0m8.478s
+sys	0m0.000s

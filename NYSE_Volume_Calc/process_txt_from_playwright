@@ -1,0 +1,40 @@
+#!/bin/bash
+
+path="/home/du/code/ml_codes/NYSE_Volume_Calc/"
+
+cd $path
+
+export TESTARG='https://www.wsj.com/market-data/stocks'
+res=$(python3 ./print_page2txt.py )
+
+timestap='0:0'
+# timestap=$(echo $res | grep Diary -A 1 | grep '[0-9]:')
+timestap=$(echo $res | tr ' ' '\n' | grep Diary -A 4 | head -5 | grep -v Diary | tr '\n' ' ' | sed "s/\ PM/88888/g"| sed "s/\ AM/99999/g"| sed "s/PM/88888/g"| sed "s/AM/99999/g" | sed "s/[A-Z]*//g" | sed "s/[a-z]*//g" | xargs -n1 | tr '\n' ' ' | sed 's/88888/PM/g'| sed "s/99999/AM/g" )
+# advancing=$(echo $res | grep Advancing | awk 'length > max_length { max_length = length; longest_line = $0 } END { print longest_line }')
+advancing=$(echo $res | tr ' ' '\n' | grep dvancing -A 2 | tail -3 | tr '\n' ' ' )
+# declining=$(echo $res | grep Declining | awk 'length > max_length { max_length = length; longest_line = $0 } END { print longest_line }')
+declining=$(echo $res | tr ' ' '\n' | grep eclining -A 2 | tail -3 | tr '\n' ' ' )
+
+adv_NY='10'
+adv_NAS='10'
+adv_NY=$(echo $advancing | awk {'print $2'})
+adv_NAS=$(echo $advancing | awk {'print $3'})
+decl_NY=$(echo $declining | awk {'print $2'})
+decl_NAS=$(echo $declining | awk {'print $3'})
+echo $timestap
+echo $adv_NY
+echo $adv_NAS
+echo $decl_NY
+echo $decl_NAS
+
+rNY=$(echo $adv_NY"/("$adv_NY"+"$decl_NY")" | tr -d ',' | bc -l)
+ratio_NY=$(printf "%.3f" $rNY)
+
+rNAS=$(echo $adv_NAS"/("$adv_NAS"+"$decl_NAS")" | tr -d ',' | bc -l)
+ratio_NAS=$(printf "%.3f" $rNAS)
+
+echo $ratio_NY
+echo $ratio_NAS
+
+echo $timestap"NYSE A "$adv_NY" D "$decl_NY" Ratio "$ratio_NY" NASDAQ A "$adv_NAS" D "$decl_NAS" Ratio "$ratio_NAS
+

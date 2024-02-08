@@ -4,23 +4,8 @@ path="/home/du/code/ml_codes/NYSE_Volume_Calc/"
 
 cd $path
 
-url='https://www.wsj.com/market-data/stocks'
-    docker_img='doooom/pvm:playwright'
-
-export TESTARG="$url"
-
-if res=$(python3 ./print_page2txt.py ); then 
-    echo "Ran playwright locally."
-else
-    cmd='export TESTARG='"$url"' && cd /home/du/code && python3 /home/du/code/print_page2txt.py '
-    # echo $cmd
-    if res=$(docker run --rm -v $(pwd):/home/du/code  $docker_img /bin/bash -c "$cmd" ); then
-        echo "Ran playwright in docker."
-    else
-        echo "Neither docker or locally ran playwright."
-    fi
-fi
-
+export TESTARG='https://www.wsj.com/market-data/stocks'
+res=$(python3 ./print_page2txt.py )
 
 timestap='0:0'
 # timestap=$(echo $res | grep Diary -A 1 | grep '[0-9]:')

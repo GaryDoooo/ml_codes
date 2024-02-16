@@ -1,0 +1,16 @@
+#!/bin/bash
+
+cd "/home/du/code/ml_codes/tesla_inv_checking"
+res=$(python3 get_source.py)
+pays=$(echo $res | tr '>' '\n' | grep monthly -A 4 | tr '<' '\n' | grep "/mo" | sort | head)
+
+echo "Received:"
+echo "$pays"
+
+echo "### "`date` > temp1
+echo "" >> temp1
+echo $pays | sed 's/o/\n\n/g' >> temp1
+echo "" >> temp1
+cat data >> temp1
+mv temp1 data
+pandoc -s data -o res.html

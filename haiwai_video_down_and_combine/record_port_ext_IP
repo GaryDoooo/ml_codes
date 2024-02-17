@@ -1,0 +1,4 @@
+#!/bin/bash
+
+ip=$(gcloud compute instances list | grep port | awk '{print $5}')
+echo $ip > /home/du/http/portIP.txt

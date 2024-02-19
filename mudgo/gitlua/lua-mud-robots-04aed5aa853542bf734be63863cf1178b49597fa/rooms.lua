@@ -372,7 +372,6 @@ rooms = {
         cost = 0,
         center = 45,
     },
-    --[[
     [46] = {
     id = 46,
     name = "赏月台",
@@ -389,7 +388,6 @@ rooms = {
     cost = 0,
     center = 45,
     },
-    ]]
     [47] = {
         id = 47,
         name = "销金窟",

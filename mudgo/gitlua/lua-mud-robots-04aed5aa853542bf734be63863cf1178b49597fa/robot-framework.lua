@@ -78,9 +78,9 @@ function print(s)
 end
 
 function send(s)    --send
-    -- if var.debug and var.debug>0 then
-        Print(">>>>>>>>>>>>>>>>>>>> "..s)
-    -- end
+    if var.debug and var.debug>0 then
+        Print(s)
+    end
     return Send(s) --发送给服务器
 end
 
@@ -1515,20 +1515,4 @@ local showjing=qi
 
 end
 
--- Run=exe
-function sleep(n)  -- seconds
-local clock = os.clock
-       local t0 = clock()
-          while clock() - t0 <= n do
-                 end
-             end
-
-function exe(inputstr)
-    sep = ";" 
-    -- local t={}
-    for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
-        -- table.insert(t, str)
-        print(str)
-        sleep(1)
-    end
-end
+Run=exe

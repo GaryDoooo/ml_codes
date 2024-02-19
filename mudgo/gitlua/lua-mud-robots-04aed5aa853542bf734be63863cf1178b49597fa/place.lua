@@ -1,7 +1,8 @@
 --房间信息抓取
 
 --抓name
-add_trigger("room_name","^[> ]*(\\S.*\\S)\\s+-(\\s*\\[.*\\]\\s*|\\s*|\\s*0)$",function (p)
+--中央广场 -  ★
+add_trigger("room_name","^[> ]*(\\S.*\\S)\\s+-(\\s*\\[.*\\]\\s*|\\s*|\\s*0|\\s*★)$",function (p)
 
     var.roomname = trim(p[1])
     var.nongwu_tianqi = nil -- 没有浓雾天气

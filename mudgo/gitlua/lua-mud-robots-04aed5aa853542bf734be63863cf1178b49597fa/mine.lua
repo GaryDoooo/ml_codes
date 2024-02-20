@@ -102,32 +102,13 @@ add_alias("sj", function(p)
 
 end)
 
-function xue_xi_worker()
-    local function values(t)
-            local i = 0
-                return function() i = i + 1; return t[i] end
-            end
-    local tlist={ 'dodge','force','parry','huntian-qigong','xiaoyaoyou','begging'}
-        -- blade                     │ 已有小成    │ 450.00      │ 485         │
-        -- │   基本轻功                │ dodge                     │ 鹤立鸡群    │ 500.00      │ 485         │
-        -- │   基本内功                │ force                     │ 已有小成    │ 450.00      │ 485         │
-        -- │   基本手法                │ hand                      │ 已有小成    │ 450.00      │ 485         │
-        -- │   基本招架                │ parry                     │ 略有小成    │ 430.00      │ 485         │
-        -- ├───────四项特殊功夫────────┼───────────────────────────┼─────────────┼─────────────┼─────────────┤
-        -- │ □ 混天气功                │ huntian-qigong            │ 鹤立鸡群    │ 500.00      │ 485         │
-        -- │ □ 六合刀                  │ liuhe-dao                 │ 已有小成    │ 450.00      │ 485         │
-        -- │ □ 蛇形手                  │ shexing-shou              │ 已有小成    │ 450.00      │ 485         │
-        -- │ □ 逍遥游                  │ xiaoyaoyou
-    -- print(">>>>>>> xue "..topic)
-   for topic1 in values(tlist) do
-        send("xue qiu for "..topic1.." 50")
-    end
-end
 
 add_alias("xx", function(p)
+    local id1="xx1"
     local id2="xx2"
     local id3="xx3"
     local id4="xx4"
+    local id5="xx5"
 
     local parameters={}
     parameters[1],parameters[2]=p[-1]:match("(%w+)(.+)")
@@ -141,10 +122,31 @@ add_alias("xx", function(p)
 
    print(">>>>>>>>> time_lenth = "..tostring(time_lenth))
    print(">><<<<<<<<<<<<<<<<<<<<<<<<<< topic "..topic)
+    
+    local xx1=true
+    local xx2=false
+    local xx3=false
+    local xx4=false
+    local xx5=false
 
-    local xx2=true
-    local xx3=true
-    local xx4=true
+    local tlist={'literate','blade','liuhe-dao','hand', 'dodge','force','parry','huntian-qigong','xiaoyaoyou','begging'}
+    local master='zhu'
+    local t_idx=1
+
+    function xue_xi_worker(times)
+            xx1=true
+            xx2=true
+            xx4=false
+            xx3=false
+            xx5=true
+            times=times or 1
+        if t_idx <= #tlist then
+            print("<<<<<<<<<<<<<<<<<< xue "..tostring(t_idx)..":"..tlist[t_idx])
+            send("xue "..master.." for "..tlist[t_idx].." "..tostring(times))
+        else
+            print("<<<<<<<<<<<<<<<<<< no more to learn.")
+        end
+    end
 
     xue_xi_worker()
 
@@ -159,13 +161,33 @@ add_alias("xx", function(p)
         end,uuid())
     end,uuid())
     
+    addtrigger(id1,"^其中.*似乎有些心得。$",
+    function()
+        if xx1 then
+            print("<<<<<<<<<<<<<<<<<< xue again.")
+            xue_xi_worker(50)
+        end
+    end)
+
+    addtrigger(id5,"^你.*(消耗了大量潜能|实战经验).*",
+    function()
+        if xx5 then
+            print("<<<<<<<<<<<<<<<<<< xue next.")
+            xx5=false
+            t_idx=t_idx+1
+            xue_xi_worker()
+        end
+    end)
+
     addtrigger(id2,
     "你今天太累了，结果什么也没有学到。",
     function()
         if xx2 then
+            xx1=false
             xx2=false
             xx3=true
             xx4=true
+            xx5=false
         -- close_trigger(id2)
         -- open_trigger(id3)
         -- open_trigger(id4)
@@ -178,8 +200,9 @@ add_alias("xx", function(p)
     "你一觉醒来，精神抖擞地活动了几下手脚。",
     function()
         if xx3 then
+            xx1=true
             xx3=false
-            xx2=true
+            xx2=false
             xx4=false
         -- close_trigger(id3)
         -- open_trigger(id2)
@@ -193,9 +216,12 @@ add_alias("xx", function(p)
     "你刚刚睡过一觉, 多睡对身体有害无益!",
     function()
         if xx4 then
+            xx1=false
+            xx2=false
             xx4=false
         -- close_trigger(id4)
-        send("get all")
+        -- send("get all")
+        execs("get all;hp;cha",3)
         add_timer(10,function()
             xx4=true
             xx3=true

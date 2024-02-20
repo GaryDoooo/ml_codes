@@ -63,6 +63,21 @@ function find_in_yz(target)
     return 0
 end
 
+add_alias("cj",function(p)
+    addtrigger("chaojinghui",
+    "你默写良久，终于抄完了，看样子可以回去领工钱了。",
+     function()
+        close_trigger("chaojinghui")
+        execs(";wd;do 3 sd;do 2 s;sw;w;sw;do 4 s;e;ne;eu;enter;ask sengren about done;report "..p[-1],2)
+    end)
+    
+    execs("out;wd;sw;w;do 4 n;ne;e;ne;do 2 n;do 3 nu;eu;write jing",2)
+    open_trigger("chaojinghui")
+end)
+-- 你默写良久，终于抄完了，看样子可以回去领工钱了。
+
+
+
 add_alias("zuojob",function(p)
     -- 左全对你说道：人人都知道我们丐帮消息天下最为灵通，打探消息就靠你们这些跑腿的了，你去北门打听(dating)些消息回来。
     -- execs(my_find_path(2016,40),2)
@@ -150,4 +165,6 @@ add_alias("zuojob",function(p)
         end)
 
 end)
+
+
 

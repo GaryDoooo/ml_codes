@@ -18,22 +18,20 @@ function run2(clist,t,k,kmax)
     end
 end
 
-function execs(cmds,t)
+function execs(cmds,t,if_print)
+    if_print = if_print or 1
     clist={}
     for match in string.gmatch(cmds..";","(.-);") do
         table.insert(clist,match)
     end
     local kmax=0
     for k,v in pairs(clist) do
-        print(">>>> "..v.." "..tostring(k))
+        if if_print==1 then
+            print(">>>> "..v.." "..tostring(k))
+        end
         kmax=k
     end
     run2(clist,t,1,kmax)
-    -- local idx=1
-    -- send(clist[idx])
-    -- addtimer(t,function()
-    --     idx=idx+1
-    --     if idx<=kmax then
 end
 
 

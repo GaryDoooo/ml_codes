@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cd /home/du/code/ml_codes/mudgo
+
+./go-mud -c config-example.yaml

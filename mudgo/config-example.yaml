@@ -5,7 +5,7 @@ UI:
 MUD:
   Host: hk.pkuxkx.com
   Port: 8080
-  Encodings: UTF-8,GB18030,GBK,GB2312
+  Encodings: UTF-8
 Lua:
   Enable: true
   Path: lua

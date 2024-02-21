@@ -63,7 +63,8 @@ function find_in_yz(target)
     return 0
 end
 
-add_alias("cj",function(p)
+add_alias("cj_old",function(p)
+    -- 你顺利到达了终点。
     addtrigger("chaojinghui",
     "你默写良久，终于抄完了，看样子可以回去领工钱了。",
      function()
@@ -77,6 +78,42 @@ end)
 -- 你默写良久，终于抄完了，看样子可以回去领工钱了。
 
 
+add_alias("cj",function(p)
+    -- 你顺利到达了终点。
+    addtrigger("chaojinghui",
+    "你默写良久，终于抄完了，看样子可以回去领工钱了。",
+     function()
+        close_trigger("chaojinghui")
+        open_trigger("reportcj")
+        execs(";node walk sjy_sms",1)
+        -- execs(";wd;do 3 sd;do 2 s;sw;w;sw;do 4 s;e;ne;eu;enter;ask sengren about done;report "..p[-1],2)
+    end)
+
+    addtrigger("reportcj",
+    "你顺利到达了终点。",
+    function()
+        execs("ask sengren about done;report "..p[-1],1)
+        deltrigger("chaojinghui")
+        deltrigger("caoxiecj")
+        deltrigger("reportcj")
+    end)
+    
+    addtrigger("caoxiecj",
+    "你顺利到达了终点。",
+    function()
+        close_trigger("caoxiecj")
+        open_trigger("chaojinghui")
+        execs(";write jing",1)
+    end)
+
+    open_trigger("caoxiecj")
+    close_trigger("chaojinghui")
+    -- open_trigger("chaojinghui")
+    close_trigger("reportcj")
+    send("node walk sms_sjy")
+    -- execs("out;wd;sw;w;do 4 n;ne;e;ne;do 2 n;do 3 nu;eu;write jing",2)
+end)
+-- 你默写良久，终于抄完了，看样子可以回去领工钱了。
 
 add_alias("zuojob",function(p)
     -- 左全对你说道：人人都知道我们丐帮消息天下最为灵通，打探消息就靠你们这些跑腿的了，你去北门打听(dating)些消息回来。
@@ -154,7 +191,7 @@ add_alias("zuojob",function(p)
                 execs(path_bck,3)
             end
         end)
-
+-- 你顺利到达了终点。
     addtrigger(id4,"你说道：「wohuilaile」",
         function(p)
             if zj4 then

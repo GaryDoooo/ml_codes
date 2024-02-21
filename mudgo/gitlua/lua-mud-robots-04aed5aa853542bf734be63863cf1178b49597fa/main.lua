@@ -23,5 +23,6 @@ require "my_patch"  ------------- my input
 require "mine"  
 require "mygps"
 require "mine2"  
+require "mine3"  
 require "denglu"
 

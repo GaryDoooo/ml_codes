@@ -71,20 +71,21 @@ add_alias("lg", function(p)
     addtrigger(id4,
     "你刚刚睡过一觉, 多睡对身体有害无益!",
     function()
-        print("<<<<<<<<<<<<<<<<<< do 4 w")
-        send("do 4 w")
-        add_timer(3,function()
-            print("<<<<<<<<<<<<<<<<<<<<<< get all")
-            send("get all")
-            add_timer(3,function()
-                print("<<<<<<<<<< do 4 e")
-                send("do 4 e")
-                add_timer(3,function()
-                    print("<<<<<<<<<<<<<<<<<< sleep")
-                    send("sleep")
-                end,uuid())
-            end,uuid())
-        end,uuid())
+        execs(";dazuo 20",10)
+        -- print("<<<<<<<<<<<<<<<<<< do 4 w")
+        -- send("do 4 w")
+        -- add_timer(3,function()
+        --     print("<<<<<<<<<<<<<<<<<<<<<< get all")
+        --     send("get all")
+        --     add_timer(3,function()
+        --         print("<<<<<<<<<< do 4 e")
+        --         send("do 4 e")
+        --         add_timer(3,function()
+        --             print("<<<<<<<<<<<<<<<<<< sleep")
+        --             send("sleep")
+        --         end,uuid())
+        --     end,uuid())
+        -- end,uuid())
     end)
         
 end)
@@ -118,10 +119,10 @@ add_alias("xx", function(p)
         time_lenth=tonumber(time_lenth)
     end
     
-   local topic=parameters[2] or "begging"
+   local master=parameters[2] or "qiu"
 
    print(">>>>>>>>> time_lenth = "..tostring(time_lenth))
-   print(">><<<<<<<<<<<<<<<<<<<<<<<<<< topic "..topic)
+   print(">><<<<<<<<<<<<<<<<<<<<<<<<<< shifu "..master)
     
     local xx1=true
     local xx2=false
@@ -129,8 +130,19 @@ add_alias("xx", function(p)
     local xx4=false
     local xx5=false
 
-    local tlist={'literate','blade','liuhe-dao','hand', 'dodge','force','parry','huntian-qigong','xiaoyaoyou','begging'}
-    local master='zhu'
+    local tlist={
+'literate',
+--     'blade',
+--     'liuhe-dao',
+--     'hand',
+--     'dodge',
+--     'force',
+--     'parry',
+--     'huntian-qigong',
+    'xiaoyaoyou',
+    'begging',
+'nothing'}
+    -- local master='qiu'
     local t_idx=1
 
     function xue_xi_worker(times)
@@ -142,7 +154,7 @@ add_alias("xx", function(p)
             times=times or 1
         if t_idx <= #tlist then
             print("<<<<<<<<<<<<<<<<<< xue "..tostring(t_idx)..":"..tlist[t_idx])
-            send("xue "..master.." for "..tlist[t_idx].." "..tostring(times))
+            send("xue"..master.." for "..tlist[t_idx].." "..tostring(times))
         else
             print("<<<<<<<<<<<<<<<<<< no more to learn.")
         end
@@ -227,8 +239,9 @@ add_alias("xx", function(p)
             xx3=true
             -- open_trigger(id4)
             -- open_trigger(id3)
-            print("<<<<<<<<<<<<<<<<<< sleep again")
-            send("sleep")
+            xue_xi_worker(50)
+            -- print("<<<<<<<<<<<<<<<<<< sleep again")
+            -- send("sleep")
         end,uuid())
     end
     end)

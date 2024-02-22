@@ -30,34 +30,58 @@ add_alias("dushu", function(p)
             send("jump")
         end,uuid())
     end,uuid())
-    
+   
+    local ds1=false
+    local ds2=true
+    local ds3=false
+    local ds4=false
+
+    worker()
+
     addtrigger(id1,
     -- "你运功完毕，深深吸了口气，站了起来。",
     ".*，似乎有点心得。$",
     function()
-        worker()
+        if ds1 then
+            ds1=false
+            ds2=true
+            worker()
+        end
     end)
     
     addtrigger(id2,
     -- "你现在的气太少了，无法产生内息运行全身经脉。",
     "你现在过于疲倦，无法专心下来研读新知。",
     function()
-        print(">>>>>>> sleep")
-        send("sleep");
+        if ds2 then
+            ds2=false
+            ds3=true
+            ds4=true
+            print(">>>>>>> sleep")
+            send("sleep");
+        end
     end)
     
     addtrigger(id3,
     "你一觉醒来，精神抖擞地活动了几下手脚。",
     function()
-        worker()
+        if ds3 then
+            ds3=false
+            ds4=false
+            ds2=true
+            worker()
+        end
     end)
     
     addtrigger(id4,
     "你刚刚睡过一觉, 多睡对身体有害无益!",
     function()
-        worker(10);
+        if ds4 then
+            ds4=false
+            ds3=false
+            ds2=true
+            execs(";lian dodge 50",9)
+            worker(10);
+        end
     end)
-    
-    worker()
-
 end)

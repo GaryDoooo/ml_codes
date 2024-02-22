@@ -233,7 +233,7 @@ add_alias("xx", function(p)
             xx4=false
         -- close_trigger(id4)
         -- send("get all")
-        execs("get all;hp;cha",3)
+        execs("cha;hp;lian blade 50",3)
         add_timer(10,function()
             xx4=true
             xx3=true

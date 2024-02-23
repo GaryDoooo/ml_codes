@@ -6,6 +6,7 @@ add_alias("dushu", function(p)
     local id4="lg4"
     
     local bookname="blade book"
+    -- local bookname="shediao"
    local time_lenth=p[-1]
     if type(time_lenth)=="string" then
         time_lenth=tonumber(time_lenth)
@@ -16,8 +17,8 @@ add_alias("dushu", function(p)
     -- >
     -- 本刀法的技巧，似乎有点心得。
    local function worker(t)
-       t=t or 0
-       execs(";du "..bookname.." for 50",t)
+       t=t or 1
+       execs("do 10 climb wall;du "..bookname.." for 50",t)
    end
     
     add_timer(time_lenth,function()
@@ -58,7 +59,7 @@ add_alias("dushu", function(p)
             ds3=true
             ds4=true
             print(">>>>>>> sleep")
-            send("sleep");
+            execs("do 10 climb wall;sleep",1);
         end
     end)
     
@@ -80,8 +81,8 @@ add_alias("dushu", function(p)
             ds4=false
             ds3=false
             ds2=true
-            execs(";lian dodge 50",9)
-            worker(10);
+            execs("drink;eat mantou;hp;cha;do 10 climb wall;lian blade 50",1.5)
+            worker(9);
         end
     end)
 end)

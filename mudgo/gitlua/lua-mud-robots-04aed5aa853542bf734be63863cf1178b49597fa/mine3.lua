@@ -1,12 +1,14 @@
 
-add_alias("dushu", function(p)
+add_alias("dushu_old", function(p)
     local id1="lg1"
     local id2="lg2"
     local id3="lg3"
     local id4="lg4"
-    
-    local bookname="blade book"
+
+    local bookname="sword book"
+    -- local bookname="blade book"
     -- local bookname="shediao"
+    local lian_what="dodge"
    local time_lenth=p[-1]
     if type(time_lenth)=="string" then
         time_lenth=tonumber(time_lenth)
@@ -81,8 +83,103 @@ add_alias("dushu", function(p)
             ds4=false
             ds3=false
             ds2=true
-            execs("drink;eat mantou;hp;cha;do 10 climb wall;lian blade 50",1.5)
+            execs("drink;eat mantou;hp;cha;do 10 climb wall;lian "..lian_what.." 50",1.5)
             worker(9);
         end
     end)
 end)
+
+function do_and_sleep(cmds,time_lenth)
+    
+    time_lenth=time_lenth or 0
+    cmds=cmds or ""
+
+    local id1=uuid()
+    local id2=uuid()
+    local id3=uuid()
+
+    local busy=false
+    local on=true
+
+    local function worker(t)
+       t=t or 1
+       if busy then
+           return
+       end
+       if on then
+           busy=true
+           execs(cmds..";say doagain",t)
+       end
+   end
+    
+----- TIME OUT Trigger
+    add_timer(time_lenth,function()
+        print(">>>>>>> deltrigger TIME UP.")
+        on=false
+        deltrigger(id2)
+        deltrigger(id1)
+        deltrigger(id3)
+        execs("jump;jump;jump;jump;jump;jump;jump",10)
+    end,uuid())
+   
+    addtrigger(id3,
+        "不一会儿，你就进入了梦乡。",
+        function()
+            busy=true
+        end)
+
+    addtrigger(id2,
+    "你一觉醒来，精神抖擞地活动了几下手脚。",
+    function()
+        if on then
+            busy=false
+            worker()
+        end
+    end)
+
+    addtrigger(id1,
+    "你说道：「doagain」",
+    function()
+        if on then
+            busy=false
+            worker()
+        end
+    end)
+    
+    local function sleep_loop()
+        if on then
+            -- worker()
+            add_timer(20,function()
+                execs("drink;eat mantou;sleep",1)
+                sleep_loop()
+            end,uuid())
+        end
+    end
+
+    -- local function worker_loop()
+    --     if on then
+    --         add_timer(4.14159,function()
+    --             worker()
+    --             worker_loop()
+    --         end,uuid())
+    --     end
+    -- end
+    --
+    -- worker_loop()
+    sleep_loop()
+    worker()
+end
+
+add_alias("paqiang", function(p)
+    local bookname="sword book"
+    -- local bookname="blade book"
+    -- local bookname="shediao"
+    local lian_what="dodge"
+    local time_lenth=p[-1]
+    if type(time_lenth)=="string" then
+        time_lenth=tonumber(time_lenth)
+    end 
+    local cmds="du "..bookname.." for 50;do 10 climb wall;lian "..lian_what.." 50"
+    do_and_sleep(cmds,time_lenth)
+end)
+

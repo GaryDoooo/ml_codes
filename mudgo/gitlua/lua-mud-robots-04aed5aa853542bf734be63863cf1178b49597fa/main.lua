@@ -24,5 +24,6 @@ require "mine"
 require "mygps"
 require "mine2"  
 require "mine3"  
+require "mine4"  
 require "denglu"
 

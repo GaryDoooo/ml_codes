@@ -20,6 +20,7 @@ end
 
 function execs(cmds,t,if_print)
     if_print = if_print or 1
+    t=t or 1
     clist={}
     for match in string.gmatch(cmds..";","(.-);") do
         table.insert(clist,match)

@@ -182,6 +182,26 @@ add_alias("yz_zj",function()
    }
    run_stages(stages)
 end)
+    -- 船老大 雷明(Lei ming)
+function find_ship_and_pay(river_name)
+    addtrigger("find_ship_boss",
+    "^\ \ \ \ 船老大.*",
+    function(p)
+        deltrigger("find_ship_boss")
+        -- name=string.sub(p[-1],string.find(name,"(")
+        local v=p[-1]
+        local fullname=string.sub(v,string.find(v,'%(')+1,string.find(v,'%)')-1)
+        local name=string.sub(fullname,1,string.find(fullname,"\ ")-1):lower()
+        print(">>>>>>>>>>>>>> boss name: "..name)
+        execs("ask "..name.." about "..river_name..";yell boat;yell boat",2)
+    end)
+    send("look")
+end
+
+-- add_alias("testing",function()
+--     find_ship_boss()
+-- end)
+
 -- 黄河渡口 -
 add_alias("yz_bj",function()
     stages={
@@ -193,7 +213,8 @@ add_alias("yz_bj",function()
    [2]={
        end_trigger="^(一叶扁舟缓缓地驶了过来|岸边一只渡船上).*",
        func=function()
-           execs("ask bao about huanghe;yell boat",2)
+           find_ship_and_pay("huanghe")
+           -- execs("ask liang about huanghe;yell boat",2)
        end},
    [3]={
        end_trigger="^(艄公说|艄公要继续做生意).*",
@@ -222,7 +243,8 @@ add_alias("bj_yz",function()
    [2]={
        end_trigger="^(一叶扁舟缓缓地驶了过来|岸边一只渡船上).*",
        func=function()
-           execs("ask liang about huanghe;yell boat",2)
+           find_ship_and_pay("huanghe")
+           -- execs("ask liang about huanghe;yell boat",2)
        end},
    [3]={
        end_trigger="^(艄公说|艄公要继续做生意).*",

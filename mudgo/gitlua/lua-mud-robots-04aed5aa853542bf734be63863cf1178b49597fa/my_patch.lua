@@ -35,6 +35,14 @@ function execs(cmds,t,if_print)
     run2(clist,t,1,kmax)
 end
 
+addtrigger("continue_walk",
+"你因为种种原因停了下来，可以用walk继续进行。",
+function()
+    execs(";walk",1)
+    execs(";walk",6)
+end)
+
+
 
 full_zonename = {
 ["扬州"] = "扬州",

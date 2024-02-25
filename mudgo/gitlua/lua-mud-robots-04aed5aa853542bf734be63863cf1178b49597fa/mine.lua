@@ -32,7 +32,7 @@ add_alias("lg", function(p)
     end
     
     print(">>>>>>> dazuo 20")
-    send("dazuo 20")
+    send("dazuo 320")
     
     add_timer(time_lenth,function()
         print(">>>>>>> deltrigger TIME UP.")
@@ -56,36 +56,23 @@ add_alias("lg", function(p)
     "你现在的气太少了，无法产生内息运行全身经脉。",
     function()
         print(">>>>>>> sleep")
-        send("sleep");
+        execs("du blade book for 50;drink;eat mantou;sleep",1)
+        -- send("sleep");
     end)
     
     addtrigger(id3,
     "你一觉醒来，精神抖擞地活动了几下手脚。",
     function()
         print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< wake")
-        print(">>>>>>> dazuo 20")
-        send("dazuo 20")
+        print(">>>>>>> dazuo 320")
+        send("dazuo 320")
 
     end)
     
     addtrigger(id4,
     "你刚刚睡过一觉, 多睡对身体有害无益!",
     function()
-        execs(";dazuo 20",10)
-        -- print("<<<<<<<<<<<<<<<<<< do 4 w")
-        -- send("do 4 w")
-        -- add_timer(3,function()
-        --     print("<<<<<<<<<<<<<<<<<<<<<< get all")
-        --     send("get all")
-        --     add_timer(3,function()
-        --         print("<<<<<<<<<< do 4 e")
-        --         send("do 4 e")
-        --         add_timer(3,function()
-        --             print("<<<<<<<<<<<<<<<<<< sleep")
-        --             send("sleep")
-        --         end,uuid())
-        --     end,uuid())
-        -- end,uuid())
+        execs("drink;eat mantou;dazuo 20",5)
     end)
         
 end)
@@ -233,7 +220,7 @@ add_alias("xx", function(p)
             xx4=false
         -- close_trigger(id4)
         -- send("get all")
-        execs("cha;hp;lian blade 50",3)
+        execs("eat mantou;drink;lian dodge 50",3)
         add_timer(10,function()
             xx4=true
             xx3=true

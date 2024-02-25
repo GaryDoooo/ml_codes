@@ -171,8 +171,8 @@ function do_and_sleep(cmds,time_lenth)
 end
 
 add_alias("paqiang", function(p)
-    local bookname="sword book"
-    -- local bookname="blade book"
+    -- local bookname="sword book"
+    local bookname="blade book"
     -- local bookname="shediao"
     local lian_what="dodge"
     local time_lenth=p[-1]

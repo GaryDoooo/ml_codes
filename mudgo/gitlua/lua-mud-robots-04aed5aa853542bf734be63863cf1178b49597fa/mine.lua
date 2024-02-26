@@ -235,3 +235,127 @@ add_alias("xx", function(p)
         
 end)
 
+
+add_alias("shediao", function(p)
+    local id1="xx1"
+    local id2="xx2"
+    local id3="xx3"
+    local id4="xx4"
+    local id5="xx5"
+
+   local time_lenth=p[-1]
+    if type(time_lenth)=="string" then
+        time_lenth=tonumber(time_lenth)
+    end
+   print(">>>>>>>>> time_lenth = "..tostring(time_lenth))
+    
+    local dushu=true
+    local yungong=false
+    local shuijiao=false
+    local time_out=false
+
+    local book=myvar["book"]
+    local food=myvar["food"]
+    local lian=myvar["lian"]
+
+    book=book or "shediao"
+    food=food or "mantou"
+    lian=lian or "dodge"
+
+    function dushu_worker()
+        if time_out then
+            return
+        end
+        if dushu then
+            dushu=false
+            yungong=true
+            shuijiao=false
+            --------------
+            watch_dog=false
+            if book=="shediao" then
+                execs("read "..book.." 50")
+            else
+                execs("du "..book.." for 50")
+            end
+        end
+    end
+
+    function shuijiao_worker()
+        if time_out then
+            return
+        end
+        dushu=false
+        yungong=false
+        shuijiao=false
+        --------------
+        watch_dog=false
+        execs("drink;eat "..food..";lian "..lian.." 50;lian "..lian.." 50;sleep",1)
+    end
+
+    dushu_worker()
+
+    local watch_dog=true
+
+    function watch_dog_reset()
+        if time_out then
+            return
+        end
+        watch_dog=true
+        add_timer(60,function()
+            if watch_dog then
+                dushu=true
+                print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< watch_dog reset")
+                dushu_worker()
+            end
+            watch_dog_reset()
+        end,"shediao_watchdog")
+    end
+
+    add_timer(time_lenth,function()
+        time_out=true
+        print(">>>>>>> deltrigger TIME UP.")
+        deltrigger(id2)
+        deltrigger(id1)
+        deltrigger(id3)
+        execs("jump;jump;jump;jump;jump;jump;jump",10)
+    end,"shediao_timeout")
+    
+    addtrigger(id1,"^你已经很累了，歇歇再读吧，身体要紧。",
+    function()
+        if time_out then
+            return
+        end
+        if yungong then
+            yungong=false
+            dushu=true
+            shuijiao=true
+            print("<<<<<<<<<<<<<<<<<<  yungong.")
+            add_timer(3, function()
+                if shuijiao then
+                    shuijiao_worker()
+                end
+            end,uuid())
+            watch_dog=false
+            execs("yun regenerate")
+        end
+    end)
+
+    addtrigger(id2,
+    "^你略一凝神，精神看起来好多了。",
+    function()
+        if dushu then
+        print(">>>>>>> dushu")
+        dushu_worker()
+    end
+    end)
+    
+    addtrigger(id3,
+    "^(你一觉醒来|你刚刚睡过一觉).*",--，精神抖擞地活动了几下手脚。",
+    function()
+        dushu=true
+        print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< wake")
+        dushu_worker()
+    end)
+    
+end)
+

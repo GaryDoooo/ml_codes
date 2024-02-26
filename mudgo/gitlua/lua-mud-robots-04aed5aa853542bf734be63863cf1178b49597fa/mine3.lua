@@ -156,16 +156,6 @@ function do_and_sleep(cmds,time_lenth)
         end
     end
 
-    -- local function worker_loop()
-    --     if on then
-    --         add_timer(4.14159,function()
-    --             worker()
-    --             worker_loop()
-    --         end,uuid())
-    --     end
-    -- end
-    --
-    -- worker_loop()
     sleep_loop()
     worker()
 end

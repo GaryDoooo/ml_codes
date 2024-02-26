@@ -42,7 +42,24 @@ function()
     execs(";walk",6)
 end)
 
+myvar={
+    ["book"]="shediao",
+    ["food"]="mantou",
+    ["lian"]="dodge"
+}
 
+add_alias("setvar", function(p)
+    local function trim(s)
+          return s:match'^()%s*$' and '' or s:match'^%s*(.*%S)'
+      end
+    local parameters={}
+    parameters[1],parameters[2]=p[-1]:match("(%w+)(.+)")
+
+    print(">>>>>>> p1="..tostring(parameters[1]))
+    print("<<<<<<<<<<<<<<<<<< p2="..tostring(parameters[2]))
+
+    myvar[trim(parameters[1])]=trim(parameters[2])
+end)
 
 full_zonename = {
 ["扬州"] = "扬州",

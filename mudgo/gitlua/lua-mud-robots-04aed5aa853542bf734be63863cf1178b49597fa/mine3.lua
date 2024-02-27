@@ -162,14 +162,19 @@ end
 
 add_alias("paqiang", function(p)
     -- local bookname="sword book"
-    local bookname="blade book"
-    -- local bookname="shediao"
-    local lian_what="dodge"
+    -- local bookname="blade book"
+    local bookname=myvar["book"]
+    local lian_what=myvar["lian"]
     local time_lenth=p[-1]
     if type(time_lenth)=="string" then
         time_lenth=tonumber(time_lenth)
     end 
-    local cmds="du "..bookname.." for 50;do 10 climb wall;lian "..lian_what.." 50"
+    local cmds=""
+    if bookname=="shediao" then
+        cmds="read "..bookname.." 50;do 10 climb wall;lian "..lian_what.." 50"
+    else
+        cmds="du "..bookname.." for 50;do 10 climb wall;lian "..lian_what.." 50"
+    end
     do_and_sleep(cmds,time_lenth)
 end)
 

@@ -274,8 +274,12 @@ add_alias("shediao", function(p)
             watch_dog=false
             if book=="shediao" then
                 execs("read "..book.." 50")
-            else
-                execs("du "..book.." for 50")
+            else 
+                if book=="table" then
+                    execs("do 10 study table;do 10 study table",1)
+                else
+                    execs("du "..book.." for 50")
+                end
             end
         end
     end
@@ -292,7 +296,6 @@ add_alias("shediao", function(p)
         execs("drink;eat "..food..";lian "..lian.." 50;lian "..lian.." 50;sleep",1)
     end
 
-    dushu_worker()
 
     local watch_dog=true
 
@@ -300,17 +303,21 @@ add_alias("shediao", function(p)
         if time_out then
             return
         end
+        print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< watch_dog reset.")
         watch_dog=true
         add_timer(60,function()
             if watch_dog then
                 dushu=true
-                print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< watch_dog reset")
+                print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< watch_dog triggered")
                 dushu_worker()
             end
             watch_dog_reset()
         end,"shediao_watchdog")
     end
 
+    watch_dog_reset()
+    dushu_worker()
+    
     add_timer(time_lenth,function()
         time_out=true
         print(">>>>>>> deltrigger TIME UP.")
@@ -320,7 +327,7 @@ add_alias("shediao", function(p)
         execs("jump;jump;jump;jump;jump;jump;jump",10)
     end,"shediao_timeout")
     
-    addtrigger(id1,"^你已经很累了，歇歇再读吧，身体要紧。",
+    addtrigger(id1,"^(你已经很累了|你现在过于疲倦).*",--，无法专心下来研读新知。
     function()
         if time_out then
             return

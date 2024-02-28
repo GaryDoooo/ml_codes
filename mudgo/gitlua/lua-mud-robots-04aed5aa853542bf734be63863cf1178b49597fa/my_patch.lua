@@ -19,20 +19,20 @@ function run2(clist,t,k,kmax)
 end
 
 function execs(cmds,t,if_print)
-    if_print = if_print or 1
-    t=t or 1
-    clist={}
+    local if_print2 = if_print or 1
+    local t2=t or 1
+    local clist={}
     for match in string.gmatch(cmds..";","(.-);") do
         table.insert(clist,match)
     end
     local kmax=0
     for k,v in pairs(clist) do
-        if if_print==1 then
+        if if_print2==1 then
             print(">>>> "..v.." "..tostring(k))
         end
         kmax=k
     end
-    run2(clist,t,1,kmax)
+    run2(clist,t2,1,kmax)
 end
 
 addtrigger("continue_walk",
@@ -42,10 +42,15 @@ function()
     execs(";walk",6)
 end)
 
+add_alias("ls",function()
+    send("yun recover")
+end)
+
 myvar={
     ["book"]="shediao",
     ["food"]="mantou",
-    ["lian"]="dodge"
+    ["lian"]="dodge",
+    ["quit"]="no"
 }
 
 add_alias("setvar", function(p)

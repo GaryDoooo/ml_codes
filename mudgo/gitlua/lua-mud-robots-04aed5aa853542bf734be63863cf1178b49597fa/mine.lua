@@ -298,10 +298,15 @@ add_alias("shediao", function(p)
 
 
     local watch_dog=true
+    local watch_dog_cnt=0
 
     function watch_dog_reset()
         if time_out then
             return
+        end
+        watch_dog_cnt=watch_dog_cnt+1
+        if watch_dog_cnt % 10 == 0 then
+            send("save")
         end
         print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< watch_dog reset.")
         watch_dog=true
@@ -324,7 +329,11 @@ add_alias("shediao", function(p)
         deltrigger(id2)
         deltrigger(id1)
         deltrigger(id3)
-        execs("jump;jump;jump;jump;jump;jump;jump",10)
+        if myvar["quit"]=="yes" then
+            execs(";;;;;save;quit",10)
+        else
+            execs("jump;jump;jump;jump;jump;jump;save",10)
+        end
     end,"shediao_timeout")
     
     addtrigger(id1,"^(你已经很累了|你现在过于疲倦).*",--，无法专心下来研读新知。

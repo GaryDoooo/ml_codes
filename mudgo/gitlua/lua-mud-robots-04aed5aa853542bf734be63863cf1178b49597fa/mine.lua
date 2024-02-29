@@ -118,16 +118,16 @@ add_alias("xx", function(p)
     local xx5=false
 
     local tlist={
-'literate',
+-- 'literate',
 --     'blade',
 --     'liuhe-dao',
 --     'hand',
 --     'dodge',
 --     'force',
 --     'parry',
---     'huntian-qigong',
-    'xiaoyaoyou',
-    'begging',
+    'huntian-qigong',
+    -- 'xiaoyaoyou',
+    -- 'begging',
 'nothing'}
     -- local master='qiu'
     local t_idx=1
@@ -257,6 +257,7 @@ add_alias("shediao", function(p)
     local book=myvar["book"]
     local food=myvar["food"]
     local lian=myvar["lian"]
+    -- local xuecmd=myvar["xuecmd"]
 
     book=book or "shediao"
     food=food or "mantou"

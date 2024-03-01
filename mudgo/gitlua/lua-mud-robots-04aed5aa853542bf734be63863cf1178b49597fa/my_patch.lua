@@ -50,7 +50,8 @@ myvar={
     ["book"]="shediao",
     ["food"]="mantou",
     ["lian"]="dodge",
-    ["quit"]="no"
+    ["quit"]="no",
+    ["shifu"]="kuaihuo"
 }
 
 add_alias("setvar", function(p)

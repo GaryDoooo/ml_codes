@@ -25,6 +25,7 @@ add_alias("lg", function(p)
     local id2="lg2"
     local id3="lg3"
     local id4="lg4"
+    local id5="lg5"
 
    local time_lenth=p[-1]
     if type(time_lenth)=="string" then
@@ -40,9 +41,8 @@ add_alias("lg", function(p)
         deltrigger(id2)
         deltrigger(id3)
         deltrigger(id4)
-        add_timer(30,function()
-            send("jump")
-        end,uuid())
+        deltrigger(id5)
+        execs("jump;jump;jump;jump",20)
     end,uuid())
     
     addtrigger(id1,
@@ -56,7 +56,7 @@ add_alias("lg", function(p)
     "你现在的气太少了，无法产生内息运行全身经脉。",
     function()
         print(">>>>>>> sleep")
-        execs("du blade book for 50;drink;eat mantou;sleep",1)
+        execs(";drink;eat mantou;sleep",1)
         -- send("sleep");
     end)
     
@@ -74,6 +74,11 @@ add_alias("lg", function(p)
     function()
         execs("drink;eat mantou;dazuo 20",5)
     end)
+
+    addtrigger(id5,"^你现在精不够.*",function()
+        execs("yun regenerate;dazuo 20",1)
+    end)
+    
         
 end)
 
@@ -116,6 +121,8 @@ add_alias("xx", function(p)
     local xx3=false
     local xx4=false
     local xx5=false
+    local food=myvar["food"]
+    local lian=myvar["lian"]
 
     local tlist={
 -- 'literate',
@@ -203,9 +210,6 @@ add_alias("xx", function(p)
             xx3=false
             xx2=false
             xx4=false
-        -- close_trigger(id3)
-        -- open_trigger(id2)
-        -- close_trigger(id4)
         print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< wake")
         xue_xi_worker()
     end
@@ -218,17 +222,11 @@ add_alias("xx", function(p)
             xx1=false
             xx2=false
             xx4=false
-        -- close_trigger(id4)
-        -- send("get all")
-        execs("eat mantou;drink;lian dodge 50",3)
+        execs("eat "..food..";drink;yun regenerate",3)
         add_timer(10,function()
             xx4=true
             xx3=true
-            -- open_trigger(id4)
-            -- open_trigger(id3)
             xue_xi_worker(50)
-            -- print("<<<<<<<<<<<<<<<<<< sleep again")
-            -- send("sleep")
         end,uuid())
     end
     end)
@@ -337,7 +335,141 @@ add_alias("shediao", function(p)
         end
     end,"shediao_timeout")
     
-    addtrigger(id1,"^(你已经很累了|你现在过于疲倦).*",--，无法专心下来研读新知。
+    addtrigger(id1,"^(你今天太累了|你已经很累了|你现在过于疲倦).*",--，无法专心下来研读新知。
+    function()
+        if time_out then
+            return
+        end
+        if yungong then
+            yungong=false
+            dushu=true
+            shuijiao=true
+            print("<<<<<<<<<<<<<<<<<<  yungong.")
+            add_timer(3, function()
+                if shuijiao then
+                    shuijiao_worker()
+                end
+            end,uuid())
+            watch_dog=false
+            execs("yun regenerate")
+        end
+    end)
+
+    addtrigger(id2,
+    "^你略一凝神，精神看起来好多了。",
+    function()
+        if dushu then
+        print(">>>>>>> dushu")
+        dushu_worker()
+    end
+    end)
+    
+    addtrigger(id3,
+    "^(你一觉醒来|你刚刚睡过一觉).*",--，精神抖擞地活动了几下手脚。",
+    function()
+        dushu=true
+        print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< wake")
+        dushu_worker()
+    end)
+    
+end)
+
+add_alias("xx2", function(p)
+    local id1="xx1"
+    local id2="xx2"
+    local id3="xx3"
+    local id4="xx4"
+    local id5="xx5"
+
+   local time_lenth=p[-1]
+    if type(time_lenth)=="string" then
+        time_lenth=tonumber(time_lenth)
+    end
+   print(">>>>>>>>> time_lenth = "..tostring(time_lenth))
+    
+    local dushu=true
+    local yungong=false
+    local shuijiao=false
+    local time_out=false
+
+    local food=myvar["food"]
+    local lian=myvar["lian"]
+    local book=myvar["book"]
+    local shifu=myvar["shifu"]
+    -- local xuecmd=myvar["xuecmd"]
+
+    food=food or "mantou"
+    lian=lian or "dodge"
+    book=book or "huntian-qigong"
+    shifu=shifu or "shifu"
+
+    function dushu_worker()
+        if time_out then
+            return
+        end
+        if dushu then
+            dushu=false
+            yungong=true
+            shuijiao=false
+            --------------
+            watch_dog=false
+            send("xue "..shifu.." for "..book.." 50")
+        end
+    end
+
+    function shuijiao_worker()
+        if time_out then
+            return
+        end
+        dushu=false
+        yungong=false
+        shuijiao=false
+        --------------
+        watch_dog=false
+        execs("drink;eat "..food..";lian "..lian.." 50;lian "..lian.." 50;sleep",1)
+    end
+
+
+    local watch_dog=true
+    local watch_dog_cnt=0
+
+    function watch_dog_reset()
+        if time_out then
+            return
+        end
+        watch_dog_cnt=watch_dog_cnt+1
+        if watch_dog_cnt % 10 == 0 then
+            send("save")
+        end
+        print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< watch_dog reset.")
+        watch_dog=true
+        add_timer(60,function()
+            if watch_dog then
+                dushu=true
+                print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< watch_dog triggered")
+                dushu_worker()
+            end
+            watch_dog_reset()
+        end,"shediao_watchdog")
+    end
+
+    watch_dog_reset()
+    dushu_worker()
+    
+    add_timer(time_lenth,function()
+        time_out=true
+        print(">>>>>>> deltrigger TIME UP.")
+        deltrigger(id2)
+        deltrigger(id1)
+        deltrigger(id3)
+        if myvar["quit"]=="yes" then
+            execs(";;;;;save;quit",10)
+        else
+            execs("jump;jump;jump;jump;jump;jump;save",10)
+        end
+    end,"shediao_timeout")
+    
+    addtrigger(id1,"^(你今天太累了|你已经很累了|你现在过于疲倦).*",--，无法专心下来研读新知。
     function()
         if time_out then
             return

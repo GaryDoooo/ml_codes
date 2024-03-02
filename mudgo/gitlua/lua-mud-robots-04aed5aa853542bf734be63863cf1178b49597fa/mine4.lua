@@ -204,7 +204,7 @@ end
 
 -- 黄河渡口 -
 add_alias("yz_bj",function()
-    stages={
+    local stages={
        [1]={
        end_trigger="^黄河渡口 -",
        func=function()
@@ -233,7 +233,7 @@ add_alias("yz_bj",function()
 end)
 
 add_alias("bj_yz",function()
-    stages={
+    local stages={
        [1]={
        end_trigger="^你顺利到达了终点。",
        -- end_trigger="^黄河渡口 -",
@@ -261,3 +261,4 @@ add_alias("bj_yz",function()
    }
    run_stages(stages)
 end)
+

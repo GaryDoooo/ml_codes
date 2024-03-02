@@ -26,13 +26,14 @@ add_alias("lg", function(p)
     local id3="lg3"
     local id4="lg4"
     local id5="lg5"
+    local cnt=0
 
    local time_lenth=p[-1]
     if type(time_lenth)=="string" then
         time_lenth=tonumber(time_lenth)
     end
     
-    print(">>>>>>> dazuo 20")
+    print(">>>>>>> dazuo 320")
     send("dazuo 320")
     
     add_timer(time_lenth,function()
@@ -48,7 +49,7 @@ add_alias("lg", function(p)
     addtrigger(id1,
     "你运功完毕，深深吸了口气，站了起来。",
     function()
-        print(">>>>>>> dazuo 20")
+        print(">>>>>>> dazuo ")
         send("dazuo 20")
     end)
     
@@ -56,6 +57,10 @@ add_alias("lg", function(p)
     "你现在的气太少了，无法产生内息运行全身经脉。",
     function()
         print(">>>>>>> sleep")
+        cnt=cnt+1
+        if cnt%30==0 then
+            send("save")
+        end
         execs(";drink;eat mantou;sleep",1)
         -- send("sleep");
     end)
@@ -64,8 +69,8 @@ add_alias("lg", function(p)
     "你一觉醒来，精神抖擞地活动了几下手脚。",
     function()
         print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< wake")
-        print(">>>>>>> dazuo 320")
-        send("dazuo 320")
+        print(">>>>>>> dazuo 500")
+        send("dazuo 500")
 
     end)
     
@@ -508,3 +513,91 @@ add_alias("xx2", function(p)
     
 end)
 
+add_alias("tn", function(p)
+    local id1="lg1"
+    local id2="lg2"
+    local id3="lg3"
+    local id4="lg4"
+    local id5="lg5"
+    local cnt=0
+    local shuijiao=false
+
+   local time_lenth=p[-1]
+    if type(time_lenth)=="string" then
+        time_lenth=tonumber(time_lenth)
+    end
+    
+    print(">>>>>>> tuna 200")
+    send("tuna 200")
+    
+    add_timer(time_lenth,function()
+        print(">>>>>>> deltrigger TIME UP.")
+        deltrigger(id1)
+        deltrigger(id2)
+        deltrigger(id3)
+        deltrigger(id4)
+        deltrigger(id5)
+        execs("jump;jump;jump;jump",20)
+    end,uuid())
+    
+    addtrigger(id1,
+    "^你吐纳完毕，睁开双眼.*",
+    function()
+        print(">>>>>>> yun and tu ")
+            add_timer(3, function()
+                if shuijiao then
+                    shuijiao=false
+                    send("sleep")
+                end
+            end,uuid())
+           shuijiao=true
+           send("yun regenerate")
+        -- execs("yun regenerate;tuna 200",2)
+        -- send("da")
+    end)
+    
+    -- addtrigger(id2,
+    -- "你现在的气太少了，无法产生内息运行全身经脉。",
+    -- function()
+    --     print(">>>>>>> sleep")
+    --     cnt=cnt+1
+    --     if cnt%30==0 then
+    --         send("save")
+    --     end
+    --     execs(";drink;eat mantou;sleep",1)
+    --     -- send("sleep");
+    -- end)
+    
+    addtrigger(id3,
+    "你一觉醒来，精神抖擞地活动了几下手脚。",
+    function()
+        print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< wake")
+        print(">>>>>>> tu")
+        send("tuna 200")
+
+    end)
+    
+    addtrigger(id4,
+    "你刚刚睡过一觉, 多睡对身体有害无益!",
+    function()
+        execs("drink;eat mantou;tuna 20",5)
+    end)
+    
+    local cnt=0
+
+    addtrigger(id5,"^你略一凝神.*",function()
+        shuijiao=false
+        cnt=cnt+1
+        if cnt%100==0 then
+            execs("save;tuna 200",1)
+        else
+            if cnt%7==0 then
+                execs("drink;eat mantou;tuna 200",2)
+            else
+                send("tuna 200")
+            end
+        end
+        -- execs("yun regenerate;dazuo 20",1)
+    end)
+        
+end)

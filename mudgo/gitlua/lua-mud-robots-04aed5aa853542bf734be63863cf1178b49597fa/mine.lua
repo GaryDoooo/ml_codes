@@ -33,8 +33,8 @@ add_alias("lg", function(p)
         time_lenth=tonumber(time_lenth)
     end
     
-    print(">>>>>>> dazuo 320")
-    send("dazuo 320")
+    print(">>>>>>> dazuo 600")
+    send("dazuo 600")
     
     add_timer(time_lenth,function()
         print(">>>>>>> deltrigger TIME UP.")
@@ -69,8 +69,8 @@ add_alias("lg", function(p)
     "你一觉醒来，精神抖擞地活动了几下手脚。",
     function()
         print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< wake")
-        print(">>>>>>> dazuo 500")
-        send("dazuo 500")
+        print(">>>>>>> dazuo 600")
+        send("dazuo 600")
 
     end)
     
@@ -527,8 +527,8 @@ add_alias("tn", function(p)
         time_lenth=tonumber(time_lenth)
     end
     
-    print(">>>>>>> tuna 200")
-    send("tuna 200")
+    print(">>>>>>> tuna 300")
+    send("tuna 300")
     
     add_timer(time_lenth,function()
         print(">>>>>>> deltrigger TIME UP.")
@@ -573,7 +573,7 @@ add_alias("tn", function(p)
     function()
         print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< wake")
         print(">>>>>>> tu")
-        send("tuna 200")
+        send("tuna 300")
 
     end)
     

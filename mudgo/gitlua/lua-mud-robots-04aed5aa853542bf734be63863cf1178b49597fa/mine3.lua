@@ -178,3 +178,31 @@ add_alias("paqiang", function(p)
     do_and_sleep(cmds,time_lenth)
 end)
 
+add_alias("pdiao", function(p)
+    local id1="lg1"
+
+   local time_lenth=p[-1]
+    if type(time_lenth)=="string" then
+        time_lenth=tonumber(time_lenth)
+    end 
+    
+    add_timer(time_lenth,function()
+        print(">>>>>>> deltrigger TIME UP.")
+        deltrigger(id1)
+        add_timer(30,function()
+            send("jump")
+        end,uuid())
+    end,uuid())
+   
+
+    addtrigger(id1,
+    -- "你运功完毕，深深吸了口气，站了起来。",
+    "你凭吊完毕,站起身来",
+    -- .*，似乎有点心得。$",
+    function()
+        execs(";pingdiao",1)
+    end)
+    send("pingdiao")
+
+end)
+

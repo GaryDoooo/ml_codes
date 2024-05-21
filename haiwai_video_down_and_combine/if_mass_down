@@ -14,10 +14,12 @@ url=inp.split(' ')[0].replace('\'','').replace(' ','')
 s=' '.join(inp.split(' ')[1:])
 print("get url:",url)
 print("get episodes selections:",s)
+
 with sync_playwright() as p:
-    browser = p.chromium.launch()
+    browser = p.webkit.launch()
     page = browser.new_page()
-    page.goto(url)
+    page.goto(url,
+              wait_until="networkidle", timeout=10000)
     #  ua = page.query_selector("01")
     atxt = page.eval_on_selector_all(
         "a", "elements => elements.map(element => element.text)")
@@ -28,12 +30,14 @@ with sync_playwright() as p:
         if "?id=" not in aurl[i]:
             continue
         try:
+            #  print(atxt[i], aurl[i])
             e = int(atxt[i].replace(' ', ''))
             #  print(e, aurl[i])
             links.add((e, aurl[i]))
         except BaseException:
             pass
     #  print(ua)
+    #  print(links)
     print("Found these episodes links:\n")
     links = sorted(list(links), key=lambda x: x[0])
     #  print(links)
@@ -44,10 +48,12 @@ with sync_playwright() as p:
 # s = input("Select episodes(e.g. 1,2,5-9 10 11):\n")
 picked = set()
 sl = re.split(r'; |, |\*|\n|,|;|\ ', s)
+#  print(sl)
 for i in sl:
     try:
         if '-' in i:
             [a, b] = list(map(int, i.split('-')))
+            print(a, b)
             if (a > b):
                 a, b = b, a
             for j in range(a, b + 1):
@@ -58,10 +64,11 @@ for i in sl:
         print("Invalid episode", i)
         pass
 
-print("Download")
 for i in links:
     if i[0] in picked:
-        print( i[0], i[1])
+        print("Download", i[0], i[1])
+
+
 END
 }
 
@@ -69,8 +76,9 @@ END
 # in a list of link" "filename
 str="$*"
 pyout=$(geturl "$str")
+echo $pyout
 echo "Input: "$str
-linkpairs=$(echo $pyout | sed 's/^.*Download//g' | sed 's/Download//g')
+linkpairs=$(echo $pyout | sed 's/^.*DOWNLOAD//g' | sed 's/Download//g')
 echo "To be downloaded link pairs: "$linkpairs
 linklist=$(echo $linkpairs | xargs -n2 bash -c 'echo $1')
 filelist=$(echo $linkpairs | xargs -n2 bash -c 'echo $0')
@@ -79,7 +87,7 @@ linkpairs=$(echo $linkpairs \
 # using python print or echo neither can print new lines clearly
 # printf in bash works better
 echo $linkpairs
-# exit 0
+exit 0
 
 for i in {1..100}
 do

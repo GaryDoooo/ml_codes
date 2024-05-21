@@ -35,6 +35,7 @@ print(len(table_divs))
 for i in range(len(table_divs)):
     #  td_class = _.get_content()
     content = table_divs[i].get_attribute('innerHTML')
+    print(content)
     if "Advancing" in content:
         advancing = table_divs[i + 1].get_attribute('innerHTML')
         print(advancing)

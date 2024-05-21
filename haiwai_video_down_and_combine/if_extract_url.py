@@ -1,11 +1,13 @@
 import sys
 import re
 from playwright.sync_api import sync_playwright
+
 url = sys.argv[1]
 with sync_playwright() as p:
-    browser = p.chromium.launch()
+    browser = p.webkit.launch()
     page = browser.new_page()
-    page.goto(url)
+    page.goto(url,
+              wait_until="networkidle", timeout=10000)
     #  ua = page.query_selector("01")
     atxt = page.eval_on_selector_all(
         "a", "elements => elements.map(element => element.text)")
@@ -16,12 +18,14 @@ with sync_playwright() as p:
         if "?id=" not in aurl[i]:
             continue
         try:
+            #  print(atxt[i], aurl[i])
             e = int(atxt[i].replace(' ', ''))
             #  print(e, aurl[i])
             links.add((e, aurl[i]))
         except BaseException:
             pass
     #  print(ua)
+    #  print(links)
     print("Found these episodes links:\n")
     links = sorted(list(links), key=lambda x: x[0])
     #  print(links)

@@ -1,0 +1,10 @@
+#!/bin/bash
+
+echo "Total "$#" Parameters."
+
+for var in "$@"
+do
+        echo "$var"
+done
+echo "One parameter per line."
+echo " "

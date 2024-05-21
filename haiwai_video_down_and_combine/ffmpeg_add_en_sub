@@ -1,0 +1,92 @@
+#!/bin/bash
+
+if [ $# -eq 0 ]; then
+    echo " "
+    echo "Usage: ffmpeg_add_en_sub XXX.mp4"
+    echo "       It will convert XXX.mp4 and search for XXX.srt or XXX.ass."
+    echo " "
+    echo "Also Usage: ffmpeg_add_en_sub XXX.mp4 XXXxxx.srt for different filenames."
+    echo " "
+    echo "Also Usage: ffmpeg_add_en_sub XXX.mp4 10 to delay subtitle for 10 seconds."
+    echo " "
+    echo "Also Usage: ffmpeg_add_en_sub XXX.mp4 XXXxxx.srt 10 to delay subtitle for 10 seconds and different filenames."
+    echo " "
+    exit 0
+fi
+
+if [ $# -eq 1 ]; then
+    video_file=$1
+    echo "Got video filenames: "$video_file
+    video_file_no_extension=$(echo $video_file | grep -Po '.*(?=\.)' )
+    echo "Got video file without extension: "$video_file_no_extension
+    echo "Search for "$video_file_no_extension".srt"
+    subtitle_file=$video_file_no_extension".srt"
+    if [ -f $subtitle_file ]; then
+        echo "Found subtitle_file: "$subtitle_file
+    else
+        echo "Search for "$video_file_no_extension".ass"
+        subtitle_file=$video_file_no_extension".ass"
+        if ! [ -f $subtitle_file ]; then
+            echo "Can't find subtitle files."
+            exit 1
+        fi
+        echo "Found subtitle: "$subtitle_file
+    fi
+fi
+
+time_offset="0"
+
+if [ $# -eq 2 ]; then
+    video_file=$1
+    echo "Got video filenames: "$video_file
+    if grep -q "s" <<< "$2" ; then
+        echo "Got subtitle file: "$2
+        subtitle_file=$2
+    else
+        time_offset=$2
+        echo "Change offset to "$time_offset
+    video_file_no_extension=$(echo $video_file | grep -Po '.*(?=\.)' )
+    echo "Got video file without extension: "$video_file_no_extension
+    echo "Search for "$video_file_no_extension".srt"
+    subtitle_file=$video_file_no_extension".srt"
+    if [ -f $subtitle_file ]; then
+        echo "Found subtitle_file: "$subtitle_file
+    else
+        echo "Search for "$video_file_no_extension".ass"
+        subtitle_file=$video_file_no_extension".ass"
+        if ! [ -f $subtitle_file ]; then
+            echo "Can't find subtitle files."
+            exit 1
+        fi
+        echo "Found subtitle: "$subtitle_file
+    fi
+    fi
+fi
+
+if [ $# -eq 3 ]; then
+    video_file=$1
+    echo "Got video filenames: "$video_file
+        echo "Got subtitle file: "$2
+        subtitle_file=$2
+        time_offset=$3
+        echo "Change offset to "$time_offset
+fi
+
+video_file_no_extension=$(echo $video_file | grep -Po '.*(?=\.)' )
+outfile="sub_"$video_file_no_extension".mp4"
+
+while [ -f $outfile ]; do
+    outfile="_"$outfile
+done
+
+
+new_subtitle_file=$subtitle_file".srt"
+
+ffmpeg -i $subtitle_file -c:s text $new_subtitle_file
+
+# ffmpeg -itsoffset $time_offset -i $video_file -threads 0 -i $new_subtitle_file -vf "subtitles=$new_subtitle_file:force_style='FontSize=18,FontName=PingFang SC,MarginV=45'" -map 0:v -map 0:a -map 1:s -f matroska - | ffmpeg -i - -vcodec libx264 -acodec aac $outfile
+
+ffmpeg -itsoffset $time_offset -i $video_file -threads 0 -vf "subtitles=$new_subtitle_file:force_style='FontSize=18,FontName=PingFang SC,MarginV=45'" -vcodec libx264 -acodec aac $outfile
+
+rm $new_subtitle_file
+

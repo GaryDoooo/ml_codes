@@ -1,0 +1,4 @@
+prog "File Manager" file-manager.png pcmanfm
+prog "Web Browser" firefox_16x16.png /usr/bin/firefox
+prog "Terminal" terminal.png crxvt-gb -fn "xft:Bitstream Vera Sans Mono:pixelsize=15"
+prog "Chrome" web-browser.png chromium-browser

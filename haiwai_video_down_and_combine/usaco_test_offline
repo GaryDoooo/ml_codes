@@ -1,0 +1,69 @@
+#!/bin/bash
+
+cd $PWD
+if [ $# -eq 1 ]; then
+        if [[ "$1" == *.cpp ]]; then
+                filename=$1
+        else
+                filename=$1".cpp"
+        fi
+        touch $filename
+        ln -sf $filename g
+fi
+
+workingFile=$(ls -l g | awk '{print $NF}')
+
+GREEN=$(tput setaf 2)
+RED=$(tput setaf 1)
+NC=$(tput sgr0)
+
+flags="-D__ALGORITHM__=OBLKIO_OPT -D__AUTO__ \
+    -O3 -std=c++14 -m64 \
+    -ffast-math -fassociative-math \
+    -ftree-vectorize -ftree-vectorizer-verbose=0 \
+    -fopenmp -fopenmp-simd \
+    -march=broadwell -Wall
+"
+g++ $flags -std=c++11 -o __a.out $workingFile && \
+        echo $GREEN"Compiled successfully."$NC >> /dev/stderr 
+#        && time ./__a.out
+
+# echo $RED"Use Input File: "$input$NC >> /dev/stderr
+# cat $input | g $workingFile
+
+# time_max=0
+if [ -f "I.1" ]; then
+      # echo "File does not exist."
+    for f_in in I.*; do
+        f_out=$(echo $f_in | sed 's/I/O/g')
+    #	command="res=$(cat $f_in | ./__a.out | diff - $f_out | wc -l)"
+        diff_res=$(diff <(cat $f_in | ./__a.out | grep -v -e '^$') <(cat $f_out | grep -v -e '^$') )
+        res=$(echo $diff_res | grep -v -e '^$' | wc -l)
+    #	echo $diff_res
+    #	EXECTIME=$({ TIMEFORMAT=%E; time $command | ./__a.out >log.out 2>log.err; } 2>&1)
+        EXECTIME=$({ TIMEFORMAT=%E; time cat $f_in | ./__a.out >/dev/null 2>/dev/null; } 2>&1)
+    #	if [[ $EXECTIME -gt $time_max ]]; then
+    #		time_max=$EXECTIME
+    #	fi
+        if [[ $res -eq 0 ]]; then
+    #	echo "Use input "$f_in" output "$f_out" "$GREEN"AC"$NC >> /dev/stderr
+        echo "Use input "$f_in" output "$f_out" "$GREEN"AC"$NC" time:"$EXECTIME >> /dev/stderr
+        else
+    #	echo "Use input "$f_in" output "$f_out" "$RED"WA"$NC >> /dev/stderr
+        echo "Use input "$f_in" output "$f_out" "$RED"WA"$NC" time:"$EXECTIME >> /dev/stderr
+        fi
+    done
+#echo "Longest run time: "$time_max"s"
+elif [ -f "1.out" ]; then
+    for f_in in *.in; do
+        f_out=$(echo $f_in | sed 's/in/out/g')
+        diff_res=$(diff <(cat $f_in | ./__a.out | grep -v -e '^$') <(cat $f_out | grep -v -e '^$') )
+        res=$(echo $diff_res | grep -v -e '^$' | wc -l)
+        EXECTIME=$({ TIMEFORMAT=%E; time cat $f_in | ./__a.out >/dev/null 2>/dev/null; } 2>&1)
+        if [[ $res -eq 0 ]]; then
+        echo "Use input "$f_in" output "$f_out" "$GREEN"AC"$NC" time:"$EXECTIME >> /dev/stderr
+        else
+        echo "Use input "$f_in" output "$f_out" "$RED"WA"$NC" time:"$EXECTIME >> /dev/stderr
+        fi
+    done
+fi 

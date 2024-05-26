@@ -31,9 +31,9 @@ async def main(linkURL):
         await page.wait_for_selector("video[id='video_player']")
         await browser.close()
 
-# asyncio.run(main(environ.get("TESTARG")))
+asyncio.run(main(environ.get("TESTARG")))
 
-main_sync(environ.get("TESTARG"))
+#main_sync(environ.get("TESTARG"))
 
 END
 }

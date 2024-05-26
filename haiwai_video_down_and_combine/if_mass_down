@@ -64,6 +64,8 @@ for i in sl:
         print("Invalid episode", i)
         pass
 
+print("\nDOWNLOAD\n")
+
 for i in links:
     if i[0] in picked:
         print("Download", i[0], i[1])
@@ -86,8 +88,9 @@ linkpairs=$(echo $linkpairs \
     | xargs -n2 printf "%s.mp4 %s\n")
 # using python print or echo neither can print new lines clearly
 # printf in bash works better
+echo " "
 echo $linkpairs
-exit 0
+#exit 0
 
 for i in {1..100}
 do

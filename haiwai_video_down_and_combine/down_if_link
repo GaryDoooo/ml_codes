@@ -9,7 +9,7 @@ from os import environ
 
 def main_sync(linkURL):
     with sync_playwright() as playwright:
-        browser = playwright.webkit.launch()
+        browser = playwright.firefox.launch()
         page = browser.new_page()
         page.on("request", lambda request: print("Request: " + request.url))
         page.on(
@@ -17,14 +17,15 @@ def main_sync(linkURL):
             lambda response: print(
                 "Response: " +
                 response.request.url))
-        page.goto(linkURL)
+        page.goto(linkURL,timeout=130000)
+        page.wait_for_selector("video[id='video_player']",timeout=60000)
         # page.goto("https://www.iyf.tv/play/SXCR45KNqi2")
         browser.close()
 
 
 async def main(linkURL):
     async with async_playwright() as p:
-        browser = await p.webkit.launch()
+        browser = await p.chromium.launch()
         page = await browser.new_page()
         page.on("request", lambda request: print("Request: " + request.url))
         await page.goto(linkURL, wait_until="networkidle", timeout=10000)
@@ -33,7 +34,7 @@ async def main(linkURL):
 
 asyncio.run(main(environ.get("TESTARG")))
 
-#main_sync(environ.get("TESTARG"))
+main_sync(environ.get("TESTARG"))
 
 END
 }

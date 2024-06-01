@@ -1,8 +1,8 @@
 
 from playwright.sync_api import sync_playwright
-from playwright.async_api import async_playwright
-import asyncio
-from os import environ
+#  from playwright.async_api import async_playwright
+#  import asyncio
+#  from os import environ
 
 with sync_playwright() as playwright:
     browser = playwright.webkit.launch()
@@ -16,6 +16,11 @@ with sync_playwright() as playwright:
     #  page.setDefaultTimeout(10000)
     #  page.setDefaultNavigationTimeout(30000)
     page.goto("https://www.iyf.tv/play/SXCR45KNqi2")
+    try:
+        ua = page.locator("video_player")
+        print(ua.get_attribute('src'))
+    except BaseException:
+        print(page.content())
     #  page.goto("https://www.iyf.tv/e072adb3-21cb-4db8-8101-e8681aa63507")
     #  page.goto("https://www.iyf.tv/1f313ff6-9ad4-4205-bab4-6d78c9185c6c")
     browser.close()

@@ -1,0 +1,60 @@
+#!/bin/bash
+
+function geturl {
+	TESTARG=$1 python3 - <<END
+from playwright.async_api import async_playwright
+from playwright.sync_api import sync_playwright
+import asyncio
+from os import environ
+
+def main_sync(linkURL):
+    with sync_playwright() as playwright:
+        browser = playwright.firefox.launch()
+        page = browser.new_page()
+        page.on("request", lambda request: print("Request: " + request.url))
+        page.on(
+            "response",
+            lambda response: print(
+                "Response: " +
+                response.request.url))
+        page.goto(linkURL,timeout=130000)
+        page.wait_for_selector("video[id='video_player']",timeout=60000)
+        # page.goto("https://www.iyf.tv/play/SXCR45KNqi2")
+        browser.close()
+
+
+async def main(linkURL):
+    async with async_playwright() as p:
+        browser = await p.chromium.launch()
+        page = await browser.new_page()
+        page.on("request", lambda request: print("Request: " + request.url))
+        await page.goto(linkURL, wait_until="networkidle", timeout=10000)
+        await page.wait_for_selector("video[id='video_player']")
+        await browser.close()
+
+asyncio.run(main(environ.get("TESTARG")))
+
+main_sync(environ.get("TESTARG"))
+
+END
+}
+linkpairs=$(geturl $1)
+echo "$linkpairs" | grep m3u8
+# exit 0
+
+# linklist=$(echo $linkpairs | xargs -n2 bash -c 'echo $0')
+m3u8link=$(echo $linkpairs | xargs -n1 | grep list.m3u8) # | xargs -n2 bash -c 'echo $1')
+m3u8link=$(echo $m3u8link | xargs -n1 | head -n1)
+if [ "$#" -eq 1 ]; then
+        randstring=$(date '+%Y-%m-%d-%H_%M_%S')
+        filename=$randstring".mp4"
+ else
+        filename=$2
+fi
+echo "Downloading link"
+echo $m3u8link
+echo $filename
+echo "====== Downloading with ffmpeg directly======"
+ffmpeg -i $m3u8link -c copy -bsf:a aac_adtstoasc $filename
+
+

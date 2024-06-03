@@ -1,40 +1,73 @@
 #!/bin/bash
 
 function geturl {
-	TESTARG=$1 python3 - <<END
-from playwright.async_api import async_playwright
-from playwright.sync_api import sync_playwright
-import asyncio
+	TESTARG=$1 xvfb-run python3 - <<END
+import re
+from playwright.sync_api import expect
+from time import sleep
+from playwright.sync_api import sync_playwright, Playwright
 from os import environ
 
-def main_sync(linkURL):
-    with sync_playwright() as playwright:
-        browser = playwright.firefox.launch()
-        page = browser.new_page()
-        page.on("request", lambda request: print("Request: " + request.url))
-        page.on(
-            "response",
-            lambda response: print(
-                "Response: " +
-                response.request.url))
-        page.goto(linkURL,timeout=130000)
-        page.wait_for_selector("video[id='video_player']",timeout=60000)
-        # page.goto("https://www.iyf.tv/play/SXCR45KNqi2")
-        browser.close()
+
+def run(playwright: Playwright, url):
+    #  iphone_13 = playwright.devices['iPhone 13']
+    browser = playwright.webkit.launch(headless=False)
+    context = browser.new_context(
+        #  **iphone_13,
+        locale='zh-CN'
+    )
+    page = context.new_page()
+    page.goto(url)
+    #  page.goto("https://www.iyf.tv/play/yYltcSemxw4?id=AYwLjKAcVK5")
+    sleep(2)
+    expect(page).to_have_title(re.compile("爱壹帆"))
+    video = page.locator('#video_player')
+    #  locator = page.get_by_role('video')
+    #  expect(video).to_have_id('video_player')
+    print(page.title())
+    print(video.all_inner_texts())
+    print(video.all_text_contents())
+    print(video.evaluate("el => el.outerHTML"))
+    browser.close()
 
 
-async def main(linkURL):
-    async with async_playwright() as p:
-        browser = await p.chromium.launch()
-        page = await browser.new_page()
-        page.on("request", lambda request: print("Request: " + request.url))
-        await page.goto(linkURL, wait_until="networkidle", timeout=10000)
-        await page.wait_for_selector("video[id='video_player']")
-        await browser.close()
-
-asyncio.run(main(environ.get("TESTARG")))
-
-main_sync(environ.get("TESTARG"))
+with sync_playwright() as playwright:
+    run(playwright, environ.get("TESTARG"))
+#
+###### OLD NOT WORKING
+# from playwright.async_api import async_playwright
+# from playwright.sync_api import sync_playwright
+# import asyncio
+# from os import environ
+#
+# def main_sync(linkURL):
+#     with sync_playwright() as playwright:
+#         browser = playwright.firefox.launch()
+#         page = browser.new_page()
+#         page.on("request", lambda request: print("Request: " + request.url))
+#         page.on(
+#             "response",
+#             lambda response: print(
+#                 "Response: " +
+#                 response.request.url))
+#         page.goto(linkURL,timeout=130000)
+#         page.wait_for_selector("video[id='video_player']",timeout=60000)
+#         # page.goto("https://www.iyf.tv/play/SXCR45KNqi2")
+#         browser.close()
+#
+#
+# async def main(linkURL):
+#     async with async_playwright() as p:
+#         browser = await p.chromium.launch()
+#         page = await browser.new_page()
+#         page.on("request", lambda request: print("Request: " + request.url))
+#         await page.goto(linkURL, wait_until="networkidle", timeout=10000)
+#         await page.wait_for_selector("video[id='video_player']")
+#         await browser.close()
+#
+# asyncio.run(main(environ.get("TESTARG")))
+#
+# main_sync(environ.get("TESTARG"))
 
 END
 }
@@ -43,8 +76,8 @@ echo "$linkpairs" | grep m3u8
 # exit 0
 
 # linklist=$(echo $linkpairs | xargs -n2 bash -c 'echo $0')
-m3u8link=$(echo $linkpairs | xargs -n1 | grep list.m3u8) # | xargs -n2 bash -c 'echo $1')
-m3u8link=$(echo $m3u8link | xargs -n1 | head -n1)
+m3u8link=$(echo $linkpairs | xargs -d '"' -n1 | grep m3u8 | sed 's/amp;//g') # | xargs -n2 bash -c 'echo $1')
+# m3u8link=$(echo $m3u8link | xargs -n1 | head -n1)
 if [ "$#" -eq 1 ]; then
         randstring=$(date '+%Y-%m-%d-%H_%M_%S')
         filename=$randstring".mp4"
@@ -55,6 +88,7 @@ echo "Downloading link"
 echo $m3u8link
 echo $filename
 echo "====== Downloading with ffmpeg directly======"
+# exit 0
 ffmpeg -i $m3u8link -c copy -bsf:a aac_adtstoasc $filename
 
 

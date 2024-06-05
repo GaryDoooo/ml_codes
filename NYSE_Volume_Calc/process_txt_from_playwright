@@ -9,7 +9,7 @@ url='https://www.wsj.com/market-data/stocks'
 
 export TESTARG="$url"
 
-if res=$(python3 ./print_page2txt.py ); then 
+if res=$(xvfb-run python3 ./print_page2txt.py ); then 
     echo "Ran playwright locally."
 else
     cmd='export TESTARG='"$url"' && cd /home/du/code && python3 /home/du/code/print_page2txt.py '

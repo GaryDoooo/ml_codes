@@ -1,145 +1,237 @@
-139
-<a href="https://www.wsj.com/market-data/quotes/index/US/Dow Jones Global/DJIA?mod=md_usstk_overview_quote">DJIA</a>
-38521.36
-141.24
-0.37
-<a href="https://www.wsj.com/market-data/quotes/index/US/XNAS/COMP?mod=md_usstk_overview_quote">Nasdaq Composite</a>
-15609.00
-11.32
-0.07
-<a href="https://www.wsj.com/market-data/quotes/index/US/S&amp;P US/SPX?mod=md_usstk_overview_quote">S&amp;P 500</a>
-4954.23
-11.42
-0.23
-<a href="https://www.wsj.com/market-data/quotes/index/US/Dow Jones Wilshire/DWCF?mod=md_usstk_overview_quote">DJ Total Stock Market</a>
-49273.23
-157.01
-0.32
-<a href="https://www.wsj.com/market-data/quotes/index/US/RUT?mod=md_usstk_overview_quote">Russell 2000</a>
-1953.63
-16.39
-0.85
-<a href="https://www.wsj.com/market-data/quotes/index/US/ARCX/NYA?mod=md_usstk_overview_quote">NYSE Composite</a>
-17135.48
-130.70
-0.77
-<a href="https://www.wsj.com/market-data/quotes/index/US/ARCX/B400?mod=md_usstk_overview_quote">Barron's 400</a>
-1063.34
-0.03
-0.00
-<a href="https://www.wsj.com/market-data/quotes/index/US/CBSX/VIX?mod=md_usstk_overview_quote">CBOE Volatility</a>
-13.06
--0.61
--4.46
-<a href="https://www.wsj.com/market-data/quotes/futures/YM00?mod=md_usstk_overview_quote">DJIA Futures</a>
-38584
-118
-0.31
-<a href="https://www.wsj.com/market-data/quotes/futures/ES00?mod=md_usstk_overview_quote">S&amp;P 500 Futures</a>
-4972.25
-10.25
-0.21
-Advancing
-2,043
-2,043
-2,783
-Declining
-809
-809
-1,468
-Unchanged
-59
-174
-Total
-2,911
-4,425
-New Highs
-92
-114
-New Lows
-41
-123
-Total
-4,532,307,328
-4,813,305,521
-Advancing
-3,375,346,142
-3,375,346,142
-3,320,331,689
-Declining
-1,085,094,841
-1,085,094,841
-1,450,926,239
-Unchanged
-71,866,345
-42,047,593
-<a href="https://www.wsj.com/market-data/quotes/US/IMNM?mod=md_usstk_movers_quote">Immunome Inc. (IMNM)</a>
-2.0M
-23.11
-6.23
-36.91
-<a href="https://www.wsj.com/market-data/quotes/US/TENX?mod=md_usstk_movers_quote">Tenax Therapeutics Inc. (TENX)</a>
-9.3M
-11.45
-2.73
-31.31
-<a href="https://www.wsj.com/market-data/quotes/US/PLTR?mod=md_usstk_movers_quote">Palantir Technologies Inc. (PLTR)</a>
-419.9M
-21.87
-5.15
-30.80
-<a href="https://www.wsj.com/market-data/quotes/US/CZOO?mod=md_usstk_movers_quote">Cazoo Group Ltd. (CZOO)</a>
-134.8K
-5.49
-1.06
-23.93
-<a href="https://www.wsj.com/market-data/quotes/US/SWIN?mod=md_usstk_movers_quote">Solowin Holdings (SWIN)</a>
-468.5K
-4.54
-0.82
-22.04
-<a href="https://www.wsj.com/market-data/quotes/US/BRK.B?mod=md_usstk_hilo_quote">Berkshire Hathaway Inc. Cl B</a>
-393.37
-<a href="https://www.wsj.com/market-data/quotes/US/BRK.A?mod=md_usstk_hilo_quote">Berkshire Hathaway Inc. Cl A</a>
-592665.00
-<a href="https://www.wsj.com/market-data/quotes/US/LLY?mod=md_usstk_hilo_quote">Eli Lilly &amp; Co.</a>
-711.88
-<a href="https://www.wsj.com/market-data/quotes/US/TSM?mod=md_usstk_hilo_quote">Taiwan Semiconductor Manufacturing Co. Ltd. ADR</a>
-119.54
-<a href="https://www.wsj.com/market-data/quotes/US/NVO?mod=md_usstk_hilo_quote">Novo Nordisk A/S ADR</a>
-118.60
-<a href="https://www.wsj.com/market-data/quotes/US/BMY?mod=md_usstk_hilo_quote">Bristol Myers Squibb Co.</a>
-47.68
-<a href="https://www.wsj.com/market-data/quotes/US/APD?mod=md_usstk_hilo_quote">Air Products &amp; Chemicals Inc.</a>
-217.03
-<a href="https://www.wsj.com/market-data/quotes/US/NEM?mod=md_usstk_hilo_quote">Newmont Corp.</a>
-33.35
-<a href="https://www.wsj.com/market-data/quotes/US/AEE?mod=md_usstk_hilo_quote">Ameren Corp.</a>
-67.70
-<a href="https://www.wsj.com/market-data/quotes/US/HRL?mod=md_usstk_hilo_quote">Hormel Foods Corp.</a>
-29.76
-<a href="https://www.wsj.com/market-data/quotes/index/US/S&amp;P US/SPX?mod=md_usstk_sp_sectors_quote">S&amp;P 500</a>
-0.23
-<a href="https://www.wsj.com/market-data/quotes/index/XX/S&amp;P US/SP500.50?mod=md_usstk_sp_sectors_quote">Communication Services</a>
--0.21
-<a href="https://www.wsj.com/market-data/quotes/index/XX/S&amp;P US/SP500.25?mod=md_usstk_sp_sectors_quote">Consumer Discretionary</a>
-0.37
-<a href="https://www.wsj.com/market-data/quotes/index/XX/S&amp;P US/SP500.30?mod=md_usstk_sp_sectors_quote">Consumer Staples</a>
-0.23
-<a href="https://www.wsj.com/market-data/quotes/index/XX/S&amp;P US/SP500.10?mod=md_usstk_sp_sectors_quote">Energy</a>
-0.32
-<a href="https://www.wsj.com/market-data/quotes/index/XX/S&amp;P US/SP500.40?mod=md_usstk_sp_sectors_quote">Financials</a>
-0.28
-<a href="https://www.wsj.com/market-data/quotes/index/XX/S&amp;P US/SP500.35?mod=md_usstk_sp_sectors_quote">Health Care</a>
-1.09
-<a href="https://www.wsj.com/market-data/quotes/index/XX/S&amp;P US/SP500.20?mod=md_usstk_sp_sectors_quote">Industrials</a>
-0.89
-<a href="https://www.wsj.com/market-data/quotes/index/XX/S&amp;P US/SP500.45?mod=md_usstk_sp_sectors_quote">Information Technology</a>
--0.48
-<a href="https://www.wsj.com/market-data/quotes/index/XX/S&amp;P US/SP500.15?mod=md_usstk_sp_sectors_quote">Materials</a>
-1.71
-<a href="https://www.wsj.com/market-data/quotes/index/XX/S&amp;P US/SP500.60?mod=md_usstk_sp_sectors_quote">Real Estate</a>
-1.49
-<a href="https://www.wsj.com/market-data/quotes/index/XX/S&amp;P US/SP500.55?mod=md_usstk_sp_sectors_quote">Utilities</a>
-0.31
-34
+Nikkei▼38400.84 
+points with a
+1.12%	Hang Seng▲18444.11 
+points with a
+0.22%	U.S. 10 Yr▼-1/32 Yield
+with a
+4.337%	Crude Oil▼73.14 
+points with a
+0.15%	Yen▲155.25 
+points with a
+0.22%
+The Wall Street JournalMarkets
+SubscribeSign In
+English EditionPrint EditionVideoAudioLatest HeadlinesMore
+Latest
+World
+Business
+U.S.
+Politics
+Economy
+Tech
+Finance
+Opinion
+Arts & Culture
+Lifestyle
+Real Estate
+Personal Finance
+Health
+Style
+Sports
+SEARCH
+U.S. STOCKS
+View All Companies
+	
+U.S.
+EMEA
+Asia
+Stock Indexes
+8:42 PM EDT 6/04/24
+U.S.Americas
+	LAST	CHG	%CHG
+DJIA	38711.29	140.26	0.36
+Nasdaq Composite	16857.05	28.38	0.17
+S&P 500	5291.34	7.94	0.15
+DJ Total Stock Market	52366.56	-3.68	-0.01
+Russell 2000	2033.94	-25.74	-1.25
+NYSE Composite	17934.49	-72.47	-0.40
+Barron's 400	1147.83	0.00	0.00
+CBOE Volatility	13.16	0.05	0.38
+DJIA Futures	38851	64	0.17
+S&P 500 Futures	5311.25	7.25	0.14
+View Stock Indexes Page
+	
+DJIA
+Advanced Charting
+1D5D3MYTD1Y3Y
+$%
+Markets Diary
+4:15 PM EDT 6/04/24
+	NYSE	NASDAQ
+Issues
+Advancing	1,095	1,515
+Declining	1,729	2,783
+Unchanged	66	150
+Total	2,890	4,448
+Issues At
+New Highs	68	55
+New Lows	54	147
+Share Volume
+Total	3,825,631,990	5,113,761,956
+Advancing	1,160,875,542	2,400,183,309
+Declining	2,627,887,421	2,668,581,435
+Unchanged	36,869,027	44,997,212
+Volume updates until 8 p.m.
+View 4 p.m. Closing Diaries page
+Stock Movers
+4:00 PM EDT 6/04/24
+GainersDeclinersActives
+Includes common stocks, ADRs and REITs listed on NYSE, Nasdaq or NYSE American with a prior day close of $2 a share or higher and volume of at least 50,000
+	VOLUME	LAST	CHG	% CHG
+Vast Renewables Ltd. (VSTE)	10.0M	4.49	1.99	79.60
+Core Scientific Inc. (CORZ)	68.8M	6.83	1.96	40.25
+Annexon Inc. (ANNX)	48.3M	5.99	1.41	30.79
+Laird Superfood Inc. (LSF)	935.2K	3.75	0.75	25.00
+TeraWulf Inc. (WULF)	43.2M	2.51	0.46	22.44
+View Full Table
+View Extended-Hours Trading Page
+New 52-Week Highs & Lows
+4:00 PM EDT 6/04/24
+NYSENasdaq
+NEW HIGHS	
+Novo Nordisk A/S ADR	138.28
+Walmart Inc.	65.90
+Coca-Cola Co.	63.76
+Philip Morris International Inc.	103.18
+Unilever PLC ADR	55.26
+NEW LOWS	
+Schlumberger Ltd.	43.81
+Las Vegas Sands Corp.	43.75
+Rockwell Automation Inc.	252.11
+Banco Bradesco S/A Ord ADR	2.18
+Banco Bradesco S/A Pref ADR	2.42
+See all New 52-Week Highs & Lows
+	
+Stocks News
+He Was Ridiculed in 1999 for Predicting Dow 40000. Look Who’s Laughing Now.
+
+05/26/24
+
+The Score: Target, Nvidia, Live Nation and More Stocks That Defined the Week
+
+05/24/24
+
+Citi Isn’t the Only One With a Fat Finger Problem
+
+05/24/24
+
+VIEW MORE
+S&P 500 Sectors
+5:16 PM EDT 6/04/24
+	% CHG
+S&P 500	0.15
+Communication Services	0.33
+Consumer Discretionary	0.17
+Consumer Staples	0.93
+Energy	-0.97
+Financials	-0.44
+Health Care	0.33
+Industrials	-0.23
+Information Technology	0.41
+Materials	-1.22
+Real Estate	0.95
+Utilities	-0.02
+Other U.S. Stocks Data
+Dividends
+Index P/Es & Yields
+WSJ Economic Forecasting Survey
+Upgrades & Downgrades
+	
+NOTES & DATA PROVIDERS
+
+Stocks: Real-time U.S. stock quotes reflect trades reported through Nasdaq only; comprehensive quotes and volume reflect trading in all markets and are delayed at least 15 minutes. International stock quotes are delayed as per exchange requirements. Fundamental company data and analyst estimates provided by FactSet. Copyright 2019© FactSet Research Systems Inc. All rights reserved. Source: FactSet
+
+Indexes: Index quotes may be real-time or delayed as per exchange requirements; refer to time stamps for information on any delays. Source: FactSet
+
+Markets Diary: Data on U.S. Overview page represent trading in all U.S. markets and updates until 8 p.m. See Closing Diaries table for 4 p.m. closing data. Sources: FactSet, Dow Jones
+
+Stock Movers: Gainers, decliners and most actives market activity tables are a combination of NYSE, Nasdaq, NYSE American and NYSE Arca listings. Sources: FactSet, Dow Jones
+
+ETF Movers: Includes ETFs & ETNs with volume of at least 50,000. Sources: FactSet, Dow Jones
+
+Bonds: Bond quotes are updated in real-time. Sources: FactSet, Tullett Prebon
+
+Currencies: Currency quotes are updated in real-time. Sources: FactSet, Tullett Prebon
+
+Commodities & Futures: Futures prices are delayed at least 10 minutes as per exchange requirements. Change value during the period between open outcry settle and the commencement of the next day's trading is calculated as the difference between the last trade and the prior day's settle. Change value during other periods is calculated as the difference between the last trade and the most recent settle. Source: FactSet
+
+Data are provided 'as is' for informational purposes only and are not intended for trading purposes. FactSet (a) does not make any express or implied warranties of any kind regarding the data, including, without limitation, any warranty of merchantability or fitness for a particular purpose or use; and (b) shall not be liable for any errors, incompleteness, interruption or delay, action taken in reliance on any data, or for any damages resulting therefrom. Data may be intentionally delayed pursuant to supplier requirements.
+
+Mutual Funds & ETFs: All of the mutual fund and ETF information contained in this display, with the exception of the current price and price history, was supplied by Lipper, A Refinitiv Company, subject to the following: Copyright 2019© Refinitiv. All rights reserved. Any copying, republication or redistribution of Lipper content, including by caching, framing or similar means, is expressly prohibited without the prior written consent of Lipper. Lipper shall not be liable for any errors or delays in the content, or for any actions taken in reliance thereon.
+
+Cryptocurrencies: Cryptocurrency quotes are updated in real-time. Sources: CoinDesk (Bitcoin), Kraken (all other cryptocurrencies)
+
+Calendars and Economy: 'Actual' numbers are added to the table after economic reports are released. Source: Kantar Media
+
+We are in the process of updating our Market Data experience and we want to hear from you. Please send us your feedback via our Customer Center
+The Wall Street Journal
+English Edition
+Subscribe NowSign In
+BACK TO TOP«
+
+WSJ Membership
+
+The Journal Collection
+Subscription Options
+Why Subscribe?
+Corporate Subscriptions
+WSJ Higher Education Program
+WSJ High School Program
+Public Library Program
+WSJ Live
+Commercial Partnerships
+
+Customer Service
+
+Customer Center
+Contact Us
+Cancel My Subscription
+
+Tools & Features
+
+Newsletters & Alerts
+Guides
+Topics
+My News
+RSS Feeds
+Video Center
+Watchlist
+Podcasts
+Visual Stories
+
+Ads
+
+Advertise
+Commercial Real Estate Ads
+Place a Classified Ad
+Sell Your Business
+Sell Your Home
+Recruitment & Career Ads
+Digital Self Service
+
+More
+
+About Us
+Content Partnerships
+Corrections
+Jobs at WSJ
+News Archive
+Register for Free
+Reprints & Licensing
+Buy Issues
+WSJ Shop
+Dow Jones Press Room
+Facebook
+Twitter
+Instagram
+YouTube
+Podcasts
+Snapchat
+Google Play
+App Store
+
+Dow Jones Products
+
+Barron'sBigChartsDow Jones NewswiresFactivaFinancial NewsMansion GlobalMarketWatchRisk & ComplianceBuy Side from WSJWSJ ProWSJ VideoWSJ Wine
+Privacy NoticeCookie NoticeDo Not Sell My Personal InformationCopyright PolicyData PolicyTerms of UseYour Ad ChoicesAccessibility
+Copyright ©2024 Dow Jones & Company, Inc. All Rights Reserved.

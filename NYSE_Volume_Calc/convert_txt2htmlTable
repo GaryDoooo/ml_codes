@@ -1,7 +1,10 @@
 #!/bin/bash 
 
-mdtmpfile=$(mktemp /tmp/NYSE_recod.XXXXXX.md)
-htmltmpfile=$(mktemp /tmp/NYSE_recod.XXXXXX.html)
+mdtmpfile=$(mktemp /tmp/NYSE_record.XXXXXX.md)
+htmltmpfile=$(mktemp /tmp/NYSE_record.XXXXXX.html)
+datafile=$(mktemp /tmp/NYSE_record.XXXXXXX)
+
+cat $1 | grep -v 000 > $datafile
 
 echo "|Time|NYSE A|NYSE D|NYSE A/(A+D)|NASDAQ A|NASDAQ D|NASDAQ A/(A+D)|">$mdtmpfile
 echo "|:---:|:----:|:----:|:-----:|:----:|:----:|:----:|">>$mdtmpfile
@@ -19,7 +22,8 @@ do
     else
         echo "ignore short line"
     fi
-  done < "$1"
+  done < $datafile
+
 cat $mdtmpfile
 pandoc -s $mdtmpfile -r markdown_github -o $htmltmpfile
 echo "HTML Result Below"
@@ -28,3 +32,4 @@ sed -e '/<table style/,/<\/colgroup>/c\<table class="tg" width=100%>' $htmltmpfi
 
 rm $htmltmpfile
 rm $mdtmpfile
+rm $datafile

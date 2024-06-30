@@ -1,0 +1,5 @@
+test repeats 10000
+L 1 U 6 N 10 S 1 chi2 0.0522 jmp 0.0405
+L 1 U 6 N 20 S 1 chi2 0.0512 jmp 0.0395
+L 1 U 6 N 40 S 1 chi2 0.0487 jmp 0.039
+L 1 U 6 N 10 S 2 chi2 0.095 jmp 0.098

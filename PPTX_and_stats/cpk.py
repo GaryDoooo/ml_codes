@@ -1,6 +1,12 @@
-#  import numpy as np
+# GDu Jun 2024
+# The calculation gives same outputs with JMP 17
+# However Cpm confidence limits of Overall has 1.5% differences.
+# So the Cpm limits are not included here. While the JMP Cpk
+# confidence limits (alpha==1) are not that accurate as the Cpk calculated by
+# chi2 dist. Using the upper limit of the sampled stdev when alpha==1
+# the cpk 95% lower limit is more close to simulation.
+
 from scipy.stats import chi2, norm, nct
-#  from scipy.stats import t as t_dist
 from scipy.optimize import root_scalar
 import statistics as stat
 from utilities import d2_values, scale_factor_f, c4_values, grouping_by_labels, calculate_d3, calculate_d2
@@ -57,7 +63,7 @@ def cpk_calc(mean, std, T, usl, lsl, df, N,
     cpu_l, cpu_u = cpl_cpu_95(cpu, N, df, alpha)
 
     if print_out:
-        print(name, "alpha =", alpha)
+        print("\n", name, "alpha =", alpha)
         print("Cpk\tEst: %.3f\tLower: %.3f\tUpper: %.3f" % (cpk, cpk_l, cpk_u))
         print("Cpl\tEst: %.3f\tLower: %.3f\tUpper: %.3f" % (cpl, cpl_l, cpl_u))
         print("Cpu\tEst: %.3f\tLower: %.3f\tUpper: %.3f" % (cpu, cpu_l, cpu_u))
@@ -70,6 +76,39 @@ def cpk_calc(mean, std, T, usl, lsl, df, N,
             "cpu_l": cpu_l, "cpu_u": cpu_u}
 
 
+def nonconformance(data, t, lsl, usl, u, sw, so, print_out=True):
+    N = len(data)
+    below = len([i for i in data if i < lsl])
+    above = len([i for i in data if i > usl])
+    wu = 1 - norm.cdf((usl - u) / sw)
+    wl = norm.cdf((lsl - u) / sw)
+    ou = 1 - norm.cdf((usl - u) / so)
+    ol = norm.cdf((lsl - u) / so)
+    if print_out:
+        print("\n", "Nonconformance (Observation and Expected)")
+        print(
+            "Below LSL Obs. %.2f%%\tExp. Within %.2f%%\tExp. Overall %.2f%%" %
+            (below / N * 100, wl * 100, ol * 100))
+        print(
+            "Above USL Obs. %.2f%%\tExp. Within %.2f%%\tExp. Overall %.2f%%" %
+            (above / N * 100, wu * 100, ou * 100))
+        print(
+            "Total Out Obs. %.2f%%\tExp. Within %.2f%%\tExp. Overall %.2f%%" %
+            ((below + above) / N * 100, (wu + wl) * 100, (ou + ol) * 100))
+
+    return {
+        "below_s": below / N,
+        "above_s": above / N,
+        "ttl_s": (
+            below + above) / N,
+        "below_w": wl,
+        "above_w": wu,
+        "ttl_w": wl + wu,
+        "below_o": ol,
+        "above_o": ou,
+        "ttl_o": ou + ol}
+
+
 def cpk(data, target, usl, lsl, print_out=True, use_range=False, alpha=0.05):
     try:
         # if data is a 2D list
@@ -79,6 +118,7 @@ def cpk(data, target, usl, lsl, print_out=True, use_range=False, alpha=0.05):
         sub_grps = len(data)
 
         if use_range:
+            within_msg = "Within sigma estimated by averge of ranges over d2."
             std_within = stat.mean(
                 [(max(l) - min(l)) / d2_values(len(l)) for l in data])
             if balanced:
@@ -88,6 +128,7 @@ def cpk(data, target, usl, lsl, print_out=True, use_range=False, alpha=0.05):
             else:
                 df_sub = len(flat_list) - sub_grps
         else:
+            within_msg = "Within sigma estimated by averge of unbiased stdev."
             std_within = stat.mean(
                 [stat.stdev(l) / c4_values(len(l)) for l in data])
             df_sub = len(flat_list) - sub_grps
@@ -96,6 +137,7 @@ def cpk(data, target, usl, lsl, print_out=True, use_range=False, alpha=0.05):
                 df_sub = scale_factor_f(n) * df_sub
 
     except BaseException:
+        within_msg = "Within sigma estimated by averge moving range."
         flat_list = data  # 1D for individual MR within
         std_within = stat.mean(
             [abs(i - j) for i, j in zip(data,
@@ -116,15 +158,32 @@ def cpk(data, target, usl, lsl, print_out=True, use_range=False, alpha=0.05):
         for key in res:
             print(key, "=", "%.3f" % res[key]
                   if isinstance(res[key], float) else res[key])
-        print("")
+        print(within_msg)
 
     res["Within"] = cpk_calc(mean, std_within, target,
                              usl, lsl, df_sub, N, alpha=alpha,
                              name="Within", print_out=print_out)
-    res["Overall"] = cpk_calc(mean, std_overall, target, usl, lsl,
-                              N - 1, N, alpha=alpha,
-                              name="Overall", print_out=print_out)
-    #  res["nonconformance"]=nonconformancenformance(
+    res["Overall"] = cpk_calc(
+        mean,
+        std_overall,
+        target,
+        usl,
+        lsl,
+        N - 1,
+        N,
+        alpha=alpha,
+        name="Overall (AKA Ppk in JMP)",
+        print_out=print_out)
+    res["nonconformance"] = nonconformance(
+        flat_list,
+        target,
+        lsl,
+        usl,
+        mean,
+        std_within,
+        std_overall,
+        print_out=print_out)
+    res["Flat List"] = flat_list
     return res
 
 
@@ -144,9 +203,10 @@ if __name__ == "__main__":
 
     dd = grouping_by_labels(data, group)
     # dd has consistent 4 samples in each group
+
     #  cpk(data, target, usl, lsl)
-    cpk(data, target, usl, lsl, alpha=0.1)
-    #  cpk(dd, target, usl, lsl, print_out=True)
+    #  cpk(data, target, usl, lsl, alpha=0.1)
+    cpk(dd, target, usl, lsl, print_out=True)
     #  cpk(d, target, usl, lsl)
     #  cpk(d, target, usl, lsl, use_range=True)
     #  cpk(dd, target, usl, lsl, print_out=True, use_range=True)

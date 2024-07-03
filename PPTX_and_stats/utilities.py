@@ -1,8 +1,46 @@
 from scipy.special import gamma
-import math
 from scipy import integrate
-from scipy.stats import norm
+from scipy.stats import norm, shapiro
 from functools import lru_cache
+import numpy as np
+from statsmodels.stats.diagnostic import normal_ad
+from scipy.stats import t as t_dist
+
+
+def pearson_correlation(x, y, alpha=0.05, print_out=True):
+    sx, sy = sum(x), sum(y)
+    sx2 = sum([i * i for i in x])
+    sy2 = sum([i * i for i in y])
+    sxy = sum([i * j for i, j in zip(x, y)])
+    n = len(x)
+    x_bar, y_bar = sx / n, sy / n
+#     r = [n(ΣXY) - (ΣX)(ΣY)] / √[n(ΣX²) - (ΣX)²][n(ΣY²) - (ΣY)²]
+    r = (n * sxy - sx * sy) / ((n * sx2 - sx * sx) * (n * sy2 - sy * sy))**.5
+#     Cov(X,Y) = Σ[(X - X̄)(Y - Ȳ)] / (n - 1)
+    cov = sum([(i - x_bar) * (j - y_bar) for i, j in zip(x, y)]) / (n - 1)
+    # https://zhiyzuo.github.io/Pearson-Correlation-CI-in-Python/
+    # below confidence level calc
+    r_z = np.arctanh(r)
+    se = 1 / np.sqrt(n - 3)
+    z = norm.ppf(1 - alpha / 2)
+    lo_z, hi_z = r_z - z * se, r_z + z * se
+    lo, hi = np.tanh((lo_z, hi_z))
+#     Calculate the t-statistic using the formula:
+#     t = r * √((n-2) / (1-r²))
+#     where n is the sample size
+#     Determine the degrees of freedom (df):
+#     df = n - 2
+    t = r * ((n - 2) / (1 - r * r))**.5
+    p = (1 - t_dist.cdf(t, n - 2)) * 2
+    if print_out:
+        print("\nPearson correlation alpha = %.3f" % alpha)
+        print("Correlation coefficient: %.3f" % r)
+        print("Confidence Interval (%.3f, %.3f)" % (lo, hi))
+        print("Covariance: %.3f" % cov)
+        print("p-value = %.3f\tN = %d" % (p, n))
+
+    return {"r": r, "r_l": lo, "r_u": hi, "cov": cov, "p": p, "N": n}
+
 
 # https://en.wikipedia.org/wiki/Unbiased_estimation_of_standard_deviation
 # to get unbiased std use normal std (mean.stdev) divided by c4 below
@@ -84,5 +122,44 @@ def calculate_d3(n):
 
     integral, _ = integrate.quad(outer_integrand, -10, 10)
     # -float('inf'), float('inf'))
-    d3 = math.sqrt(2 * integral - calculate_d2(n)**2)
+    d3 = (2 * integral - calculate_d2(n)**2)**.5
     return d3  # round(d3,5)
+
+
+def quantiles(input_data,
+              percentiles=[100, 99.5, 97.5, 90, 75, 50,
+                           25, 10, 2.5, 0.5, 0]):
+
+    data = sorted([i for i in input_data])
+    N = len(data)
+    # x input is percentile
+    def p(x): return (N + 1) * x / 100
+
+    def value(i):
+        if i <= 1:
+            return data[0]
+        if i >= N:
+            return data[-1]
+        a1 = data[int(i) - 1]
+        a2 = data[int(i)]
+        dec = i - int(i)
+        return a1 + (a2 - a1) * dec
+
+    res = []
+    for i in percentiles:
+        res.append(value(p(i)))
+    return res
+    ########## Result same to JMP  ##################
+
+
+def norm_test(data, print_out=False):
+    s1, p1 = shapiro(data)
+    s2, p2 = normal_ad(np.array(data))
+    if print_out:
+        print(f"Shapiro-Wilk test\tstats {s1:.3f}\tp-value {p1:.3f}")
+        print(f"Anderson Darling test\tstats {s2:.3f}\tp-value {p2:.3f}")
+    return {"shapiro s": s1, "shapiro p": p1, "AD s": s2, "AD p": p2}
+
+
+if __name__ == "__main__":
+    pearson_correlation([1, 2, 3], [2, 3, 1])

@@ -88,17 +88,21 @@ def linear_fit(x, y, print_out=True):
 
     SSLF = SSE - SSPE
 
-    # Mean square of Pure Error
-    MSPE = SSPE / DFPE
     # Mean square of lack of fit
     MSLF = SSLF / DFLF
 
-    F_lack = MSLF / MSPE
-#     If p-value < significance level (typically 0.05):
-# Reject the null hypothesis. There is evidence of lack of fit,
-# suggesting the linear model may not be adequate. A more complex
-# model (e.g., polynomial) might be more appropriate.
-    p_lack = 1 - f_dist.cdf(F_lack, dfn=DFLF, dfd=DFPE)
+    if DFPE > 0:
+        # Mean square of Pure Error
+        MSPE = SSPE / DFPE
+
+        F_lack = MSLF / MSPE
+    #     If p-value < significance level (typically 0.05):
+    # Reject the null hypothesis. There is evidence of lack of fit,
+    # suggesting the linear model may not be adequate. A more complex
+    # model (e.g., polynomial) might be more appropriate.
+        p_lack = 1 - f_dist.cdf(F_lack, dfn=DFLF, dfd=DFPE)
+    else:
+        MSPE = F_lack = p_lack = -1
 
 #     Calculate sum of squares for the saturated model (SSM):
 # SSM = Σni(ȳi - ȳ)², where ȳi is the mean of each group and
@@ -121,8 +125,8 @@ def linear_fit(x, y, print_out=True):
 
     SEb1 = S / (sum([(xi - x_u)**2 for xi in x]))**.5
     SEb0 = S * (1 / n + x_u * x_u / sum([(xi - x_u)**2 for xi in x]))**.5
-    slope_t = b1 / SEb1
-    int_t = b0 / SEb0
+    slope_t = abs(b1 / SEb1)
+    int_t = abs(b0 / SEb0)  # two tails test needs abs
 # The prob of the values are zero in truth
     p_slope = (1 - t_dist.cdf(slope_t, n - 2)) * 2
     p_int = (1 - t_dist.cdf(int_t, n - 2)) * 2
@@ -180,7 +184,7 @@ def linear_fit(x, y, print_out=True):
             "t slope": slope_t, "t int.": int_t,
             "p slope": p_slope, "p int.": p_int,
             "Normal Test Resid": ntest_e,
-            "MST": MST,"Residual":e}
+            "MST": MST, "Residual": e}
 
 
 if __name__ == "__main__":

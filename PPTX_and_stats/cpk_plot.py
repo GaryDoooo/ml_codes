@@ -2,10 +2,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import norm
 from cpk import cpk
-#  import statistics as stat
+import statistics as stat
 
 
-def cpk_plot(data, usl, target, lsl, print_out=True,
+def cpk_plot(data, usl, target, lsl, print_out=False,
              use_range=False, alpha=0.05, show_plot=False,
              filename=None, xlabel=None,
              transparent=None):
@@ -84,6 +84,53 @@ def cpk_plot(data, usl, target, lsl, print_out=True,
             format='png')
 
     return res
+
+
+def hist_norm(data, ax=None, show_plot=False,
+              filename=None, xlabel=None):
+
+    if ax is not None:
+        ax1 = ax
+    else:
+        fig, ax1 = plt.subplots()
+    # Add y axis on the right side
+    ax2 = ax1.twinx()
+
+    # Use density=True when creating the histogram to ensure
+    # the y-axis represents probability density, which is
+    # necessary for a proper comparison with the normal distribution curve
+    d = data
+    ax2.hist(d, density=False, alpha=0.2, color='g', edgecolor='k')
+    ax1.hist(d, density=True, alpha=0, color='b')
+
+    std = stat.stdev(data)
+    mean = stat.mean(data)
+
+    # Create x and y values for the normal distribution curve
+    xmin, xmax = plt.xlim()
+    x = np.linspace(xmin, xmax, 100)
+
+    # Plot the normal distribution curve for overall
+    y = norm.pdf(x, mean, std)
+    ax1.plot(x, y, 'k', linewidth=2, linestyle="dashed", label="Overall")
+
+    # Add labels and title
+    ax2.set_ylabel("Counts")
+    ax1.set_xlabel(xlabel)
+    ax1.set_ylabel('Density')
+    # ax1.set_title(f'Histogram with Normal Distribution Fit (μ={mu:.2f}, σ={std:.2f})')
+
+    if show_plot:
+        plt.show()
+
+    if filename is not None:
+        fname = str(filename) + '.png'
+        plt.savefig(
+            fname,
+            dpi=200,
+            format='png')
+
+    return
 
 
 if __name__ == "__main__":

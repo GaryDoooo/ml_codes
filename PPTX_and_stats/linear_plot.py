@@ -1,49 +1,63 @@
-from linear_fit import linear_fit
-from ortho_fit import orthogonal_fit
 import numpy as np
 import matplotlib.pyplot as plt
-from utilities import pearson_correlation
-from matplotlib.patches import Ellipse
 import statistics as stat
 from scipy.stats import t as t_dist
+###### Own modules #######
+from linear_fit import linear_fit
+from ortho_fit import orthogonal_fit
+from utilities import pearson_correlation
 
 
-def fit_plot(x, y, alpha=0.05, print_out=True,
+def fit_plot(x, y, alpha=0.05, print_out=False,
              ellipse=False, linear=False,
              ortho=False, ortho_ratio=1,
              show_CI=False, show_PI=False,
              show_plot=False, filename=None,
              xlabel=None, ylabel=None,
-             grid=False, show_legend=False):
+             grid=False, show_legend=False,
+             x_min=None, x_max=None,
+             y_min=None, y_max=None,
+             scatter=True, ax=None):
 
     res = dict()
-    _, ax = plt.subplots()
-    ax.scatter(x, y, color='blue', label='Data points')
+    if x_min is None:
+        x_min = min(x) - (max(x) - min(x)) * .05
+    if x_max is None:
+        x_max = max(x) + (max(x) - min(x)) * .05
+    if y_min is None:
+        y_min = min(y) - (max(y) - min(y)) * .05
+    if y_max is None:
+        y_max = max(y) + (max(y) - min(y)) * .05
+
+    if ax is None:
+        _, ax = plt.subplots()
+
+    if scatter:
+        ax.scatter(x, y, color='blue', alpha=1 / (len(x))**.2,
+                   label='Data points')
 
     if ellipse:
         correlation = pearson_correlation(x, y, alpha=alpha,
                                           print_out=print_out)
-        r = correlation["r"]
         res["Pearson"] = correlation
-        major = np.abs(correlation["r_u"] - correlation["r_l"])
-        minor = 2 * np.sqrt(1 - r**2)
-        angle = np.degrees(np.arctan(r / np.sqrt(1 - r**2)) / 2)
-
-        ax.add_patch(
-            Ellipse(
-                (stat.mean(x),
-                 stat.mean(y)),
-                major,
-                minor,
-                angle=angle,
-                alpha=0.2,
-                color='b'))
+        # Use parametric equations to generate points on the ellipse:
+        # x(t) = x̄ + a * cos(t) * cos(θ) - b * sin(t) * sin(θ)
+        # y(t) = ȳ + a * cos(t) * sin(θ) + b * sin(t) * cos(θ)
+        theta = np.linspace(0, np.pi * 2, 100)
+        a = res["Pearson"]["ellipse"]["a"]
+        b = res["Pearson"]["ellipse"]["b"]
+        t = res["Pearson"]["ellipse"]["theta"]
+        x_line = np.mean(x) + a * np.cos(theta) * np.cos(t) - \
+            b * np.sin(theta) * np.sin(t)
+        y_line = np.mean(y) + a * np.cos(theta) * np.sin(t) + \
+            b * np.sin(theta) * np.cos(t)
+        ax.plot(x_line, y_line)
 
     if ortho:
         ortho_res = orthogonal_fit(x, y, error_ratio=ortho_ratio,
                                    print_out=print_out, alpha=alpha)
         res["Orthogonal Fit"] = ortho_res
-        x1, x0 = max(x), min(x)
+        x1, x0 = x_max, x_min
         x_line = [x0, x1]
         y_line = [ortho_res["intercept"] + x0 * ortho_res["slope"],
                   ortho_res["intercept"] + x1 * ortho_res["slope"]]
@@ -52,7 +66,7 @@ def fit_plot(x, y, alpha=0.05, print_out=True,
     if linear:
         l_res = linear_fit(x, y, print_out=print_out)
         res["Linear Fit"] = l_res
-        x1, x0 = max(x), min(x)
+        x1, x0 = x_max, x_min
         x_line = [x0, x1]
         y_line = [l_res["intercept"] + x0 * l_res["slope"],
                   l_res["intercept"] + x1 * l_res["slope"]]
@@ -105,9 +119,11 @@ def fit_plot(x, y, alpha=0.05, print_out=True,
                 l_res["slope"] * x_line + l_res["intercept"]
             ax.plot(x_line, y_line, color='g', linestyle='dashed', linewidth=1)
 
-    plt.xlabel(xlabel)
-    plt.ylabel(ylabel)
+    ax.set(xlabel=xlabel)
+    ax.set(ylabel=ylabel)
     plt.grid(grid)
+    ax.set_xlim(left=x_min, right=x_max)
+    ax.set_ylim(bottom=y_min, top=y_max)
     if show_legend:
         ax.legend(loc='best', frameon=True)
     if show_plot:

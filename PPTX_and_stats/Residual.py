@@ -1,20 +1,21 @@
-from linear_fit import linear_fit
-from utilities import pearson_correlation, norm_test
 import numpy as np
 from scipy.stats import probplot
 import matplotlib.pyplot as plt
+####### Own Modules ###########
 from cpk_plot import hist_norm
 from linear_plot import fit_plot
 from control_chart import x_plot
+from linear_fit import linear_fit
+from utilities import norm_test
 
 
 def linear_fit_resid_test(x, y, print_out=False, show_plot=False,
                           filename=None):
-    pearson_correlation(x, y, print_out=False)
+    #  pearson_correlation(x, y, print_out=False)
     res = linear_fit(x, y, print_out=False)
 
     data = res["Residual"]
-    y_est = x * res["slope"] + res["intercept"]
+    y_est = np.array(x) * res["slope"] + res["intercept"]
     return resid_test(data, y_est, print_out=print_out,
                       show_plot=show_plot, filename=filename)
 

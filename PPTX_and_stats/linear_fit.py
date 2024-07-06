@@ -1,7 +1,10 @@
 import statistics as stat
 from scipy.stats import f as f_dist
 from scipy.stats import t as t_dist
+from prettytable import PrettyTable as PT
+######## Own Module ###########
 from utilities import norm_test
+
 
 
 def linear_fit(x, y, print_out=True):
@@ -134,31 +137,57 @@ def linear_fit(x, y, print_out=True):
     if print_out:
         print("Linear Fit ")
         print("Summary of Fit")
-        print(f"RSquare {R_sq:.3f}\tRSquare Adj {R_sq_adj:.3f}")
+        print(f"RSquare {R_sq:.3f}\t\t\tRSquare Adj {R_sq_adj:.3f}")
         print(
             f"Root Mean Square Error {S:.3f}\tMean of Response {y_est_u:.3f}")
         print("N = %d" % len(x))
         print("\nParameter Estimates")
-        print(f"Slope Est. {b1:.3f}\tStd Error {SEb1:.3f}")
-        print(f"t ratio {slope_t:.3f}\tProb>|t| {p_slope:.3f}")
-        print(f"Intercept Est. {b0:.3f}\tStd Error {SEb0:.3f}")
-        print(f"t ratio {int_t:.3f}\tProb>|t| {p_int:.3f}")
+        t = PT()
+        t.field_names = ["Item", "Est.", "Std Error", "t Ratio", "Prob > |t|"]
+        t.add_row(["Slope", "%.3f" %
+                   b1, "%.3f" %
+                   SEb1, "%.3f" %
+                   slope_t, "%.3f" %
+                   p_slope])
+        t.add_row(["Intercept", "%.3f" %
+                   b0, "%.3f" %
+                   SEb0, "%.3f" %
+                   int_t, "%.3f" %
+                   p_int])
+        print(t)
+        #  print(f"Slope Est. {b1:.3f}\tStd Error {SEb1:.3f}")
+        #  print(f"t ratio {slope_t:.3f}\tProb>|t| {p_slope:.3f}")
+        #  print(f"Intercept Est. {b0:.3f}\tStd Error {SEb0:.3f}")
+        #  print(f"t ratio {int_t:.3f}\tProb>|t| {p_int:.3f}")
         print("p values above are the probabilities of each term == 0.")
         print("\nAnalysis of Variances")
-        print(f"Model DF 1\tSum of Sq {SSR:.3f}\tMean Sq {MSR:.3f}")
-        print("Error DF %d\tSum of Sq %.3f\tMean Sq %.3f" % (n - 2, SSE, MSE))
-        print("Total DF %d\tSum of Sq %.3f" % (n - 1, SST))
-        print(f"F Ratio {F_reg:.3f}\tProb>F {p_reg:.3f}")
+        t = PT()
+        t.field_names = ["Item", "DF", "Sum of Sq.", "Mean Sq."]
+        t.add_row(["Model", "1", "%.3f" % SSR, "%.3f" % MSR])
+        t.add_row(["Error", "%d" % (n - 2), "%.3f" % SSE, "%.3f" % MSE])
+        t.add_row(["Total", "%d" % (n - 1), "%.3f" % SST, " "])
+        print(t)
+        #  print(f"Model DF 1\tSum of Sq {SSR:.3f}\tMean Sq {MSR:.3f}")
+        #  print("Error DF %d\tSum of Sq %.3f\tMean Sq %.3f" % (n - 2, SSE, MSE))
+        #  print("Total DF %d\tSum of Sq %.3f" % (n - 1, SST))
+        print(f"F Ratio {F_reg:.3f}\tProb > F {p_reg:.3f}")
         print("p value is the probability of slope == 0.")
         print("\nLack of Fit")
-        print(
-            f"Lack of Fit DF {DFLF:d}\tSum of Sq {SSLF:.3f}\tMean Sq {MSLF:.3f}")
-        print(
-            f"Pure Error DF {DFPE:d}\tSum of Sq {SSPE:.3f}\tMean Sq {MSPE:.3f}")
-        print("Total Error is the Error in Variances Analysis.")
-        print(f"F Ratio {F_lack:.3f}\tProb>F {p_lack:.3f}")
+        t = PT()
+        t.field_names = ["Item", "DF", "Sum of Sq.", "Mean Sq."]
+        t.add_row(["Lack of fit", "%d" % DFLF, "%.3f" % SSLF, "%.3f" % MSLF])
+        t.add_row(["Pure Error", "%d" % DFPE, "%.3f" % SSPE, "%.3f" % MSPE])
+        t.add_row(["Total", "%d" % (n - 1), "%.3f" % SST, " "])
+        print(t)
+
+        #  print(
+        #      f"Lack of Fit DF {DFLF:d}\tSum of Sq {SSLF:.3f}\tMean Sq {MSLF:.3f}")
+        #  print(
+        #      f"Pure Error DF {DFPE:d}\tSum of Sq {SSPE:.3f}\tMean Sq {MSPE:.3f}")
+        #  print("Total Error is the Error in Variances Analysis.")
+        print(f"F Ratio {F_lack:.3f}\tProb > F {p_lack:.3f}\tMax R Square {max_r_sq:.3f}")
         print("p value is the probability of the true relationship is linear.")
-        print(f"Max R Square {max_r_sq:.3f}")
+        #  print(f"Max R Square {max_r_sq:.3f}")
         print("\nNormality of Residuals")
         print("Shapiro-Wilk Statistics %.3f\tp-value %.3f" %
               (ntest_e["shapiro s"], ntest_e["shapiro p"]))

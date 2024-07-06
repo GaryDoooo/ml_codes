@@ -6,6 +6,8 @@ import numpy as np
 from statsmodels.stats.diagnostic import normal_ad
 from scipy.stats import t as t_dist
 import statistics as stat
+######### Own Modules ############
+# from binomial import binomial
 
 def pearson_correlation(x, y, alpha=0.05, print_out=True):
     sx, sy = sum(x), sum(y)
@@ -20,7 +22,11 @@ def pearson_correlation(x, y, alpha=0.05, print_out=True):
     cov = sum([(i - x_bar) * (j - y_bar) for i, j in zip(x, y)]) / (n - 1)
     # https://zhiyzuo.github.io/Pearson-Correlation-CI-in-Python/
     # below confidence level calc
-    r_z = np.arctanh(r)
+    #  print(r)
+    if abs(r) < 1:
+        r_z = np.arctanh(r)
+    else:
+        r_z = 10000
     se = 1 / np.sqrt(n - 3)
     z = norm.ppf(1 - alpha / 2)
     lo_z, hi_z = r_z - z * se, r_z + z * se
@@ -30,8 +36,11 @@ def pearson_correlation(x, y, alpha=0.05, print_out=True):
 #     where n is the sample size
 #     Determine the degrees of freedom (df):
 #     df = n - 2
-    t = r * ((n - 2) / (1 - r * r))**.5
-    p = (1 - t_dist.cdf(t, n - 2)) * 2
+    if abs(r) == 1:
+        p=a = b = theta = 0
+    else:
+        t = r * ((n - 2) / (1 - r * r))**.5
+        p = (1 - t_dist.cdf(t, n - 2)) * 2
 
     # Calculate ellipse
 # Source: https://education.illinois.edu/docs/default-source/carolyn-anderson/edpsy584/lectures/MultivariateNormal-beamer-online.pdf
@@ -40,19 +49,17 @@ def pearson_correlation(x, y, alpha=0.05, print_out=True):
 # Don't know why, swapping D1 and D0 seems work well.
 # Important: chi2 cumulated prob uses 1-alpha, not 1-alpha/2
 
-    xu=stat.mean(x)
-    yu=stat.mean(y)
-    xv=stat.variance(x)
-    yv=stat.variance(y)
-    D, E = np.linalg.eig([[xv,cov],[cov,yv]])
-    X2=chi2.ppf(1-alpha,2)
-    x1=(X2*D[1])**.5*E[0][0]
-    y1=(X2*D[1])**.5*E[0][1]
-    x2=(X2*D[0])**.5*E[1][0]
-    y2=(X2*D[0])**.5*E[1][1]
-    a=(x1*x1+y1*y1)**.5
-    b=(x2*x2+y2*y2)**.5
-    t=np.arctan(x1/y1)
+        xv = stat.variance(x)
+        yv = stat.variance(y)
+        D, E = np.linalg.eig([[xv, cov], [cov, yv]])
+        X2 = chi2.ppf(1 - alpha, 2)
+        x1 = (X2 * D[1])**.5 * E[0][0]
+        y1 = (X2 * D[1])**.5 * E[0][1]
+        x2 = (X2 * D[0])**.5 * E[1][0]
+        y2 = (X2 * D[0])**.5 * E[1][1]
+        a = (x1 * x1 + y1 * y1)**.5
+        b = (x2 * x2 + y2 * y2)**.5
+        theta = np.arctan(x1 / y1)
 
     if print_out:
         print("\nPearson correlation alpha = %.3f" % alpha)
@@ -62,7 +69,7 @@ def pearson_correlation(x, y, alpha=0.05, print_out=True):
         print("p-value = %.3f\tN = %d" % (p, n))
 
     return {"r": r, "r_l": lo, "r_u": hi, "cov": cov, "p": p, "N": n,
-		     "ellipse":{"a":a,"b":b,"theta":t}}
+            "ellipse": {"a": a, "b": b, "theta": theta}}
 
 
 # https://en.wikipedia.org/wiki/Unbiased_estimation_of_standard_deviation
@@ -121,9 +128,10 @@ def grouping_by_labels(data_list, grouping_list):
     res.append(subgroup)
     return res[1:]
 
-def group_df_to_list(df,y_key="Value",grp_key="Date"):
-    return [list(df[df[grp_key]==gid][y_key])
-           for gid in df[grp_key].unique() ]
+
+def group_df_to_list(df, y_key="Value", grp_key="Date"):
+    return [list(df[df[grp_key] == gid][y_key])
+            for gid in df[grp_key].unique()]
 
 
 @lru_cache

@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import statistics as stat
 from scipy.stats import t as t_dist
+from prettytable import PrettyTable as PT
 ###### Own modules #######
 from linear_fit import linear_fit
 from ortho_fit import orthogonal_fit
@@ -17,17 +18,18 @@ def fit_plot(x, y, alpha=0.05, print_out=False,
              grid=False, show_legend=False,
              x_min=None, x_max=None,
              y_min=None, y_max=None,
-             scatter=True, ax=None):
+             scatter=True, ax=None,
+             ax_margin=0.1):
 
     res = dict()
     if x_min is None:
-        x_min = min(x) - (max(x) - min(x)) * .05
+        x_min = min(x) - (max(x) - min(x)) * ax_margin
     if x_max is None:
-        x_max = max(x) + (max(x) - min(x)) * .05
+        x_max = max(x) + (max(x) - min(x)) * ax_margin
     if y_min is None:
-        y_min = min(y) - (max(y) - min(y)) * .05
+        y_min = min(y) - (max(y) - min(y)) * ax_margin
     if y_max is None:
-        y_max = max(y) + (max(y) - min(y)) * .05
+        y_max = max(y) + (max(y) - min(y)) * ax_margin
 
     if ax is None:
         _, ax = plt.subplots()
@@ -51,7 +53,8 @@ def fit_plot(x, y, alpha=0.05, print_out=False,
             b * np.sin(theta) * np.sin(t)
         y_line = np.mean(y) + a * np.cos(theta) * np.sin(t) + \
             b * np.sin(theta) * np.cos(t)
-        ax.plot(x_line, y_line)
+        ax.fill(x_line, y_line, alpha=0.1, facecolor='blue', edgecolor='none')
+        #  ax.plot(x_line, y_line)
 
     if ortho:
         ortho_res = orthogonal_fit(x, y, error_ratio=ortho_ratio,
@@ -135,3 +138,59 @@ def fit_plot(x, y, alpha=0.05, print_out=False,
             dpi=200,
             format='png')
     return res
+
+
+def multi_fit(data, labels, print_out=False,
+              show_plot=False, filename=None, ax_margin=0.1):
+
+    t = PT(["\\"] + labels)
+    cor_res = []
+    n = len(data)
+    for y in range(n):
+        res_tmp = []
+        row = [labels[y]]
+        for x in range(n):
+            r = pearson_correlation(data[x], data[y], print_out=False)
+            row.append("%.3f" % r["r"])
+            res_tmp.append(r)
+        cor_res.append(res_tmp)
+        t.add_row(row)
+    res = {"pearson": cor_res}
+
+    if print_out:
+        print("Pearson correlation coefficient")
+        print(t)
+
+    fig, axs = plt.subplots(n - 1, n - 1)  # , sharex=True, sharey=True)
+    # Remove vertical space between Axes
+    fig.subplots_adjust(hspace=0)
+    fig.subplots_adjust(wspace=0)
+
+    for x in range(len(data) - 1):
+        for y in range(1, len(data)):
+            fx, fy = x, y - 1
+            if x >= y:
+                axs[fy][fx].axis('off')
+            else:
+                fit_plot(data[x], data[y], ax_margin=ax_margin,
+                         ellipse=True, ax=axs[fy][fx],
+                         xlabel=labels[x] if y == n - 1 else None,
+                         ylabel=labels[y] if x == 0 else None)
+                if x > 0:
+                    axs[fy][fx].get_yaxis().set_visible(False)
+    if show_plot:
+        plt.show()
+    if filename is not None:
+        fname = str(filename) + '.png'
+        plt.savefig(
+            fname,
+            dpi=200,
+            format='png')
+    return res
+
+
+if __name__ == "__main__":
+    data = [[11, 12, 13, 11.2, 12], [3, 4, 2, 3.3, 4.4],
+            [3, 2, 1, 13, 12], [-3, -2, -1, -13, -12]]
+    labels = ["AAlksdfsjd", "sskdf", "sdejf", "d"]
+    multi_fit(data, labels, filename="test_multi")

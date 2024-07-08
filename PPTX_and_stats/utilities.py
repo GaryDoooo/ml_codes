@@ -9,6 +9,7 @@ import statistics as stat
 ######### Own Modules ############
 # from binomial import binomial
 
+
 def pearson_correlation(x, y, alpha=0.05, print_out=True):
     sx, sy = sum(x), sum(y)
     sx2 = sum([i * i for i in x])
@@ -37,7 +38,7 @@ def pearson_correlation(x, y, alpha=0.05, print_out=True):
 #     Determine the degrees of freedom (df):
 #     df = n - 2
     if abs(r) == 1:
-        p=a = b = theta = 0
+        p = a = b = theta = 0
     else:
         t = r * ((n - 2) / (1 - r * r))**.5
         p = (1 - t_dist.cdf(t, n - 2)) * 2
@@ -132,6 +133,18 @@ def grouping_by_labels(data_list, grouping_list):
 def group_df_to_list(df, y_key="Value", grp_key="Date"):
     return [list(df[df[grp_key] == gid][y_key])
             for gid in df[grp_key].unique()]
+
+
+def group_by2factors(f1, f2, d):
+    f2_d = [(i, j) for i, j in zip(f2, d)]
+    gf1 = grouping_by_labels(f2_d, f1)
+    res = []
+    for sublist in gf1:
+        factor = [i[0] for i in sublist]
+        data = [i[1] for i in sublist]
+        res.append(grouping_by_labels(
+            data, factor))
+    return res
 
 
 @lru_cache

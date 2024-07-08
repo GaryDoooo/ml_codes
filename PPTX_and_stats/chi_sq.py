@@ -3,6 +3,7 @@ import numpy as np
 from scipy.stats import chi2, norm, kurtosis
 from scipy.stats import f as f_dist
 from math import log as ln
+from prettytable import PrettyTable as PT
 
 
 def chi2_test_stdev(data_list, s0, print_out=True):
@@ -141,12 +142,24 @@ def chi_square(data, print_out=True):
 
     p = 1 - chi2.cdf(chi_sq, df)
 
-    if print_out:
-        print("Chi_sq = %.2f" % chi_sq)
-        print("df = %d" % df)
-        print("Pearson P = %.2f" % p)
+    LR = 0
+    for y in range(a.shape[0]):
+        for x in range(a.shape[1]):
+            expected = row_sum[y] * col_sum[x] / ttl_sum
+            LR += 2 * a[y][x] * ln(a[y][x] / expected)
 
-    return {"p": p, "chi_sq": chi_sq, "df": df}
+    p_LR = 1 - chi2.cdf(LR, df)
+
+    if print_out:
+        print("df = %d" % df)
+        t = PT()
+        t.field_names = ["Test", "Chi sq", "P >ChiSq"]
+        t.add_row(["Likelihood Ratio", "%.3f" % LR, "%.3f" % p_LR])
+        t.add_row(["Pearson", "%.3f" % chi_sq, "%.3f" % p])
+        print(t)
+
+    return {"p Pearson": p, "chi sq Pearson": chi_sq, "df": df,
+            "p LR": p_LR, "chi sq LR": LR}
 
 # Key differences and considerations:
 #         Robustness:
@@ -234,3 +247,8 @@ def two_pop_var_test(l1, l2, print_out=True):
     res["F"] = res2["F"]
 
     return res
+
+
+if __name__ == "__main__":
+    print(chi_square([[30, 76, 49], [1, 37, 62], [11, 11, 26]]))
+    chi_square([[95, 43], [101, 64]])

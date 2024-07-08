@@ -5,6 +5,7 @@ from prettytable import PrettyTable as PT
 #  import numpy as np
 ####### Own Modules ########
 from binomial import binomial
+from chi_sq import chi_square
 
 
 def p_blaker(n, p, k):
@@ -119,7 +120,11 @@ def prop_test_1sample(events=1, N=1, p0=1,
                    p_exct_high, "%.3f" %
                    p_exct_low])
         print(t)
-        print("")
+        print("\nJMP Test Probabilities in Distributions")
+
+    chi_res = chi_square([[events, N - events],
+                          [10000 * N * p0, 10000 * N * (1 - p0)]],
+                         print_out=print_out)
 
     return {"p norm": p_norm, "p Binomial": p_bi,
             "Z p less": p_norm_less,
@@ -127,7 +132,8 @@ def prop_test_1sample(events=1, N=1, p0=1,
                         "CI high": CI_high, "CI low": CI_low},
             "p Sterne": p_s, "p Blaker": p_b,
             "CI exact": {"CI l": p_exct_l, "CI u": p_exct_u,
-                         "CI high": p_exct_high, "CI low": p_exct_low}
+                         "CI high": p_exct_high, "CI low": p_exct_low},
+            "JMP chi sq": chi_res
             }
 
 

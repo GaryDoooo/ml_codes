@@ -1,10 +1,16 @@
-from tkinter import Frame, Menu, BOTH
+from tkinter import Frame, Menu, BOTH, Toplevel, END
 #  messagebox, simpledialog, PanedWindow, HORIZONTAL
-from pandastable_local import config
+from pandastable_local import config, plotting
 from pandastable_local.core import Table
 from pandastable_local.app import DataExplore
+import pickle
 import os
 import platform
+import time
+######## Own Module ###########
+from plots import plot_viewer
+from linear_plot import fit_plot
+from txt_output import txt_viewer
 
 
 class TestApp(DataExplore):
@@ -14,7 +20,7 @@ class TestApp(DataExplore):
         self.parent = parent
         Frame.__init__(self)
         self.main = self.master
-        self.main.geometry('600x400+200+100')
+        self.main.geometry('600x400+100+100')
         self.main.title('Table app')
 
         # Get platform into a variable
@@ -39,6 +45,8 @@ class TestApp(DataExplore):
         #  self.setStyles()
         self.clipboarddf = None
         self.projopen = False
+        self.plots = dict()
+        self.table.tOut = None
 
         #  self.newProject()
         #  self.main.protocol('WM_DELETE_WINDOW', self.quit)
@@ -113,10 +121,21 @@ class TestApp(DataExplore):
         self.table_menu = self.createPulldown(self.menu, self.table_menu)
         self.menu.add_cascade(label='Tools', menu=self.table_menu['var'])
 
-        self.plots_menu = {'01Store plot': {'cmd': self.addPlot},
-                           '02Clear plots': {'cmd': self.updatePlotsMenu},
-                           '03PDF report': {'cmd': self.pdfReport},
-                           '04sep': ''}
+        self.stats_menu = {
+            '01Plot Test': {
+                'cmd': self.test}, '03Output Text': {
+                'cmd': self.test2}, '04add txt': {
+                'cmd': self.test3}, '05PDF report': {
+                    'cmd': self.pdfReport}, '06sep': ''}
+        self.stats_menu = self.createPulldown(self.menu, self.stats_menu)
+        self.menu.add_cascade(label='Stats', menu=self.stats_menu['var'])
+
+        self.plots_menu = {
+            '01Plot Selected': {
+                'cmd': lambda: self._call('plotSelected')}, '02sep': '', '03Store plot': {
+                'cmd': self.addPlot}, '04Clear plots': {
+                'cmd': self.updatePlotsMenu}, '05PDF report': {
+                    'cmd': self.pdfReport}, '06sep': ''}
         self.plots_menu = self.createPulldown(self.menu, self.plots_menu)
         self.menu.add_cascade(label='Plots', menu=self.plots_menu['var'])
 
@@ -132,7 +151,74 @@ class TestApp(DataExplore):
     def getCurrentTable(self):
         return self.table
 
+    def addPlot(self):
+        """Store the current plot so it can be re-loaded"""
 
-app = TestApp()
-# launch the app
-app.mainloop()
+        #  name = self.getCurrentSheet()
+        #  table = self.sheets[name]
+        table = self.getCurrentTable()
+        fig = table.pf.fig
+        t = time.strftime("%H:%M:%S")
+        label = t
+        # dump and reload the figure to get a new object
+        p = pickle.dumps(fig)
+        fig = pickle.loads(p)
+        self.plots[label] = fig
+
+        def func(label):
+            fig = self.plots[label]
+            win = Toplevel()
+            win.title(label)
+            plotting.addFigure(win, fig)
+
+        menu = self.plots_menu['var']
+        menu.add_command(label=label, command=lambda: func(label))
+        return
+
+    def updatePlotsMenu(self, clear=True):
+        """Clear stored plots"""
+
+        if clear:
+            self.plots = {}
+        menu = self.plots_menu['var']
+        menu.delete(6, menu.index(END))
+        return
+
+    def test(self):
+        pf = self.showPlotViewer()
+        pf.ax = pf.fig.add_subplot(111)
+        fit_plot([1, 2], [1, 2], ax=pf.ax)
+        return
+
+    def showPlotViewer(self, parent=None):
+        """Create plot frame"""
+
+        if hasattr(self.table, 'pf') and self.table.pf is not None:
+            self.addPlot()
+            self.table.pf.close()
+
+        self.table.pf = plot_viewer(table=self.table, parent=parent)
+        if hasattr(self.table, 'child') and self.table.child is not None:
+            self.table.child.pf = self.table.pf
+        return self.table.pf
+
+    def test2(self):
+        self.tOut = txt_viewer(table=self.table)
+        self.tOut.add_txt("sdf\nsldkjf\nskdddd")
+        return
+
+    def test3(self):
+        self.print("skjdlf")
+        return
+
+    def print(self, txt, end="\n"):
+        if self.table.tOut is None:
+            self.tOut = txt_viewer(table=self.table)
+        self.tOut.add_txt(txt + end)
+        return
+
+
+if __name__ == "__main__":
+    app = TestApp()
+    # launch the app
+    app.mainloop()

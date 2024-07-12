@@ -11,6 +11,7 @@ import time
 from plots import plot_viewer
 from linear_plot import fit_plot
 from txt_output import txt_viewer
+from fit_dialog import LinearFitDialog, CorrelationDialog, OrthoFitDialog
 
 
 class TestApp(DataExplore):
@@ -26,30 +27,28 @@ class TestApp(DataExplore):
         # Get platform into a variable
         self.currplatform = platform.system()
         self.setConfigDir()
-        # if not hasattr(self,'defaultsavedir'):
-        self.defaultsavedir = os.path.join(os.path.expanduser('~'))
+        if not hasattr(self, 'defaultsavedir'):
+            self.defaultsavedir = os.path.join(os.path.expanduser('~'))
         self.loadAppOptions()
         # start logging
         self.start_logging()
 
-        #  self.setupGUI()
         f = Frame(self.main)
         f.pack(fill=BOTH, expand=1)
-        #  #  df = TableModel.getSampleData()
         self.table = pt = Table(f, showtoolbar=False, showstatusbar=True)
         options = {'colheadercolor': 'green', 'floatprecision': 5}
         config.apply_options(options, pt)
         pt.show()
         self.createMenuBar()
         #  self.setupGUI()
-        #  self.setStyles()
+        self.setStyles()
         self.clipboarddf = None
         self.projopen = False
         self.plots = dict()
         self.table.tOut = None
 
         #  self.newProject()
-        #  self.main.protocol('WM_DELETE_WINDOW', self.quit)
+        self.main.protocol('WM_DELETE_WINDOW', self.quit)
         self.main.lift()
         return
 
@@ -123,10 +122,10 @@ class TestApp(DataExplore):
 
         self.stats_menu = {
             '01Plot Test': {
-                'cmd': self.test}, '03Output Text': {
-                'cmd': self.test2}, '04add txt': {
-                'cmd': self.test3}, '05PDF report': {
-                    'cmd': self.pdfReport}, '06sep': ''}
+                'cmd': self.test}, '03Correlation': {
+                'cmd': self.correlation}, '05Orthogonal Fit': {
+                'cmd': self.ortho_fit}, '04Linear Fit': {
+                    'cmd': self.linear_fit}, '06sep': ''}
         self.stats_menu = self.createPulldown(self.menu, self.stats_menu)
         self.menu.add_cascade(label='Stats', menu=self.stats_menu['var'])
 
@@ -202,19 +201,34 @@ class TestApp(DataExplore):
             self.table.child.pf = self.table.pf
         return self.table.pf
 
-    def test2(self):
-        self.tOut = txt_viewer(table=self.table)
-        self.tOut.add_txt("sdf\nsldkjf\nskdddd")
-        return
-
-    def test3(self):
-        self.print("skjdlf")
-        return
-
     def print(self, txt, end="\n"):
         if self.table.tOut is None:
             self.tOut = txt_viewer(table=self.table)
         self.tOut.add_txt(txt + end)
+        return
+
+    def linear_fit(self):
+
+        _ = LinearFitDialog(
+            self.table, app=self,
+            df=self.table.model.df,
+            title='Linear Fit')
+        return
+
+    def correlation(self):
+
+        _ = CorrelationDialog(
+            self.table, app=self,
+            df=self.table.model.df,
+            title='Correlation')
+        return
+
+    def ortho_fit(self):
+
+        _ = OrthoFitDialog(
+            self.table, app=self,
+            df=self.table.model.df,
+            title='Orthogonal Fit')
         return
 
 

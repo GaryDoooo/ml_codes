@@ -19,8 +19,10 @@ def fit_plot(x, y, alpha=0.05, print_out=False,
              x_min=None, x_max=None,
              y_min=None, y_max=None,
              scatter=True, ax=None,
-             ax_margin=0.1):
+             ax_margin=0.1, print_port=print):
 
+    print = print_port
+    #  print("test")
     res = dict()
     if x_min is None:
         x_min = min(x) - (max(x) - min(x)) * ax_margin
@@ -39,7 +41,7 @@ def fit_plot(x, y, alpha=0.05, print_out=False,
                    label='Data points')
 
     if ellipse:
-        correlation = pearson_correlation(x, y, alpha=alpha,
+        correlation = pearson_correlation(x, y, alpha=alpha, print_port=print,
                                           print_out=print_out)
         res["Pearson"] = correlation
         # Use parametric equations to generate points on the ellipse:
@@ -57,8 +59,13 @@ def fit_plot(x, y, alpha=0.05, print_out=False,
         #  ax.plot(x_line, y_line)
 
     if ortho:
-        ortho_res = orthogonal_fit(x, y, error_ratio=ortho_ratio,
-                                   print_out=print_out, alpha=alpha)
+        ortho_res = orthogonal_fit(
+            x,
+            y,
+            error_ratio=ortho_ratio,
+            print_port=print,
+            print_out=print_out,
+            alpha=alpha)
         res["Orthogonal Fit"] = ortho_res
         x1, x0 = x_max, x_min
         x_line = [x0, x1]
@@ -67,7 +74,7 @@ def fit_plot(x, y, alpha=0.05, print_out=False,
         ax.plot(x_line, y_line, color='k', label='Orthogonal Fit')
 
     if linear:
-        l_res = linear_fit(x, y, print_out=print_out)
+        l_res = linear_fit(x, y, print_out=print_out, print_port=print)
         res["Linear Fit"] = l_res
         x1, x0 = x_max, x_min
         x_line = [x0, x1]
@@ -124,7 +131,7 @@ def fit_plot(x, y, alpha=0.05, print_out=False,
 
     ax.set(xlabel=xlabel)
     ax.set(ylabel=ylabel)
-    plt.grid(grid)
+    ax.grid(grid)
     ax.set_xlim(left=x_min, right=x_max)
     ax.set_ylim(bottom=y_min, top=y_max)
     if show_legend:

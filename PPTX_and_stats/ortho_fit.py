@@ -4,7 +4,7 @@ from scipy.stats import norm
 
 
 def orthogonal_fit(x, y, error_ratio=1.0, alpha=0.05,
-                   print_out=True):
+                   print_port=print, print_out=True):
     """
     Perform orthogonal fit with unequal variances.
 
@@ -20,6 +20,7 @@ def orthogonal_fit(x, y, error_ratio=1.0, alpha=0.05,
     All the results are same to Minitab 20
     slope and int have same 3~4 digits with JMP, CIs are different w/JMP
     """
+    print = print_port
     x_mean = np.mean(x)
     y_mean = np.mean(y)
 
@@ -96,4 +97,3 @@ def orthogonal_fit(x, y, error_ratio=1.0, alpha=0.05,
             "Fitted Y": y_est, "Fitted X": x_est,
             "Residuals": vt_est, "St Resid": std_vt_est,
             "Normal test Resid": ntest_resid}
-

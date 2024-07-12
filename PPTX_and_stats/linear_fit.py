@@ -6,8 +6,8 @@ from prettytable import PrettyTable as PT
 from utilities import norm_test
 
 
-
-def linear_fit(x, y, print_out=True):
+def linear_fit(x, y, print_out=True, print_port=print):
+    print = print_port
     # Source:
     # https://support.minitab.com/en-us/minitab/help-and-how-to/statistical-modeling/regression/how-to/fitted-line-plot/methods-and-formulas/methods-and-formulas/
     x_u = stat.mean(x)
@@ -57,7 +57,12 @@ def linear_fit(x, y, print_out=True):
     MST = SST / (n - 1)
 
     # F value
-    F_reg = MSR / MSE
+    if MSE != 0:
+        F_reg = MSR / MSE
+        p_reg = 1 - f_dist.cdf(F_reg, dfn=1, dfd=n - 2)
+    else:
+        F_reg = -1
+        p_reg = 0
 
 #     If p < 0.05 (or your chosen significance level):
 # Reject the null hypothesis
@@ -70,7 +75,6 @@ def linear_fit(x, y, print_out=True):
 # relationship between the predictor and the response. Or,
 # stated differently, the p-value is used to test the hypothesis
 # that the true slope coefficient is zero.
-    p_reg = 1 - f_dist.cdf(F_reg, dfn=1, dfd=n - 2)
 
     # Lack of fit
     # c is number of distinct x values
@@ -128,11 +132,21 @@ def linear_fit(x, y, print_out=True):
 
     SEb1 = S / (sum([(xi - x_u)**2 for xi in x]))**.5
     SEb0 = S * (1 / n + x_u * x_u / sum([(xi - x_u)**2 for xi in x]))**.5
-    slope_t = abs(b1 / SEb1)
-    int_t = abs(b0 / SEb0)  # two tails test needs abs
+
 # The prob of the values are zero in truth
-    p_slope = (1 - t_dist.cdf(slope_t, n - 2)) * 2
-    p_int = (1 - t_dist.cdf(int_t, n - 2)) * 2
+    if SEb1 != 0:
+        slope_t = abs(b1 / SEb1)
+        p_slope = (1 - t_dist.cdf(slope_t, n - 2)) * 2
+    else:
+        slope_t = -1
+        p_slope = 0
+
+    if SEb0 != 0:
+        int_t = abs(b0 / SEb0)  # two tails test needs abs
+        p_int = (1 - t_dist.cdf(int_t, n - 2)) * 2
+    else:
+        int_t = -1
+        p_int = 1 if b0 == 0 else 0
 
     if print_out:
         print("Linear Fit ")
@@ -154,7 +168,7 @@ def linear_fit(x, y, print_out=True):
                    SEb0, "%.3f" %
                    int_t, "%.3f" %
                    p_int])
-        print(t)
+        print(str(t))
         #  print(f"Slope Est. {b1:.3f}\tStd Error {SEb1:.3f}")
         #  print(f"t ratio {slope_t:.3f}\tProb>|t| {p_slope:.3f}")
         #  print(f"Intercept Est. {b0:.3f}\tStd Error {SEb0:.3f}")
@@ -166,7 +180,7 @@ def linear_fit(x, y, print_out=True):
         t.add_row(["Model", "1", "%.3f" % SSR, "%.3f" % MSR])
         t.add_row(["Error", "%d" % (n - 2), "%.3f" % SSE, "%.3f" % MSE])
         t.add_row(["Total", "%d" % (n - 1), "%.3f" % SST, " "])
-        print(t)
+        print(str(t))
         #  print(f"Model DF 1\tSum of Sq {SSR:.3f}\tMean Sq {MSR:.3f}")
         #  print("Error DF %d\tSum of Sq %.3f\tMean Sq %.3f" % (n - 2, SSE, MSE))
         #  print("Total DF %d\tSum of Sq %.3f" % (n - 1, SST))
@@ -178,14 +192,15 @@ def linear_fit(x, y, print_out=True):
         t.add_row(["Lack of fit", "%d" % DFLF, "%.3f" % SSLF, "%.3f" % MSLF])
         t.add_row(["Pure Error", "%d" % DFPE, "%.3f" % SSPE, "%.3f" % MSPE])
         t.add_row(["Total", "%d" % (n - 1), "%.3f" % SST, " "])
-        print(t)
+        print(str(t))
 
         #  print(
         #      f"Lack of Fit DF {DFLF:d}\tSum of Sq {SSLF:.3f}\tMean Sq {MSLF:.3f}")
         #  print(
         #      f"Pure Error DF {DFPE:d}\tSum of Sq {SSPE:.3f}\tMean Sq {MSPE:.3f}")
         #  print("Total Error is the Error in Variances Analysis.")
-        print(f"F Ratio {F_lack:.3f}\tProb > F {p_lack:.3f}\tMax R Square {max_r_sq:.3f}")
+        print(
+            f"F Ratio {F_lack:.3f}\tProb > F {p_lack:.3f}\tMax R Square {max_r_sq:.3f}")
         print("p value is the probability of the true relationship is linear.")
         #  print(f"Max R Square {max_r_sq:.3f}")
         print("\nNormality of Residuals")

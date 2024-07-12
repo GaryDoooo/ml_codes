@@ -10,7 +10,8 @@ import statistics as stat
 # from binomial import binomial
 
 
-def pearson_correlation(x, y, alpha=0.05, print_out=True):
+def pearson_correlation(x, y, alpha=0.05, print_out=True, print_port=print):
+    print=print_port
     sx, sy = sum(x), sum(y)
     sx2 = sum([i * i for i in x])
     sy2 = sum([i * i for i in y])

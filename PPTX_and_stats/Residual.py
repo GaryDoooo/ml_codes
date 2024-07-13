@@ -10,26 +10,31 @@ from utilities import norm_test
 
 
 def linear_fit_resid_test(x, y, print_out=False, show_plot=False,
-                          filename=None):
+                          axs=None, filename=None, print_port=print):
     #  pearson_correlation(x, y, print_out=False)
     res = linear_fit(x, y, print_out=False)
 
     data = res["Residual"]
     y_est = np.array(x) * res["slope"] + res["intercept"]
     return resid_test(data, y_est, print_out=print_out,
+                      print_port=print_port, axs=axs,
                       show_plot=show_plot, filename=filename)
 
 
 def resid_test(data, y_est, print_out=False, show_plot=False,
-               filename=None):
+               axs=None, print_port=print, filename=None):
 
-    res = norm_test(data, print_out=print_out)
+    res = norm_test(data, print_out=print_out, print_port=print_port)
 
-    fig, axs = plt.subplots(2, 2, dpi=200, figsize=(16, 9))
-    probplot(data, dist="norm", plot=plt)
-    plt.xlabel('Theoretical quantiles')
-    plt.ylabel('Residual Values')
-    plt.title("")
+    if axs is None:
+        fig, axs = plt.subplots(2, 2, dpi=200, figsize=(16, 9))
+    else:
+        fig = None
+
+    probplot(data, dist="norm", plot=axs[1][1])
+    axs[1][1].set_xlabel('Theoretical quantiles')
+    axs[1][1].set_ylabel('Residual Values')
+    axs[1][1].set_title("")
 
     hist_norm(data, ax=axs[1][0], xlabel="Residual")
 
@@ -38,8 +43,9 @@ def resid_test(data, y_est, print_out=False, show_plot=False,
 
     x_plot(data, ax=axs[0][0], xlabel="Observation Order", ylabel1="Residual")
 
-    fig.suptitle("SW p-value = %.3f   AD p-value = %.3f" % (
-        res["shapiro p"], res["AD p"]), y=0.95)
+    if fig is not None:
+        fig.suptitle("SW p-value = %.3f   AD p-value = %.3f" % (
+            res["shapiro p"], res["AD p"]), y=0.95)
 
     if show_plot:
         plt.show()

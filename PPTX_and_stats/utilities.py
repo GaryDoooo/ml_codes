@@ -11,7 +11,7 @@ import statistics as stat
 
 
 def pearson_correlation(x, y, alpha=0.05, print_out=True, print_port=print):
-    print=print_port
+    print = print_port
     sx, sy = sum(x), sum(y)
     sx2 = sum([i * i for i in x])
     sy2 = sum([i * i for i in y])
@@ -201,10 +201,12 @@ def quantiles(input_data,
     ########## Result same to JMP  ##################
 
 
-def norm_test(data, print_out=False):
+def norm_test(data, print_out=False, print_port=print):
     s1, p1 = shapiro(data)
     s2, p2 = normal_ad(np.array(data))
     if print_out:
+        print = print_port
+        print("\n---- Normality Test ----")
         print(f"Shapiro-Wilk test\tstats {s1:.3f}\tp-value {p1:.3f}")
         print(f"Anderson Darling test\tstats {s2:.3f}\tp-value {p2:.3f}")
     return {"shapiro s": s1, "shapiro p": p1, "AD s": s2, "AD p": p2}

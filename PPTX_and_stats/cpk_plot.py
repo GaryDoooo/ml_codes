@@ -107,7 +107,7 @@ def hist_norm(data, ax=None, show_plot=False,
     mean = stat.mean(data)
 
     # Create x and y values for the normal distribution curve
-    xmin, xmax = plt.xlim()
+    xmin, xmax = min(data), max(data)
     x = np.linspace(xmin, xmax, 100)
 
     # Plot the normal distribution curve for overall

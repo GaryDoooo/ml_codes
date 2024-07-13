@@ -2489,8 +2489,11 @@ class Table(Canvas):
 
     def paste(self, event=None):
         """Paste a new table from the clipboard"""
-
+        
         self.storeCurrent()
+
+        print(self.multiplerowlist,self.multiplecollist)
+
         try:
             df = pd.read_clipboard(sep=',',on_bad_lines='skip')
         except Exception as e:
@@ -2499,7 +2502,7 @@ class Table(Canvas):
             return
         if len(df) == 0:
             return
-
+        
         df = pd.read_clipboard(sep=',', on_bad_lines='skip')
         model = TableModel(df)
         self.updateModel(model)

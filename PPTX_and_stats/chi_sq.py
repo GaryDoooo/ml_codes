@@ -6,16 +6,17 @@ from math import log as ln
 from prettytable import PrettyTable as PT
 
 
-def chi2_test_stdev(data_list, s0, print_out=True):
+def chi2_test_stdev(data_list, s0, print_out=False, alpha=0.05,
+                    print_port=print):
     df = len(data_list) - 1
     S = stat.variance(data_list) * df
     stdev = stat.stdev(data_list)
     chi_sq = S / s0 / s0
     p = 1 - chi2.cdf(chi_sq, df)
 
-    chi2_low0025 = chi2.ppf(0.025, df)
-    chi2_high0975 = chi2.ppf(0.975, df)
-    chi2_low005 = chi2.ppf(0.05, df)
+    chi2_low0025 = chi2.ppf(alpha / 2, df)
+    chi2_high0975 = chi2.ppf(1 - alpha / 2, df)
+    chi2_low005 = chi2.ppf(alpha, df)
     stdev_range_low = (chi2_low0025 * s0 * s0 / df)**.5
     stdev_range_high = (chi2_high0975 * s0 * s0 / df)**.5
 
@@ -23,21 +24,32 @@ def chi2_test_stdev(data_list, s0, print_out=True):
 
     std_from_S_high95 = (S / chi2_low005)**.5
 
+    pct = "%.2f%%" % (100 - alpha * 100)
+
     if print_out:
+        print = print_port
         print("Population stdev: %.2f\nSampled stdev: %.2f" % (s0, stdev))
         print("df = %d" % df)
         print("chi square = %.2f" % chi_sq)
         print("Prob of variation is bigger than the sample. p = %.2f" % p)
-        print("Lower %%2.5 Chi square = %.2f  Top %%2.5 Chi square = %.2f" % (
-            chi2_low0025, chi2_high0975))
         print(
-            "%%95 confidence range of stdev: (%.2f, %.2f), when sampling %d times from a population with stdev of %.2f." %
-            (stdev_range_low, stdev_range_high, df + 1, s0))
+            "Lower %.2f%% Chi square = %.2f  Top %.2f%% Chi square = %.2f" %
+            (alpha * 50, chi2_low0025, alpha * 50, chi2_high0975))
         print(
-            "%%95 confidence range of the population stdev: (%.2f, %.2f), where the samples came from." %
+            pct +
+            " confidence range of stdev: (%.2f, %.2f), when sampling %d times from a population with stdev of %.2f." %
+            (stdev_range_low,
+             stdev_range_high,
+             df +
+             1,
+             s0))
+        print(
+            pct +
+            " confidence range of the population stdev: (%.2f, %.2f), where the samples came from." %
             std_range_from_S)
         print(
-            "%%95 confidence the population stdev lower than %.2f, where the samples came from." %
+            pct +
+            " confidence the population stdev lower than %.2f, where the samples came from." %
             std_from_S_high95)
 
     return {

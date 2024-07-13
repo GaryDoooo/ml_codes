@@ -1,0 +1,120 @@
+from scipy.stats import t as t_test
+import statistics as stat
+
+
+def t_test_1sample(data_list, u0, print_out=False,
+                   alpha=0.05, print_port=print):
+    # Test if the data has the same mean of u0
+    mean = stat.mean(data_list)
+    stdev = stat.stdev(data_list)
+
+    t = (mean - u0) / stdev * (len(data_list)**.5)
+
+    df = len(data_list) - 1
+    p = (1 - t_test.cdf(abs(t), df)) * 2
+
+    t_0025 = t_test.ppf(alpha / 2, df)
+    t_0975 = t_test.ppf(1 - alpha / 2, df)
+
+    u0_95range = (mean - t_0975 * stdev / (len(data_list)**.5),
+                  mean - t_0025 * stdev / (len(data_list)**.5))
+    pct = "%.2f%%" % (100 - 100 * alpha)
+    # Here P is two tailed test, for one tailed test 1/2
+    if print_out:
+        print = print_port
+        print("mean = %.2f" % mean)
+        print("stdev = %.2f" % stdev)
+        print("t = %.2f" % t)
+        print("df = %.2f" % df)
+        print("Two-tailed test p=%.2f" % p)
+        print(
+            pct +
+            " range of population mean which the samples came from: (%.2f, %.2f)" %
+            u0_95range)
+    return {
+        "t": t,
+        "p": p,
+        "df": df,
+        "mean": mean,
+        "stdev": stdev,
+        "u0_95range": u0_95range}
+
+
+def paired_t_test(l1, l2, print_out=False,
+                  alpha=0.05, print_port=print):
+    diff = [i - j for i, j in zip(l1, l2)]
+    res = t_test_1sample(diff, 0, print_out=False, alpha=alpha)
+#     If p < alpha (e.g., p < 0.05): Reject the null hypothesis.
+# There is strong evidence of a significant difference between the
+# paired measurements.
+    pct = "%.2f%%" % (100 - alpha * 100)
+    if print_out:
+        print = print_port
+        print("Paired difference:")
+        print("   mean = %.2f" % res["mean"])
+        print("   stdev = %.2f" % res["stdev"])
+        print("   t = %.2f" % res["t"])
+        print("   df = %.2f" % res["df"])
+        print("   Two-tailed test p=%.2f" % res["p"])
+        print("   " + pct +
+              " range of the difference's mean: (%.2f, %.2f)" %
+              res["u0_95range"])
+    return res
+
+ # Assumptions:
+#   Pooled t-test assumes equal population variances between the two groups.
+#   Unpooled t-test (Welch's t-test) does not assume equal population variances.
+# Degrees of freedom (df) calculation:
+#   Pooled t-test: df = n1 + n2 - 2
+#   Unpooled t-test: Uses a more complex formula (Welch–Satterthwaite equation)
+#   that typically results in non-integer df.
+#        df = (s1^2/n1 + s2^2/n2)^2 / [(s1^2/n1)^2/(n1-1) + (s2^2/n2)^2/(n2-1)]
+# Variance estimation:
+#   Pooled t-test uses a weighted average of the two sample variances (pooled variance).
+#   Unpooled t-test uses separate variance estimates for each group.
+# Applicability:
+#   Pooled t-test is more appropriate when variances are truly equal or sample sizes are equal.
+# Unpooled t-test is more robust and generally recommended when unsure
+# about variance equality.
+
+
+def t_test_2samples(l1, l2, print_out=False, print_port=print):
+    u1 = stat.mean(l1)
+    u2 = stat.mean(l2)
+    s1 = stat.stdev(l1)
+    s2 = stat.stdev(l2)
+    n1 = len(l1)
+    n2 = len(l2)
+    # t = (x̄₁ - x̄₂) / √((s₁²/n₁) + (s₂²/n₂))
+    # df = (s1^2/n1 + s2^2/n2)^2 / [(s1^2/n1)^2/(n1-1) + (s2^2/n2)^2/(n2-1)]
+    t = (u1 - u2) / (s1 * s1 / n1 + s2 * s2 / n2)**.5
+    df = (s1 * s1 / n1 + s2 * s2 / n2)**2 / ((s1 * s1 / n1)
+                                             ** 2 / (n1 - 1) + (s2 * s2 / n2)**2 / (n2 - 1))
+    p = (1 - t_test.cdf(abs(t), df)) * 2
+    # Here P is two tailed test, for one tailed test 1/2
+    if print_out:
+        print = print_port
+        print("u1 = %.2f\ts1 = %.2f\tn1 = %d" % (u1, s1, n1))
+        print("u2 = %.2f\ts2 = %.2f\tn2 = %d" % (u2, s2, n2))
+        print("t = %.2f" % t)
+        print("df = %.2f" % df)
+        print("Two-tailed unpooled test p=%.2f" % p)
+    return {
+        "t": t,
+        "p": p,
+        "df": df,
+        "u1": u1,
+        "u2": u2,
+        "s1": s1,
+        "s2": s2,
+        "n1": n1,
+        "n2": n2}
+
+
+if __name__ == "__main__":
+    l1 = [1, 1, 2, 2, 3, 4, 1]
+    l2 = [3, 3, 4, 2, 3, 1, 2]
+    t_test_1sample(l1, 1, print_out=True)
+    paired_t_test(l1, l2, print_out=True)
+    print(t_test_2samples(l1, l2, print_out=True))
+    #  print(t_test_2samples_pooled(l1, l2, print_out=True))

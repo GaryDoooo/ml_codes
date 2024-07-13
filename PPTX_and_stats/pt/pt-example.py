@@ -1,17 +1,19 @@
 from tkinter import Frame, Menu, BOTH, Toplevel, END
 #  messagebox, simpledialog, PanedWindow, HORIZONTAL
 from pandastable_local import config, plotting
-from pandastable_local.core import Table
+#  from pandastable_local.core import Table
 from pandastable_local.app import DataExplore
 import pickle
 import os
 import platform
 import time
 ######## Own Module ###########
+from modified_table import MTable as Table
 from plots import plot_viewer
 from linear_plot import fit_plot
 from txt_output import txt_viewer
-from fit_dialog import LinearFitDialog, CorrelationDialog, OrthoFitDialog
+from fit_dialog import LinearFitDialog, CorrelationDialog, OrthoFitDialog, ResidDialog
+from basic_dialogs import DescribeDialog, NormTestDialog, CIDialog
 
 
 class TestApp(DataExplore):
@@ -21,7 +23,7 @@ class TestApp(DataExplore):
         self.parent = parent
         Frame.__init__(self)
         self.main = self.master
-        self.main.geometry('600x400+100+100')
+        self.main.geometry('600x400+50+100')
         self.main.title('Table app')
 
         # Get platform into a variable
@@ -35,10 +37,12 @@ class TestApp(DataExplore):
 
         f = Frame(self.main)
         f.pack(fill=BOTH, expand=1)
-        self.table = pt = Table(f, showtoolbar=False, showstatusbar=True)
-        options = {'colheadercolor': 'green', 'floatprecision': 5}
-        config.apply_options(options, pt)
-        pt.show()
+        self.table = Table(f, showtoolbar=False, showstatusbar=True,
+                           enable_menus=True)
+        options = {'colheadercolor': 'green', 'floatprecision': 5,
+                   'rowheaderfgcolor': 'black', 'rowheaderbgcolor': 'gray'}
+        config.apply_options(options, self.table)
+        self.table.show()
         self.createMenuBar()
         #  self.setupGUI()
         self.setStyles()
@@ -121,11 +125,14 @@ class TestApp(DataExplore):
         self.menu.add_cascade(label='Tools', menu=self.table_menu['var'])
 
         self.stats_menu = {
-            '01Plot Test': {
-                'cmd': self.test}, '03Correlation': {
-                'cmd': self.correlation}, '05Orthogonal Fit': {
-                'cmd': self.ortho_fit}, '04Linear Fit': {
-                    'cmd': self.linear_fit}, '06sep': ''}
+            '01Describe': {'cmd': self.describe},
+            '02Normality': {'cmd': self.norm_test},
+            '03Confidence Intervals': {'cmd': self.confidence_interval},
+            '13Correlation': {'cmd': self.correlation},
+            '16Orthogonal Fit': {'cmd': self.ortho_fit},
+            '14Linear Fit': {'cmd': self.linear_fit},
+            '15Residual Plots': {'cmd': self.resid},
+            '06sep': ''}
         self.stats_menu = self.createPulldown(self.menu, self.stats_menu)
         self.menu.add_cascade(label='Stats', menu=self.stats_menu['var'])
 
@@ -229,6 +236,34 @@ class TestApp(DataExplore):
             self.table, app=self,
             df=self.table.model.df,
             title='Orthogonal Fit')
+        return
+
+    def describe(self):
+        _ = DescribeDialog(
+            self.table, app=self,
+            df=self.table.model.df,
+            title='Stats Summary')
+        return
+
+    def norm_test(self):
+        _ = NormTestDialog(
+            self.table, app=self,
+            df=self.table.model.df,
+            title='Normality Test')
+        return
+
+    def resid(self):
+        _ = ResidDialog(
+            self.table, app=self,
+            df=self.table.model.df,
+            title='Residual Plots')
+        return
+
+    def confidence_interval(self):
+        _ = CIDialog(
+            self.table, app=self,
+            df=self.table.model.df,
+            title='Confidence Intervals')
         return
 
 

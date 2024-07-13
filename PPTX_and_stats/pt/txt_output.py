@@ -51,7 +51,7 @@ class txt_viewer(plot_viewer):
         self.m = Frame(self.main)
         self.m.pack(fill=BOTH, expand=1)
         self.plotfr = Frame(self.m)
-        self.T = Text(self.plotfr)
+        self.T = Text(self.plotfr, bg='white')
         self.T.pack(fill=BOTH, expand=1)
         #  self.T.bind("<Key>", lambda e: "break")
         #  self.T.config(state='disabled')

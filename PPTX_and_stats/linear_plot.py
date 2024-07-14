@@ -147,7 +147,8 @@ def fit_plot(x, y, alpha=0.05, print_out=False,
     return res
 
 
-def multi_fit(data, labels, print_out=False,
+def multi_fit(data, labels, print_out=False, print_port=print,
+              axs=None, fig=None,
               show_plot=False, filename=None, ax_margin=0.1):
 
     t = PT(["\\"] + labels)
@@ -165,10 +166,12 @@ def multi_fit(data, labels, print_out=False,
     res = {"pearson": cor_res}
 
     if print_out:
-        print("Pearson correlation coefficient")
+        print = print_port
+        print("\n---- Pearson correlation coefficient ----")
         print(t)
 
-    fig, axs = plt.subplots(n - 1, n - 1)  # , sharex=True, sharey=True)
+    if axs is None or fig is None:
+        fig, axs = plt.subplots(n - 1, n - 1)  # , sharex=True, sharey=True)
     # Remove vertical space between Axes
     fig.subplots_adjust(hspace=0)
     fig.subplots_adjust(wspace=0)

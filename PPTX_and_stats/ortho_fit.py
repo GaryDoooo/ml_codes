@@ -83,7 +83,7 @@ def orthogonal_fit(x, y, error_ratio=1.0, alpha=0.05,
 # They are propotionally same values
 
     if print_out:
-        print("Orthogonal Regression alpha = %.3f" % alpha)
+        print("\n---- Orthogonal Regression alpha = %.3f ----" % alpha)
         print("Error Variance Ratio %.3f" % w)
         print("Slope %.3f CI(%.3f, %.3f)" % (b1, slope_l, slope_u))
         print("Intercept %.3f CI(%.3f, %.3f)" % (b0, int_l, int_u))

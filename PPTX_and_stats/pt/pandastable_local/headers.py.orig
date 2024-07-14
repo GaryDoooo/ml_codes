@@ -387,165 +387,74 @@ class ColumnHeader(Canvas):
         self.table.drawMultipleCells()
         return
 
-    #  def handle_double_click(self, event):
-    #      """Double click sorts by this column. """
-    #
-    #      colclicked = self.table.get_col_clicked(event)
-    #      if self.sort_ascending == 1:
-    #          self.sort_ascending = 0
-    #      else:
-    #          self.sort_ascending = 1
-    #      self.table.sortTable(ascending=self.sort_ascending)
-    #      return
     def handle_double_click(self, event):
-        """Modified original Double click sorts by this column. """
-        self.renameColumn()
-        return
+        """Double click sorts by this column. """
 
-    #  def popupMenu(self, event):
-    #      """Add left and right click behaviour for column header"""
-    #
-    #      df = self.table.model.df
-    #      if len(df.columns)==0:
-    #          return
-    #      ismulti = util.check_multiindex(df.columns)
-    #      colname = str(df.columns[self.table.currentcol])
-    #      currcol = self.table.currentcol
-    #      multicols = self.table.multiplecollist
-    #      colnames = list(df.columns[multicols])[:4]
-    #      colnames = [str(i)[:20] for i in colnames]
-    #      if len(colnames)>2:
-    #          colnames = ','.join(colnames[:2])+'+%s others' %str(len(colnames)-2)
-    #      else:
-    #          colnames = ','.join(colnames)
-    #      popupmenu = Menu(self, tearoff = 0)
-    #      def popupFocusOut(event):
-    #          popupmenu.unpost()
-    #
-    #      columncommands = {"Rename": self.renameColumn,
-    #                        "Add": self.table.addColumn,
-    #                        #"Delete": self.table.deleteColumn,
-    #                        "Copy": self.table.copyColumn,
-    #                        "Move to Start": self.table.moveColumns,
-    #                        "Move to End": lambda: self.table.moveColumns(pos='end')
-    #                       }
-    #      formatcommands = {'Set Color': self.table.setColumnColors,
-    #                        'Color by Value': self.table.setColorbyValue,
-    #                        'Alignment': self.table.setAlignment,
-    #                        'Wrap Header' : self.table.setWrap
-    #                       }
-    #      popupmenu.add_command(label="Sort by " + colnames + ' \u2193',
-    #                  command=lambda : self.table.sortTable(ascending=[1 for i in multicols]))
-    #      popupmenu.add_command(label="Sort by " + colnames + ' \u2191',
-    #          command=lambda : self.table.sortTable(ascending=[0 for i in multicols]))
-    #      popupmenu.add_command(label="Set %s as Index" %colnames, command=self.table.setindex)
-    #      popupmenu.add_command(label="Delete Column(s)", command=self.table.deleteColumn)
-    #      if ismulti == True:
-    #          popupmenu.add_command(label="Flatten Index", command=self.table.flattenIndex)
-    #      popupmenu.add_command(label="Fill With Data", command=self.table.fillColumn)
-    #      popupmenu.add_command(label="Create Categorical", command=self.table.createCategorical)
-    #      popupmenu.add_command(label="Apply Function", command=self.table.applyColumnFunction)
-    #      popupmenu.add_command(label="Resample/Transform", command=self.table.applyTransformFunction)
-    #      popupmenu.add_command(label="Value Counts", command=self.table.valueCounts)
-    #      popupmenu.add_command(label="String Operation", command=self.table.applyStringMethod)
-    #      popupmenu.add_command(label="Date/Time Conversion", command=self.table.convertDates)
-    #      popupmenu.add_command(label="Set Data Type", command=self.table.setColumnType)
-    #
-    #      createSubMenu(popupmenu, 'Column', columncommands)
-    #      createSubMenu(popupmenu, 'Format', formatcommands)
-    #      popupmenu.bind("<FocusOut>", popupFocusOut)
-    #      popupmenu.focus_set()
-    #      popupmenu.post(event.x_root, event.y_root)
-    #      applyStyle(popupmenu)
-    #      return popupmenu
+        colclicked = self.table.get_col_clicked(event)
+        if self.sort_ascending == 1:
+            self.sort_ascending = 0
+        else:
+            self.sort_ascending = 1
+        self.table.sortTable(ascending=self.sort_ascending)
+        return
 
     def popupMenu(self, event):
         """Add left and right click behaviour for column header"""
 
         df = self.table.model.df
-        if len(df.columns) == 0:
+        if len(df.columns)==0:
             return
         ismulti = util.check_multiindex(df.columns)
-        #  colname = str(df.columns[self.table.currentcol])
-        #  currcol = self.table.currentcol
+        colname = str(df.columns[self.table.currentcol])
+        currcol = self.table.currentcol
         multicols = self.table.multiplecollist
         colnames = list(df.columns[multicols])[:4]
         colnames = [str(i)[:20] for i in colnames]
-        if len(colnames) > 2:
-            colnames = ','.join(colnames[:2]) + \
-                '+%s others' % str(len(colnames) - 2)
+        if len(colnames)>2:
+            colnames = ','.join(colnames[:2])+'+%s others' %str(len(colnames)-2)
         else:
             colnames = ','.join(colnames)
-        popupmenu = Menu(self, tearoff=0)
-
+        popupmenu = Menu(self, tearoff = 0)
         def popupFocusOut(event):
             popupmenu.unpost()
 
-        #  columncommands = {"Rename": self.renameColumn,
-        #                    "Add": self.table.addColumn,
-        #                    #  "Delete": self.table.deleteColumn,
-        #                    "Copy": self.table.copyColumn,
-        #                    "Move to Start": self.table.moveColumns,
-        #                    "Move to End": lambda: self.table.moveColumns(pos='end')
-        #                   }
-        #  formatcommands = {'Set Color': self.table.setColumnColors,
-        #                    'Color by Value': self.table.setColorbyValue,
-        #                    'Alignment': self.table.setAlignment,
-        #                    'Wrap Header' : self.table.setWrap
-        #                   }
-        popupmenu.add_command(
-            label="Sort by " + colnames + ' \u2193',
-            command=lambda: self.table.sortTable(
-                ascending=[
-                    1 for i in multicols]))
-        popupmenu.add_command(
-            label="Sort by " + colnames + ' \u2191',
-            command=lambda: self.table.sortTable(
-                ascending=[
-                    0 for i in multicols]))
-        #  popupmenu.add_command(label="Set %s as Index" %colnames, command=self.table.setindex)
-        popupmenu.add_command(
-            label="Delete Column(s)",
-            command=self.table.deleteColumn)
-        if ismulti:
-            popupmenu.add_command(
-                label="Flatten Index",
-                command=self.table.flattenIndex)
+        columncommands = {"Rename": self.renameColumn,
+                          "Add": self.table.addColumn,
+                          #"Delete": self.table.deleteColumn,
+                          "Copy": self.table.copyColumn,
+                          "Move to Start": self.table.moveColumns,
+                          "Move to End": lambda: self.table.moveColumns(pos='end')
+                         }
+        formatcommands = {'Set Color': self.table.setColumnColors,
+                          'Color by Value': self.table.setColorbyValue,
+                          'Alignment': self.table.setAlignment,
+                          'Wrap Header' : self.table.setWrap
+                         }
+        popupmenu.add_command(label="Sort by " + colnames + ' \u2193',
+                    command=lambda : self.table.sortTable(ascending=[1 for i in multicols]))
+        popupmenu.add_command(label="Sort by " + colnames + ' \u2191',
+            command=lambda : self.table.sortTable(ascending=[0 for i in multicols]))
+        popupmenu.add_command(label="Set %s as Index" %colnames, command=self.table.setindex)
+        popupmenu.add_command(label="Delete Column(s)", command=self.table.deleteColumn)
+        if ismulti == True:
+            popupmenu.add_command(label="Flatten Index", command=self.table.flattenIndex)
+        popupmenu.add_command(label="Fill With Data", command=self.table.fillColumn)
+        popupmenu.add_command(label="Create Categorical", command=self.table.createCategorical)
+        popupmenu.add_command(label="Apply Function", command=self.table.applyColumnFunction)
+        popupmenu.add_command(label="Resample/Transform", command=self.table.applyTransformFunction)
+        popupmenu.add_command(label="Value Counts", command=self.table.valueCounts)
+        popupmenu.add_command(label="String Operation", command=self.table.applyStringMethod)
+        popupmenu.add_command(label="Date/Time Conversion", command=self.table.convertDates)
+        popupmenu.add_command(label="Set Data Type", command=self.table.setColumnType)
 
-        popupmenu.add_command(
-            label="Rename Column",
-            command=self.renameColumn)
-        popupmenu.add_command(label="Add Column", command=self.table.addColumn)
-        popupmenu.add_command(
-            label="Set Color",
-            command=self.table.setColumnColors)
-        popupmenu.add_command(
-            label="Color by Value",
-            command=self.table.setColorbyValue)
-        popupmenu.add_command(
-            label="Set Alignment",
-            command=self.table.setAlignment)
-        #  popupmenu.add_command(label="Wrap Header", command=self.table.setWrap)
-        popupmenu.add_command(
-            label="Fill With Data",
-            command=self.table.fillColumn)
-        #  popupmenu.add_command(label="Create Categorical", command=self.table.createCategorical)
-        #  popupmenu.add_command(label="Apply Function", command=self.table.applyColumnFunction)
-        #  popupmenu.add_command(label="Resample/Transform", command=self.table.applyTransformFunction)
-        #  popupmenu.add_command(label="Value Counts", command=self.table.valueCounts)
-        #  popupmenu.add_command(label="String Operation", command=self.table.applyStringMethod)
-        #  popupmenu.add_command(label="Date/Time Conversion", command=self.table.convertDates)
-        popupmenu.add_command(
-            label="Set Data Type",
-            command=self.table.setColumnType)
-
-        #  createSubMenu(popupmenu, 'Column', columncommands)
-        #  createSubMenu(popupmenu, 'Format', formatcommands)
+        createSubMenu(popupmenu, 'Column', columncommands)
+        createSubMenu(popupmenu, 'Format', formatcommands)
         popupmenu.bind("<FocusOut>", popupFocusOut)
         popupmenu.focus_set()
         popupmenu.post(event.x_root, event.y_root)
         applyStyle(popupmenu)
         return popupmenu
+
     def renameColumn(self):
         """Rename column"""
 

@@ -5,6 +5,7 @@ from tkinter import TOP, LEFT, X, BOTH
 from linear_plot import fit_plot
 from dialog import Dialogs
 from Residual import linear_fit_resid_test
+from utilities import number_2lists
 
 
 class LinearFitDialog(Dialogs):
@@ -18,13 +19,13 @@ class LinearFitDialog(Dialogs):
         w = tk.Label(f, text="X")
         w.pack(side=LEFT, fill=X, padx=2)
         w = ttk.Combobox(
-            f, values=self.valcols, textvariable=self.xvar,
+            f, values=self.cols, textvariable=self.xvar,
             width=14)
         w.pack(side=LEFT, padx=2)
         w = tk.Label(f, text="Y")
         w.pack(side=LEFT, fill=X, padx=2)
         w = ttk.Combobox(
-            f, values=self.valcols, textvariable=self.yvar,
+            f, values=self.cols, textvariable=self.yvar,
             width=14)
         w.pack(side=LEFT, padx=2)
         self.ellipse = tk.BooleanVar(value=False)
@@ -77,8 +78,10 @@ class LinearFitDialog(Dialogs):
     def apply(self):
         """Apply crosstab"""
 
-        x = list(self.df[self.xvar.get()])
-        y = list(self.df[self.yvar.get()])
+        x, y = number_2lists(self.df[self.xvar.get()],
+                             self.df[self.yvar.get()],
+                             col_name1=self.xvar.get(), col_name2=self.yvar.get(),
+                             print_out=True, print_port=self.app.print)
         pf = self.app.showPlotViewer()
         pf.ax = pf.fig.add_subplot(111)
 
@@ -128,21 +131,60 @@ class ResidDialog(Dialogs):
         w = tk.Label(f, text="X")
         w.pack(side=LEFT, fill=X, padx=2)
         w = ttk.Combobox(
-            f, values=self.valcols, textvariable=self.xvar,
+            f, values=self.cols, textvariable=self.xvar,
             width=14)
         w.pack(side=LEFT, padx=2)
         w = tk.Label(f, text="Y")
         w.pack(side=LEFT, fill=X, padx=2)
         w = ttk.Combobox(
-            f, values=self.valcols, textvariable=self.yvar,
+            f, values=self.cols, textvariable=self.yvar,
             width=14)
         w.pack(side=LEFT, padx=2)
         return
 
     def apply(self):
 
-        x = list(self.df[self.xvar.get()])
-        y = list(self.df[self.yvar.get()])
+        x, y = number_2lists(self.df[self.xvar.get()],
+                             self.df[self.yvar.get()],
+                             col_name1=self.xvar.get(), col_name2=self.yvar.get(),
+                             print_out=True, print_port=self.app.print)
+        pf = self.app.showPlotViewer()
+        axs = [[pf.fig.add_subplot(221), pf.fig.add_subplot(222)],
+               [pf.fig.add_subplot(223), pf.fig.add_subplot(224)]]
+        pf.fig.set_tight_layout(True)
+        linear_fit_resid_test(x, y, print_port=self.app.print,
+                              axs=axs, print_out=True)
+        return
+class MCorDialog(Dialogs):
+    def createWidgets(self, m):
+        """Create a set of grp-agg-func options together"""
+        w = tk.Label(
+            m, text="Residual plots are only available for linear fits.")
+        w.pack(side=TOP, fill=BOTH, padx=2)
+        f = tk.LabelFrame(m, text='X Y Values')
+        f.pack(side=TOP, fill=BOTH, padx=2)
+        self.xvar = tk.StringVar(value="")
+        self.yvar = tk.StringVar(value="")
+        w = tk.Label(f, text="X")
+        w.pack(side=LEFT, fill=X, padx=2)
+        w = ttk.Combobox(
+            f, values=self.cols, textvariable=self.xvar,
+            width=14)
+        w.pack(side=LEFT, padx=2)
+        w = tk.Label(f, text="Y")
+        w.pack(side=LEFT, fill=X, padx=2)
+        w = ttk.Combobox(
+            f, values=self.cols, textvariable=self.yvar,
+            width=14)
+        w.pack(side=LEFT, padx=2)
+        return
+
+    def apply(self):
+
+        x, y = number_2lists(self.df[self.xvar.get()],
+                             self.df[self.yvar.get()],
+                             col_name1=self.xvar.get(), col_name2=self.yvar.get(),
+                             print_out=True, print_port=self.app.print)
         pf = self.app.showPlotViewer()
         axs = [[pf.fig.add_subplot(221), pf.fig.add_subplot(222)],
                [pf.fig.add_subplot(223), pf.fig.add_subplot(224)]]

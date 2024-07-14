@@ -10,9 +10,9 @@ import time
 ######## Own Module ###########
 from modified_table import MTable as Table
 from plots import plot_viewer
-from linear_plot import fit_plot
+#  from linear_plot import fit_plot
 from txt_output import txt_viewer
-from fit_dialog import LinearFitDialog, CorrelationDialog, OrthoFitDialog, ResidDialog
+from fit_dialog import LinearFitDialog, CorrelationDialog, OrthoFitDialog, ResidDialog, MCorDialog
 from basic_dialogs import DescribeDialog, NormTestDialog, CIDialog
 
 
@@ -39,7 +39,7 @@ class TestApp(DataExplore):
         f.pack(fill=BOTH, expand=1)
         self.table = Table(f, showtoolbar=False, showstatusbar=True,
                            enable_menus=True)
-        options = {'colheadercolor': 'green', 'floatprecision': 5,
+        options = {'colheadercolor': 'green', 'floatprecision': 3,
                    'rowheaderfgcolor': 'black', 'rowheaderbgcolor': 'gray'}
         config.apply_options(options, self.table)
         self.table.show()
@@ -83,9 +83,11 @@ class TestApp(DataExplore):
 
         editmenuitems = {'01Undo Last Change': {'cmd': self.undo},
                          '02Copy Table': {'cmd': self.copyTable},
-                         '03Find/Replace': {'cmd': self.findText},
-                         '04Preferences': {'cmd': self.currentTablePrefs}
-                         }
+                         '03Paste w/o header Ctrl-V': {'cmd': lambda: self._call('paste')},
+                         '04Paste w/ header': {'cmd': lambda: self._call('paste_header')},
+                         '13Find/Replace': {'cmd': self.findText},
+                         '20sep': 'ddddd',
+                         '24Preferences': {'cmd': self.currentTablePrefs}}
         self.edit_menu = self.createPulldown(self.menu, editmenuitems)
         self.menu.add_cascade(label='Edit', menu=self.edit_menu['var'])
 
@@ -103,24 +105,36 @@ class TestApp(DataExplore):
         self.view_menu = self.createPulldown(self.menu, self.view_menu)
         self.menu.add_cascade(label='View', menu=self.view_menu['var'])
 
-        self.table_menu = {'01Describe Table': {'cmd': self.describe},
-                           '02Convert Column Names': {'cmd': lambda: self._call('convertColumnNames')},
-                           '03Convert Numeric': {'cmd': lambda: self._call('convertNumeric')},
-                           '04Clean Data': {'cmd': lambda: self._call('cleanData')},
-                           '05Find Duplicates': {'cmd': lambda: self._call('findDuplicates')},
-                           '06Correlation Matrix': {'cmd': lambda: self._call('corrMatrix')},
-                           #  '07Concatenate Tables': {'cmd': self.concat},
-                           '08Table to Text': {'cmd': lambda: self._call('showasText')},
-                           '09Table Info': {'cmd': lambda: self._call('showInfo')},
-                           '10sep': '',
-                           '11Transform Values': {'cmd': lambda: self._call('transform')},
-                           '12Group-Aggregate': {'cmd': lambda: self._call('aggregate')},
-                           '13Cross Tabulation': {'cmd': lambda: self._call('crosstab')},
-                           '14Merge/Concat Tables': {'cmd': lambda: self._call('doCombine')},
-                           '15Pivot Table': {'cmd': lambda: self._call('pivot')},
-                           '16Melt Table': {'cmd': lambda: self._call('melt')},
-                           '17Time Series Resampling': {'cmd': lambda: self._call('resample')}
-                           }
+        self.data_menu = {
+            '01Create Categorical': {'cmd': lambda: self._call('createCategorical')},
+            '02Apply Function': {'cmd': lambda: self._call('applyColumnFunction')},
+            '03Resample/Transform': {'cmd': lambda: self._call('applyTransformFunction')},
+            '04Value Counts': {'cmd': lambda: self._call('valueCounts')},
+            '05String Operation': {'cmd': lambda: self._call('applyStringMethod')},
+            '06Date/Time Conversion': {'cmd': lambda: self._call('convertDates')},
+            '22Filter Rows': {'cmd': lambda: self._call('queryBar')}}
+        self.data_menu = self.createPulldown(self.menu, self.data_menu)
+        self.menu.add_cascade(label='Data', menu=self.data_menu['var'])
+
+        self.table_menu = {
+            #  '01Describe Table': {'cmd': self.describe},
+            '02Convert Column Names': {'cmd': lambda: self._call('convertColumnNames')},
+            '03Convert Numeric': {'cmd': lambda: self._call('convertNumeric')},
+            '04Clean Data': {'cmd': lambda: self._call('cleanData')},
+            '05Find Duplicates': {'cmd': lambda: self._call('findDuplicates')},
+            #  '06Correlation Matrix': {'cmd': lambda: self._call('corrMatrix')},
+            #  '07Concatenate Tables': {'cmd': self.concat},
+            '08Table to Text': {'cmd': lambda: self._call('showasText')},
+            '09Table Info': {'cmd': lambda: self._call('showInfo')},
+            '10sep': '',
+            '11Transform Values': {'cmd': lambda: self._call('transform')},
+            '12Group-Aggregate': {'cmd': lambda: self._call('aggregate')},
+            '13Cross Tabulation': {'cmd': lambda: self._call('crosstab')},
+            '14Merge/Concat Tables': {'cmd': lambda: self._call('doCombine')},
+            '15Pivot Table': {'cmd': lambda: self._call('pivot')},
+            '16Melt Table': {'cmd': lambda: self._call('melt')},
+            '17Time Series Resampling': {'cmd': lambda: self._call('resample')}
+        }
         self.table_menu = self.createPulldown(self.menu, self.table_menu)
         self.menu.add_cascade(label='Tools', menu=self.table_menu['var'])
 
@@ -132,6 +146,7 @@ class TestApp(DataExplore):
             '16Orthogonal Fit': {'cmd': self.ortho_fit},
             '14Linear Fit': {'cmd': self.linear_fit},
             '15Residual Plots': {'cmd': self.resid},
+            '17Correlation Matrix': {'cmd': self.multi_cor},
             '06sep': ''}
         self.stats_menu = self.createPulldown(self.menu, self.stats_menu)
         self.menu.add_cascade(label='Stats', menu=self.stats_menu['var'])
@@ -188,12 +203,6 @@ class TestApp(DataExplore):
             self.plots = {}
         menu = self.plots_menu['var']
         menu.delete(6, menu.index(END))
-        return
-
-    def test(self):
-        pf = self.showPlotViewer()
-        pf.ax = pf.fig.add_subplot(111)
-        fit_plot([1, 2], [1, 2], ax=pf.ax)
         return
 
     def showPlotViewer(self, parent=None):
@@ -264,6 +273,13 @@ class TestApp(DataExplore):
             self.table, app=self,
             df=self.table.model.df,
             title='Confidence Intervals')
+        return
+
+    def multi_cor(self):
+        _ = MCorDialog(
+            self.table, app=self,
+            df=self.table.model.df,
+            title='Multi Column Correlation')
         return
 
 

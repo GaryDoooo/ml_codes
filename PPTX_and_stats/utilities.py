@@ -8,6 +8,66 @@ from scipy.stats import t as t_dist
 import statistics as stat
 ######### Own Modules ############
 # from binomial import binomial
+from chi_sq import chi2_test_stdev
+from t_test import t_test_1sample
+
+
+def mean_std_CIs(data, alpha=0.05, print_out=False, print_port=print):
+    chi2_r = chi2_test_stdev(
+        data,
+        1,
+        alpha=alpha,
+        print_out=False,
+        print_port=print_port)
+    std_2side_range = chi2_r["95_range_from_S"]
+    chi2_r = chi2_test_stdev(
+        data,
+        1,
+        alpha=2 * alpha,
+        print_out=False,
+        print_port=print_port)
+    std_1side_range = chi2_r["95_range_from_S"]
+
+    t_r = t_test_1sample(
+        data,
+        1,
+        alpha=alpha,
+        print_out=False,
+        print_port=print_port)
+    mean_2side_range = t_r["u0_95range"]
+    t_r = t_test_1sample(
+        data,
+        1,
+        alpha=2 * alpha,
+        print_out=False,
+        print_port=print_port)
+    mean_1side_range = t_r["u0_95range"]
+
+    if print_out:
+        print = print_port
+        print("\n---- Confidence Intervals ----")
+        pct = "%.1f%% " % (100 - 100 * alpha)
+        print("For the population where the samples came from:\n")
+        print(
+            pct +
+            "Prob that mean is in the range of (%.3f, %.3f)" %
+            mean_2side_range)
+        print(pct + "Prob that mean is less than %.3f." % mean_1side_range[1])
+        print(
+            pct +
+            "Prob that mean is greater than %.3f.\n" %
+            mean_1side_range[0])
+        print(
+            pct +
+            "Prob that stdev is in the range of (%.3f, %.3f)" %
+            std_2side_range)
+        print(pct + "Prob that stdev is less than %.3f." % std_1side_range[1])
+        print(
+            pct +
+            "Prob that stdev is greater than %.3f." %
+            std_1side_range[0])
+    return {"std 2side": std_2side_range, "std 1side": std_1side_range,
+            "mean 2side": mean_2side_range, "mean 1side": mean_1side_range}
 
 
 def pearson_correlation(x, y, alpha=0.05, print_out=True, print_port=print):
@@ -64,7 +124,7 @@ def pearson_correlation(x, y, alpha=0.05, print_out=True, print_port=print):
         theta = np.arctan(x1 / y1)
 
     if print_out:
-        print("\nPearson correlation alpha = %.3f" % alpha)
+        print("\n---- Pearson correlation alpha = %.3f ----" % alpha)
         print("Correlation coefficient: %.3f" % r)
         print("Confidence Interval (%.3f, %.3f)" % (lo, hi))
         print("Covariance: %.3f" % cov)
@@ -210,6 +270,57 @@ def norm_test(data, print_out=False, print_port=print):
         print(f"Shapiro-Wilk test\tstats {s1:.3f}\tp-value {p1:.3f}")
         print(f"Anderson Darling test\tstats {s2:.3f}\tp-value {p2:.3f}")
     return {"shapiro s": s1, "shapiro p": p1, "AD s": s2, "AD p": p2}
+
+
+def number_list(data, col_name="unknown", print_out=False,
+                print_port=print):
+    l = list(data)
+    res = []
+    for i in l:
+        try:
+            j = float(i)
+            if j < 0 or j >= 0:
+                res.append(j)
+        except BaseException:
+            pass
+    if print_out:
+        print = print_port
+        print("Col: " +
+              col_name +
+              ", inputs: %d, valid numbers: %d" %
+              (len(l), len(res)))
+    return res
+
+
+def number_2lists(d1, d2, col_name1="unknown",
+                  col_name2="unknown", print_out=False,
+                  print_port=print):
+    l1 = list(d1)
+    l2 = list(d2)
+    x, y = [], []
+    for i, j in zip(l1, l2):
+        try:
+            ii = float(i)
+            jj = float(j)
+            if jj < 0 or jj >= 0:
+                if ii < 0 or ii >= 0:
+                    x.append(ii)
+                    y.append(jj)
+        except BaseException:
+            pass
+    if print_out:
+        print = print_port
+        print(
+            "Col " +
+            col_name1 +
+            " inputs: %d" %
+            len(l1) +
+            ", Col " +
+            col_name2 +
+            " inputs: %d." %
+            len(l2))
+        print("Valid number pairs: %d." % len(x))
+    return x, y
 
 
 if __name__ == "__main__":

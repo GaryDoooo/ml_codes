@@ -6,6 +6,8 @@ from scipy.stats import probplot
 from dialog import Dialogs
 from describe import describe
 from utilities import norm_test
+########### Own Modules #############
+from utilities import number_list, mean_std_CIs
 
 
 class DescribeDialog(Dialogs):
@@ -14,7 +16,7 @@ class DescribeDialog(Dialogs):
         f.pack(side=TOP, fill=BOTH, padx=2)
         self.xvar = tk.StringVar(value="")
         w = ttk.Combobox(
-            f, values=self.valcols, textvariable=self.xvar,
+            f, values=self.cols, textvariable=self.xvar,
             width=14)
         w.pack(side=LEFT, padx=2)
 
@@ -29,7 +31,10 @@ class DescribeDialog(Dialogs):
 
     def apply(self):
 
-        x = list(self.df[self.xvar.get()])
+        x = number_list(self.df[self.xvar.get()],
+                        col_name=self.xvar.get(),
+                        print_out=True, print_port=self.app.print)
+        print(x)
         pct = self.pct.get()
         try:
             pct = [float(i) for i in pct.split(",") if 0 <= float(i) <= 100]
@@ -46,7 +51,7 @@ class NormTestDialog(Dialogs):
         f.pack(side=TOP, fill=BOTH, padx=2)
         self.xvar = tk.StringVar(value="")
         w = ttk.Combobox(
-            f, values=self.valcols, textvariable=self.xvar,
+            f, values=self.cols, textvariable=self.xvar,
             width=14)
         w.pack(side=LEFT, padx=2)
         f = tk.LabelFrame(m, text='Plot')
@@ -58,7 +63,9 @@ class NormTestDialog(Dialogs):
         return
 
     def apply(self):
-        x = list(self.df[self.xvar.get()])
+        x = number_list(self.df[self.xvar.get()],
+                        col_name=self.xvar.get(),
+                        print_out=True, print_port=self.app.print)
         qq = self.qq.get()
 
         norm_test(x, print_out=True, print_port=self.app.print)
@@ -71,23 +78,23 @@ class NormTestDialog(Dialogs):
             pf.ax.set_ylabel('Observed Values')
         return
 
+
 class CIDialog(Dialogs):
     def createWidgets(self, m):
         f = tk.LabelFrame(m, text='Mean & Std CI')
         f.pack(side=TOP, fill=BOTH, padx=2)
         self.xvar = tk.StringVar(value="")
         w = ttk.Combobox(
-            f, values=self.valcols, textvariable=self.xvar,
+            f, values=self.cols, textvariable=self.xvar,
             width=14)
         w.pack(side=LEFT, padx=2)
-        self.add_alpha()
+        self.add_alpha(m)
         return
 
     def apply(self):
-
-        x = list(self.df[self.xvar.get()])
-        alpha= self.alpha.get()
-        
-        describe(x, print_out=True, print_port=self.app.print,
-                 percentiles=pct)
+        x = number_list(self.df[self.xvar.get()],
+                        col_name=self.xvar.get(),
+                        print_out=True, print_port=self.app.print)
+        alpha = self.alpha.get()
+        mean_std_CIs(x, alpha=alpha, print_out=True, print_port=self.app.print)
         return

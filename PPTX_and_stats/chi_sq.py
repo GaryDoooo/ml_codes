@@ -31,7 +31,7 @@ def chi2_test_stdev(data_list, s0, print_out=False, alpha=0.05,
         print("Population stdev: %.2f\nSampled stdev: %.2f" % (s0, stdev))
         print("df = %d" % df)
         print("chi square = %.2f" % chi_sq)
-        print("Prob of variation is bigger than the sample. p = %.2f" % p)
+        print("Prob of variation is greater than the sample. p = %.2f" % p)
         print(
             "Lower %.2f%% Chi square = %.2f  Top %.2f%% Chi square = %.2f" %
             (alpha * 50, chi2_low0025, alpha * 50, chi2_high0975))
@@ -168,7 +168,7 @@ def chi_square(data, print_out=True):
         t.field_names = ["Test", "Chi sq", "P >ChiSq"]
         t.add_row(["Likelihood Ratio", "%.3f" % LR, "%.3f" % p_LR])
         t.add_row(["Pearson", "%.3f" % chi_sq, "%.3f" % p])
-        print(t)
+        print(str(t))
 
     return {"p Pearson": p, "chi sq Pearson": chi_sq, "df": df,
             "p LR": p_LR, "chi sq LR": LR}
@@ -264,3 +264,4 @@ def two_pop_var_test(l1, l2, print_out=True):
 if __name__ == "__main__":
     print(chi_square([[30, 76, 49], [1, 37, 62], [11, 11, 26]]))
     chi_square([[95, 43], [101, 64]])
+    chi2_test_stdev([1, 1, 2, 2, 3, 4, 1], 2, print_out=True)

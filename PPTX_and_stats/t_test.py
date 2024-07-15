@@ -1,32 +1,43 @@
 from scipy.stats import t as t_test
+from scipy.stats import norm
 import statistics as stat
 
 
 def t_test_1sample(data_list, u0, print_out=False,
+                   sample_mean=None, sample_std=None, sample_n=None,
                    alpha=0.05, print_port=print):
     # Test if the data has the same mean of u0
-    mean = stat.mean(data_list)
-    stdev = stat.stdev(data_list)
 
-    t = (mean - u0) / stdev * (len(data_list)**.5)
+    if sample_mean is not None and sample_std is not None and sample_n is not None:
+        mean = sample_mean
+        stdev = sample_std
+        n = sample_n
+    else:
+        mean = stat.mean(data_list)
+        stdev = stat.stdev(data_list)
+        n = len(data_list)
 
-    df = len(data_list) - 1
+    t = (mean - u0) / stdev * (n**.5)
+
+    df = n - 1
     p = (1 - t_test.cdf(abs(t), df)) * 2
 
     t_0025 = t_test.ppf(alpha / 2, df)
     t_0975 = t_test.ppf(1 - alpha / 2, df)
 
-    u0_95range = (mean - t_0975 * stdev / (len(data_list)**.5),
-                  mean - t_0025 * stdev / (len(data_list)**.5))
+    u0_95range = (mean - t_0975 * stdev / (n**.5),
+                  mean - t_0025 * stdev / (n**.5))
     pct = "%.2f%%" % (100 - 100 * alpha)
     # Here P is two tailed test, for one tailed test 1/2
     if print_out:
         print = print_port
-        print("mean = %.2f" % mean)
-        print("stdev = %.2f" % stdev)
-        print("t = %.2f" % t)
-        print("df = %.2f" % df)
-        print("Two-tailed test p=%.2f" % p)
+        print("\n---- One sample t ----")
+        print("mean = %.3f" % mean)
+        print("stdev = %.3f" % stdev)
+        print("t = %.3f" % t)
+        print("df = %.3f" % df)
+        print("Two-tailed test p = %.3f" % p)
+        print("P-value is the prob of that population mean equals the specified value, which the samples came from.")
         print(
             pct +
             " range of population mean which the samples came from: (%.2f, %.2f)" %
@@ -38,6 +49,40 @@ def t_test_1sample(data_list, u0, print_out=False,
         "mean": mean,
         "stdev": stdev,
         "u0_95range": u0_95range}
+
+
+def z_test_1sample(
+        data_list,
+        u0,
+        s0,
+        sample_mean=None,
+        sample_n=None,
+        print_out=True,
+        print_port=print):
+
+    if sample_mean is None or sample_n is None:
+        mean = stat.mean(data_list)
+        n = len(data_list)
+    else:
+        n = sample_n
+        mean = sample_mean
+
+    deno = s0 / (n**.5)
+    z = (mean - u0) / deno
+    p = 2 * (1 - norm.cdf(abs(z)))
+
+    df = n - 1
+
+    # Here P is two tailed test, for one tailed test 1/2
+    if print_out:
+        print = print_port
+        print("\n---- One sample Z ----")
+        print("mean = %.3f" % mean)
+        print("z = %.3f" % z)
+        print("df = %.3f" % df)
+        print("Two-tailed test p = %.3f" % p)
+        print("P-value is the prob of that population mean equals the specified value, which the samples came from.")
+    return {"z": z, "p": p, "df": df, "mean": mean}
 
 
 def paired_t_test(l1, l2, print_out=False,

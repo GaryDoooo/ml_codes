@@ -323,5 +323,13 @@ def number_2lists(d1, d2, col_name1="unknown",
     return x, y
 
 
+def get_number(x):
+    """x is a tk variable with get()"""
+    try:
+        return float(x.get())
+    except BaseException:
+        return None
+
+
 if __name__ == "__main__":
     pearson_correlation([1, 2, 3], [2, 3, 1])

@@ -14,6 +14,7 @@ from plots import plot_viewer
 from txt_output import txt_viewer
 from fit_dialog import LinearFitDialog, CorrelationDialog, OrthoFitDialog, ResidDialog, MCorDialog
 from basic_dialogs import DescribeDialog, NormTestDialog, CIDialog
+from sample_test_dialog import Mean1SampleDialog, Mean1SampleZDialog
 
 
 class TestApp(DataExplore):
@@ -147,7 +148,9 @@ class TestApp(DataExplore):
             '14Linear Fit': {'cmd': self.linear_fit},
             '15Residual Plots': {'cmd': self.resid},
             '17Correlation Matrix': {'cmd': self.multi_cor},
-            '06sep': ''}
+            '22One Sample Mean t-test': {'cmd': self.mean_1sample},
+            '23One Sample Mean Z-test': {'cmd': self.mean_1sampleZ},
+            '06sep': '', '20sep': ''}
         self.stats_menu = self.createPulldown(self.menu, self.stats_menu)
         self.menu.add_cascade(label='Stats', menu=self.stats_menu['var'])
 
@@ -280,6 +283,20 @@ class TestApp(DataExplore):
             self.table, app=self,
             df=self.table.model.df,
             title='Multi Column Correlation')
+        return
+
+    def mean_1sample(self):
+        _ = Mean1SampleDialog(
+            self.table, app=self,
+            df=self.table.model.df,
+            title='One sample t-test')
+        return
+
+    def mean_1sampleZ(self):
+        _ = Mean1SampleZDialog(
+            self.table, app=self,
+            df=self.table.model.df,
+            title='One sample Z-test')
         return
 
 

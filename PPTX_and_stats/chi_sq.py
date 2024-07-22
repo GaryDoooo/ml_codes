@@ -4,6 +4,8 @@ from scipy.stats import chi2, norm, kurtosis
 from scipy.stats import f as f_dist
 from math import log as ln
 from prettytable import PrettyTable as PT
+########### Own Modules ############
+#  from utilities import mean_std_CIs
 
 
 def chi2_test_stdev(data_list, s0, print_out=False, alpha=0.05,
@@ -138,34 +140,66 @@ single_pop_var_test = chi2_test_stdev
 # (rows - 1) * (columns - 1).
 
 
-def chi_square(data, print_out=True):
+def chi_square(data, print_out=True, print_port=print,
+               print_table=False, rKeys=None, cKeys=None):
     a = np.array(data)  # a stores the observed values
     col_sum = np.sum(a, axis=0)
     row_sum = np.sum(a, axis=1)
     ttl_sum = np.sum(col_sum)
-
+    #  print = print_port
+    #  print(str(data))
+    #  print(str(rKeys) + " rKeys")
+    #  print(str(cKeys))
     chi_sq = 0
-    for y in range(a.shape[0]):
-        for x in range(a.shape[1]):
-            expected = row_sum[y] * col_sum[x] / ttl_sum
-            chi_sq += (a[y][x] - expected)**2 / expected
+    e = np.zeros(a.shape)
+    try:
+        for y in range(a.shape[0]):
+            for x in range(a.shape[1]):
+                expected = row_sum[y] * col_sum[x] / ttl_sum
+                chi_sq += (a[y][x] - expected)**2 / expected
+                e[y][x] = expected
 
-    df = (a.shape[0] - 1) * (a.shape[1] - 1)
+        df = (a.shape[0] - 1) * (a.shape[1] - 1)
 
-    p = 1 - chi2.cdf(chi_sq, df)
-
+        p = 1 - chi2.cdf(chi_sq, df)
+    except BaseException:
+        chi_sq = p = np.nan
     LR = 0
-    for y in range(a.shape[0]):
-        for x in range(a.shape[1]):
-            expected = row_sum[y] * col_sum[x] / ttl_sum
-            LR += 2 * a[y][x] * ln(a[y][x] / expected)
+    try:
+        for y in range(a.shape[0]):
+            for x in range(a.shape[1]):
+                expected = row_sum[y] * col_sum[x] / ttl_sum
+                LR += 2 * a[y][x] * ln(a[y][x] / expected)
+                e[y][x] = expected
 
-    p_LR = 1 - chi2.cdf(LR, df)
+        p_LR = 1 - chi2.cdf(LR, df)
+    except BaseException:
+        p_LR = LR = np.nan
 
     if print_out:
+        print = print_port
+        if print_table and cKeys is not None and rKeys is not None:
+            print("\n---- Contingency Table ----")
+            t = PT()
+            l = ["Count/Expected"] + list(cKeys) + ["Total"]
+            t.field_names = l
+            for y, rkey in enumerate(rKeys):
+                l = [rkey]
+                for x in range(len(cKeys)):
+                    l.append("%d / %.2f" % (a[y][x], e[y][x]))
+                l.append("%d" % row_sum[y])
+                t.add_row(l)
+            l = ["Total"]
+            for x in range(len(cKeys)):
+                l.append("%d" % col_sum[x])
+            l.append("%d" % ttl_sum)
+            t.add_row(l)
+            print(str(t))
+
+        print("\n---- Chi square test ----")
         print("df = %d" % df)
         t = PT()
-        t.field_names = ["Test", "Chi sq", "P >ChiSq"]
+        t.field_names = ["Test", "Chi sq", "P > ChiSq"]
         t.add_row(["Likelihood Ratio", "%.3f" % LR, "%.3f" % p_LR])
         t.add_row(["Pearson", "%.3f" % chi_sq, "%.3f" % p])
         print(str(t))
@@ -194,7 +228,8 @@ def chi_square(data, print_out=True):
 #         error control across different distribution shapes
 
 
-def multi_pop_var_test(data, print_out=True):
+def multi_pop_var_test(data, labels, print_out=False, print_port=print,
+                       alpha=0.05):
     # data in a list of lists
 
     def one_way_anova(data):
@@ -239,9 +274,34 @@ def multi_pop_var_test(data, print_out=True):
     res["Brown_Forsythe"] = Brown_Forsythe(data)
 
     if print_out:
+        print = print_port
+        print("\n---- Multi Sample Standard Deviation Test ----")
+        t = PT()
+        pct = "%.2f%%" % (100 - 100 * alpha)
+        t.field_names = ["Sample", "N", "stdev", pct + " CI of std"]
+        for i in range(len(data)):
+            chi2_r = chi2_test_stdev(
+                data[i],
+                1,
+                alpha=alpha,
+                print_out=False,
+                print_port=print_port)
+            sr = chi2_r["95_range_from_S"]
+            t.add_row([labels[i], len(data[i]),
+                       "%.3f" % stat.stdev(data[i]),
+                       "(%.3f, %.3f)" % sr])
+        print(str(t))
+        print("Stdev CI method is same to JMP but different from Minitab.")
+
+        print("p value is the prob of the pops' standard deviations are equal.")
         print("O'Brien[.5]       p = %.3f" % res["OBrien"]["p"])
         print("Levene            p = %.3f" % res["Levene"]["p"])
         print("Brown-Forsythe    p = %.3f" % res["Brown_Forsythe"]["p"])
+    if len(data) == 2:
+        res2 = several_tests_stdev_2sided(data[0], data[1], print_out=False)
+        if print_out:
+            print("2 Sided F test    p = %.3f" % res2["F"]["p"])
+        res["F"] = res2["F"]
 
     return res
 
@@ -261,7 +321,61 @@ def two_pop_var_test(l1, l2, print_out=True):
     return res
 
 
+def var_1sample(data=None, sample_n=None, sample_std=None,
+                print_port=print, print_out=False, alpha=0.05,
+                s0=None):
+    if s0 is None:
+        return
+    if sample_n is None or sample_std is None:
+        if data is None:
+            return
+        n = len(data)
+        std = stat.stdev(data)
+    else:
+        n = sample_n
+        std = sample_std
+
+    df = n - 1
+
+    CIn = (n - 1)**.5 * std  # CI numerator
+    CI_95 = (CIn / chi2.ppf(1 - alpha / 2, df)**.5,
+             CIn / chi2.ppf(alpha / 2, df)**.5)
+    CI_u = CIn / chi2.ppf(alpha, df)**.5
+    CI_l = CIn / chi2.ppf(1 - alpha, df)**.5
+
+    chi_sq = (n - 1) * (std / s0)**2
+    p_l = chi2.cdf(chi_sq, df)
+    p_u = 1 - p_l
+    p = 2 * min(p_l, p_u)
+
+    if print_out:
+        print = print_port
+        pct = "%.2f%%" % (100 - 100 * alpha)
+        print("\n---- 1 Sample Variance ----")
+        print("N = %d\tstd = %.3f" % (n, std))
+        print("H0 s==s0, H1 s!=s0: p = %.3f" % p)
+        print("Chi sq CI " + pct + " (%.3f, %.3f)" % CI_95)
+        print("H0 s==s0, H1 s>s0: p = %.3f" % p_l)
+        print(pct + " Upper bound chi sq of population std: %.3f" % CI_u)
+        print("H0 s==s0, H1 s>s0: p = %.3f" % p_u)
+        print(pct + " Lower bound chi sq of population std: %.3f" % CI_l)
+    return {
+        "p": p, "n": n,
+        "df": df,
+        "stdev": std,
+        "CI 95": CI_95, "p gt": p_u, "p lt": p_l,
+        "CI upper": CI_u, "CI lower": CI_l
+    }
+
+
 if __name__ == "__main__":
     print(chi_square([[30, 76, 49], [1, 37, 62], [11, 11, 26]]))
     chi_square([[95, 43], [101, 64]])
     chi2_test_stdev([1, 1, 2, 2, 3, 4, 1], 2, print_out=True)
+    var_1sample(data=[1, 2, 3, 1, 1, 2, 2], s0=1, print_out=True)
+    multi_pop_var_test([[1, 2, 3, 1, 1, 2, 2], [1, 3, 4, 2, 2, 1, 3]], [
+        "a", "b"], print_out=True)
+    several_tests_stdev_2sided([1, 2, 3, 1, 1, 2, 2], [
+        1, 3, 4, 2, 2, 1, 3], print_out=True)
+    chi_square([[2, 1], [0, 2], [1, 0]])
+    chi_square([[138, 165], [5e9, 5e9]])

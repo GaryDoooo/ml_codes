@@ -6,10 +6,85 @@ import numpy as np
 from statsmodels.stats.diagnostic import normal_ad
 from scipy.stats import t as t_dist
 import statistics as stat
+from math import isnan
 ######### Own Modules ############
 # from binomial import binomial
 from chi_sq import chi2_test_stdev
 from t_test import t_test_1sample
+
+
+def is_void(x):
+    if len(str(x).replace(" ", "")) == 0:
+        return True
+    try:
+        if isnan(x):
+            return True
+    except BaseException:
+        pass
+    return False
+
+
+def count_1factor(col):
+    [col] = filter_voids([col])
+    keys = sorted(list(set(col)))
+    res = [0 for i in range(len(keys))]
+    for item in col:
+        res[keys.index(item)] += 1
+    return res, keys
+
+
+def count_2factors(colr, colc):
+    """
+    A list of the column data of rows
+    and a list of the column data of cols.
+    """
+    r, c = [], []
+    for i, j in zip(colr, colc):
+        if is_void(i) or is_void(j):
+            continue
+        r.append(i)
+        c.append(j)
+    rKeys = sorted(list(set(r)))
+    cKeys = sorted(list(set(c)))
+    v = [1 for i in range(len(c))]
+    res = group_by2factors(r, c, v)
+    return [[sum(_) for _ in i] for i in res], rKeys, cKeys
+
+
+def make_dict(data, col_names):
+    """
+    Input data is a list of the data points, which can be lists too.
+    col_names are the key values of the dict
+    output: dict with by order key with the data points
+    """
+    res = dict()
+    for i in range(len(col_names)):
+        try:
+            res[col_names[i]] = data[i]
+        except BaseException:
+            pass
+    return res
+
+
+def event_count(data, x):
+    xs = str(x).upper()
+    cnt = ttl = 0
+    for _ in data:
+        try:
+            if is_void(_):
+                continue
+        except BaseException:
+            pass
+        ttl += 1
+        if str(_).upper() == xs:
+            cnt += 1
+        else:
+            try:
+                if float(_) == float(x):
+                    cnt += 1
+            except BaseException:
+                pass
+    return ttl, cnt
 
 
 def mean_std_CIs(data, alpha=0.05, print_out=False, print_port=print):
@@ -66,6 +141,7 @@ def mean_std_CIs(data, alpha=0.05, print_out=False, print_port=print):
             pct +
             "Prob that stdev is greater than %.3f." %
             std_1side_range[0])
+        print("Stdev CI method is same to JMP but different from Minitab.")
     return {"std 2side": std_2side_range, "std 1side": std_1side_range,
             "mean 2side": mean_2side_range, "mean 1side": mean_1side_range}
 
@@ -176,19 +252,15 @@ def d2_values(n):
     return d2[n] if n < 51 else d2[50]
 
 
-def grouping_by_labels(data_list, grouping_list):
-    data = [(i, j) for i, j in zip(grouping_list, data_list)]
-    data.sort(key=lambda x: x[0])
-    subgroup, res = [], []
-    prev_i = None
-    for i, j in data:
-        if prev_i != i:
-            res.append(subgroup)
-            subgroup = []
-        subgroup.append(j)
-        prev_i = i
-    res.append(subgroup)
-    return res[1:]
+def grouping_by_labels(data_list, grouping_list, keys=None):
+    [data_list, grouping_list] = filter_voids([data_list, grouping_list])
+    if keys is None:
+        #  print(grouping_list)
+        keys = sorted(list(set(grouping_list)))
+    res = [[] for i in range(len(keys))]
+    for i, j in zip(grouping_list, data_list):
+        res[keys.index(i)].append(j)
+    return res
 
 
 def group_df_to_list(df, y_key="Value", grp_key="Date"):
@@ -197,14 +269,36 @@ def group_df_to_list(df, y_key="Value", grp_key="Date"):
 
 
 def group_by2factors(f1, f2, d):
+    [f1, f2, d] = filter_voids([f1, f2, d])
     f2_d = [(i, j) for i, j in zip(f2, d)]
     gf1 = grouping_by_labels(f2_d, f1)
     res = []
+    f2key = sorted(list(set(f2)))
     for sublist in gf1:
         factor = [i[0] for i in sublist]
         data = [i[1] for i in sublist]
         res.append(grouping_by_labels(
-            data, factor))
+            data, factor, keys=f2key))
+    return res
+
+
+def filter_voids(data):
+    """
+    data comes as a 2D list, all the elements in the same row
+    will not be void
+    """
+    res = [[] for i in range(len(data))]
+    for y in range(len(data[0])):
+        OK = True
+        for x in range(len(data)):
+            try:
+                if is_void(data[x][y]):
+                    OK = False
+            except BaseException:
+                OK = False
+        if OK:
+            for x in range(len(data)):
+                res[x].append(data[x][y])
     return res
 
 
@@ -331,5 +425,33 @@ def get_number(x):
         return None
 
 
+def transpose_2D_list(matrix):
+    return list(map(list, zip(*matrix)))
+
+
+def number_2Dlist(df=None, cols=None,
+                  print_out=False, print_port=print):
+    n = df[cols[0]].shape[0]
+    res = []
+    for i in range(n):
+        r = []
+        for col in cols:
+            try:
+                _ = float(df[col].iloc[i])
+                if _ > 0 or _ <= 0:
+                    r.append(_)
+            except BaseException:
+                pass
+        if len(r) == len(cols):
+            res.append(r)
+    if print_out:
+        print = print_port
+        print("Received %d cols of data. Found %d rows valid." % (
+            len(cols), len(res)))
+    return transpose_2D_list(res)
+
+
 if __name__ == "__main__":
     pearson_correlation([1, 2, 3], [2, 3, 1])
+    print(count_2factors(["F", "M", "F", "F", "M", "M"],
+                         ["D", "M", "W", "D", 'D', 'M']))

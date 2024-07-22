@@ -148,27 +148,33 @@ def fit_plot(x, y, alpha=0.05, print_out=False,
 
 
 def multi_fit(data, labels, print_out=False, print_port=print,
-              axs=None, fig=None,
+              axs=None, fig=None, alpha=0.05,
               show_plot=False, filename=None, ax_margin=0.1):
 
     t = PT(["\\"] + labels)
+    t2 = PT(["\\"] + labels)
     cor_res = []
     n = len(data)
     for y in range(n):
         res_tmp = []
         row = [labels[y]]
+        row2 = [labels[y]]
         for x in range(n):
             r = pearson_correlation(data[x], data[y], print_out=False)
             row.append("%.3f" % r["r"])
+            row2.append("%.3f" % r["p"])
             res_tmp.append(r)
         cor_res.append(res_tmp)
         t.add_row(row)
+        t2.add_row(row2)
     res = {"pearson": cor_res}
 
     if print_out:
         print = print_port
         print("\n---- Pearson correlation coefficient ----")
-        print(t)
+        print(str(t))
+        print("\n---- Pearson correlation p-value  ----")
+        print(str(t2))
 
     if axs is None or fig is None:
         fig, axs = plt.subplots(n - 1, n - 1)  # , sharex=True, sharey=True)
@@ -183,7 +189,7 @@ def multi_fit(data, labels, print_out=False, print_port=print,
                 axs[fy][fx].axis('off')
             else:
                 fit_plot(data[x], data[y], ax_margin=ax_margin,
-                         ellipse=True, ax=axs[fy][fx],
+                         ellipse=True, ax=axs[fy][fx], alpha=alpha,
                          xlabel=labels[x] if y == n - 1 else None,
                          ylabel=labels[y] if x == 0 else None)
                 if x > 0:

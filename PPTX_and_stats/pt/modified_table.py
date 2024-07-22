@@ -4,7 +4,6 @@ import numpy as np
 ############ pandastable #############
 from pandastable_local.core import Table
 from pandastable_local.data import TableModel
-#  from pandastable_local.headers import IndexHeader,
 from pandastable_local.dialogs import MultipleValDialog
 ############## Own Module ###############
 #  from modified_header import MColumnHeader as ColumnHeader
@@ -13,6 +12,88 @@ from df_combine import df_combine
 
 
 class MTable(Table):
+    def fillColumn(self):
+        """Fill a column with a data range"""
+
+        dists = ['normal', 'gamma', 'uniform', 'random integer', 'logistic']
+        d = MultipleValDialog(
+            title='New Column',
+            initialvalues=(
+                0,
+                1,
+                False,
+                False,
+                dists,
+                1.0,
+                1.0),
+            labels=(
+                'Linear Low',
+                'Linear High',
+                'Add Random Noise to Linear',
+                'Fill Random Numbers',
+                'Distribution',
+                'Mean',
+                'Std'),
+            types=(
+                'string',
+                'string',
+                'checkbutton',
+                'checkbutton',
+                'combobox',
+                'float',
+                'float'),
+            tooltips=(
+                'start value if filling with data',
+                'end value if filling with data',
+                'add random noise upon the linear filling above',
+                'create random noise data in the ranges',
+                'sampling distribution for noise',
+                'mean/scale of distribution',
+                'std dev./shape of distribution'),
+            parent=self.parentframe)
+        if d.result is None:
+            return
+        else:
+            low = d.results[0]
+            high = d.results[1]
+            add_random = d.results[2]
+            random = d.results[3]
+            dist = d.results[4]
+            param1 = float(d.results[5])
+            param2 = float(d.results[6])
+
+        df = self.model.df
+        self.storeCurrent()
+        if low != '' and high != '':
+            try:
+                low = float(low)
+                high = float(high)
+            except BaseException:
+                #  logging.error("Exception occurred", exc_info=True)
+                return
+        #  if random:
+        if dist == 'normal':
+            data = np.random.normal(param1, param2, len(df))
+        elif dist == 'gamma':
+            data = np.random.gamma(param1, param2, len(df))
+        elif dist == 'uniform':
+            data = np.random.uniform(low, high, len(df))
+        elif dist == 'random integer':
+            data = np.random.randint(low, high, len(df))
+        elif dist == 'logistic':
+            data = np.random.logistic(low, high, len(df))
+        if not random:
+            step = (high - low) / len(df)
+            if add_random:
+                data += np.arange(low, high, step)
+            else:
+                data = pd.Series(np.arange(low, high, step))
+        col = df.columns[self.currentcol]
+        df[col] = data
+        self.redraw()
+        self.tableChanged()
+        return
+
     def sortColumnIndex(self):
         """Sort the column header by the current rows values"""
 

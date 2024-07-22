@@ -1,20 +1,20 @@
 from tkinter import Frame, Menu, BOTH, Toplevel, END
-#  messagebox, simpledialog, PanedWindow, HORIZONTAL
-from pandastable_local import config, plotting
-#  from pandastable_local.core import Table
-from pandastable_local.app import DataExplore
 import pickle
 import os
 import platform
 import time
+###############################
+from pandastable_local import config, plotting
+from pandastable_local.app import DataExplore
 ######## Own Module ###########
 from modified_table import MTable as Table
 from plots import plot_viewer
-#  from linear_plot import fit_plot
 from txt_output import txt_viewer
 from fit_dialog import LinearFitDialog, CorrelationDialog, OrthoFitDialog, ResidDialog, MCorDialog
 from basic_dialogs import DescribeDialog, NormTestDialog, CIDialog
-from sample_test_dialog import Mean1SampleDialog, Mean1SampleZDialog
+from sample_test_dialog import Mean1SampleDialog, Mean1SampleZDialog, Var1SampleDialog, Mean2SampleDialog, PairedTDialog, MultiVarDialog, Prop1SDialog, Prop2SDialog
+from anova_dialog import Anova1WayDialog, TtestDialog, Anova2WayDialog
+from chi2_dialog import Chi2TableDialog, Chi2PropDialog
 
 
 class TestApp(DataExplore):
@@ -150,13 +150,25 @@ class TestApp(DataExplore):
             '17Correlation Matrix': {'cmd': self.multi_cor},
             '22One Sample Mean t-test': {'cmd': self.mean_1sample},
             '23One Sample Mean Z-test': {'cmd': self.mean_1sampleZ},
-            '06sep': '', '20sep': ''}
+            '24One Sample Stdev': {'cmd': self.var_1sample},
+            '25One Sample Proportion': {'cmd': self.prop_1sample},
+            '26Two Samples t-test': {'cmd': self.mean_2samples},
+            '27Paired t-test': {'cmd': self.paired_t},
+            '28Two Samples Proportion': {'cmd': self.prop_2samples},
+            '29Multi Sample Std Eq.': {'cmd': self.multi_var},
+            '32Oneway ANOVA': {'cmd': self.anova_1way},
+            '33Mean Comparison': {'cmd': self.JMP_t_test},
+            '34Twoway ANOVA': {'cmd': self.anova_2way},
+            '42Contingency table & Chi2': {'cmd': self.chi2table},
+            '43Proportion Chi Square': {'cmd': self.chi2prop},
+            '06sep': '', '20sep': '', '30sep': '', '40sep': ''}
         self.stats_menu = self.createPulldown(self.menu, self.stats_menu)
         self.menu.add_cascade(label='Stats', menu=self.stats_menu['var'])
 
         self.plots_menu = {
-            '01Plot Selected': {
-                'cmd': lambda: self._call('plotSelected')}, '02sep': '', '03Store plot': {
+            '01Plot Selected': {'cmd': self.plot_selected},
+            #  'cmd': lambda: self._call('plotSelected')},
+            '02sep': '', '03Store plot': {
                 'cmd': self.addPlot}, '04Clear plots': {
                 'cmd': self.updatePlotsMenu}, '05PDF report': {
                     'cmd': self.pdfReport}, '06sep': ''}
@@ -208,6 +220,13 @@ class TestApp(DataExplore):
         menu.delete(6, menu.index(END))
         return
 
+    def plot_selected(self):
+        if hasattr(self.table, 'pf') and self.table.pf is not None:
+            self.addPlot()
+            self.table.pf.close()
+        self._call('plotSelected')
+        return
+
     def showPlotViewer(self, parent=None):
         """Create plot frame"""
 
@@ -224,6 +243,7 @@ class TestApp(DataExplore):
         if self.table.tOut is None:
             self.tOut = txt_viewer(table=self.table)
         self.tOut.add_txt(txt + end)
+        self.tOut.to_end()
         return
 
     def linear_fit(self):
@@ -297,6 +317,83 @@ class TestApp(DataExplore):
             self.table, app=self,
             df=self.table.model.df,
             title='One sample Z-test')
+        return
+
+    def var_1sample(self):
+        _ = Var1SampleDialog(
+            self.table, app=self,
+            df=self.table.model.df,
+            title='One sample Stdev test')
+        return
+
+    def mean_2samples(self):
+        _ = Mean2SampleDialog(
+            self.table, app=self,
+            df=self.table.model.df,
+            title='Two samples t-test')
+        return
+
+    def paired_t(self):
+        _ = PairedTDialog(
+            self.table, app=self,
+            df=self.table.model.df,
+            title='Paired t-test')
+        return
+
+    def multi_var(self):
+        _ = MultiVarDialog(
+            self.table, app=self,
+            df=self.table.model.df,
+            title='Mutli-sample Stdev')
+        return
+
+    def prop_1sample(self):
+        _ = Prop1SDialog(
+            self.table, app=self,
+            df=self.table.model.df,
+            title='One Sample Proportion')
+        return
+
+    def prop_2samples(self):
+        _ = Prop2SDialog(
+            self.table, app=self,
+            df=self.table.model.df,
+            title='Two Samples Proportion')
+        return
+
+    def anova_1way(self):
+        _ = Anova1WayDialog(
+            self.table, app=self,
+            df=self.table.model.df,
+            title='Oneway Anova')
+        return
+
+    def JMP_t_test(self):
+        _ = TtestDialog(
+            self.table, app=self,
+            df=self.table.model.df,
+            title="Mean Comparison Student's t")
+        return
+
+    def anova_2way(self):
+        _ = Anova2WayDialog(
+            self.table, app=self,
+            df=self.table.model.df,
+            title='Twoway Anova')
+        return
+
+    def chi2table(self):
+        _ = Chi2TableDialog(
+            self.table, app=self,
+            df=self.table.model.df,
+            title='Contingency Table and Chi SQ Test')
+        return
+
+    def chi2prop(self):
+        _ = Chi2PropDialog(
+            self.table, app=self,
+            df=self.table.model.df,
+            title='Propabilities Chi SQ Test')
         return
 
 

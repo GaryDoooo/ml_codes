@@ -1,24 +1,10 @@
+from tkinter import BOTH, Toplevel, VERTICAL, LEFT, Frame, Text, TOP, END, BOTTOM, filedialog, Scrollbar
+import os
+#####################################
 from pandastable_local.plotting import addButton
 from pandastable_local import images
-#  from tkinter.ttk import Frame
-from tkinter import BOTH, Toplevel, VERTICAL, LEFT, Frame, Text, TOP, END, BOTTOM, filedialog
-import os
-#  from idlelib.WidgetRedirector import WidgetRedirector
-#  from collections import OrderedDict
 ############# Own Modules ###########
 from plots import plot_viewer
-
-#
-#  class ReadOnlyText(Text):
-#      def __init__(self, *args, **kwargs):
-#          Text.__init__(self, *args, **kwargs)
-#          self.redirector = WidgetRedirector(self)
-#          self.insert = self.redirector.register(
-#              "insert", lambda *args, **kw: "break")
-#          self.delete = self.redirector.register(
-#              "delete", lambda *args, **kw: "break")
-#
-#
 
 
 class txt_viewer(plot_viewer):
@@ -37,7 +23,7 @@ class txt_viewer(plot_viewer):
             self.master = self.main
             self.main.title('Output')
             self.main.protocol("WM_DELETE_WINDOW", self.close)
-            g = '400x700'
+            g = '420x700'
             self.main.geometry(g)
         self.orient = VERTICAL
         self.style = None
@@ -52,7 +38,14 @@ class txt_viewer(plot_viewer):
         self.m.pack(fill=BOTH, expand=1)
         self.plotfr = Frame(self.m)
         self.T = Text(self.plotfr, bg='white')
-        self.T.pack(fill=BOTH, expand=1)
+        #  self.T.pack(fill=BOTH, expand=1)
+        self.vsb = Scrollbar(
+            self.plotfr,
+            orient="vertical",
+            command=self.T.yview)
+        self.T.configure(yscrollcommand=self.vsb.set)
+        self.vsb.pack(side="right", fill="y")
+        self.T.pack(side="left", fill="both", expand=True)
         #  self.T.bind("<Key>", lambda e: "break")
         #  self.T.config(state='disabled')
         self.plotfr.pack(side=TOP, fill=BOTH, expand=1)
@@ -73,12 +66,7 @@ class txt_viewer(plot_viewer):
         return
 
     def add_txt(self, txt):
-        #  text.configure(state='normal')
-        #  text.insert('end', 'Some Text')
-        #  text.configure(state='disabled')
-        #  self.T.config(state='normal')
         self.T.insert(END, txt)
-        #  self.T.config(state='disabled')
         return
 
     def save(self, filename=None):
@@ -100,9 +88,7 @@ class txt_viewer(plot_viewer):
         return
 
     def clear(self):
-        #  self.T.config(state=ENABLED)
         self.T.delete('1.0', END)
-        #  self.T.config(state=DISABLED)
         return
 
     def close(self):
@@ -113,3 +99,6 @@ class txt_viewer(plot_viewer):
             pass
         self.main.destroy()
         return
+
+    def to_end(self):
+        self.T.see("end")

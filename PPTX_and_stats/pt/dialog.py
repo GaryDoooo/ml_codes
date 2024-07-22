@@ -2,6 +2,7 @@ from pandastable_local.dialogs import BaseDialog  # , addListBox
 from tkinter import Frame, TOP, LEFT, X, BOTH
 import tkinter as tk
 import numpy as np
+from prettytable import PrettyTable as PT
 
 
 class Dialogs(BaseDialog):
@@ -139,3 +140,13 @@ class Dialogs(BaseDialog):
     def update_vars(self):
         """ Do nothing, can be updated """
         return
+
+    def error(self,msg=None):
+        if msg is None:
+            return
+        t=PT()
+        t.field_names=["ERROR"]
+        t.add_row([msg])
+        self.app.print("\n"+str(t))
+        return
+

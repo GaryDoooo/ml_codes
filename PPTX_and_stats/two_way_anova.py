@@ -38,7 +38,7 @@ def SSA_SSB(data):
     # Both type III
 
 
-def two_way_anova(data, factor_listA=None,
+def two_way_anova(data, factor_listA=None,print_port=print,
                   factor_listB=None, print_out=False, name_a="A", name_b="B"):
     """
     The data input should be a 3D list, the first two dims are the
@@ -101,12 +101,13 @@ def two_way_anova(data, factor_listA=None,
     #  print(y_bar, y_bar_a, y_bar_b, n_b, n_a)
 
     if print_out:
-        print("Two Way ANOVA\n\nFactor Info.")
+        print=print_port
+        print("\n---- Two Way ANOVA\n\nFactor Info ----")
         t = PT()
         t.field_names = ["Factor", "Levels"]
         t.add_row([name_a, a])
         t.add_row([name_b, b])
-        print(t)
+        print(str(t))
         print("\nAnalysis of Variance")
         t = PT()
         t.field_names = ["Source", "DF", "Adj SS", "Adj MS",
@@ -130,7 +131,8 @@ def two_way_anova(data, factor_listA=None,
                    PAB])
         t.add_row(["Error", DFE, "%.3f" % SSE, "%.3f" % MSE, " ", " "])
         t.add_row(["Total", DFT, "%.3f" % SST, " ", " ", " "])
-        print(t)
+        print(str(t))
+        print("Note: The algo is same to Minitab 20, not JMP 17.")
 
     return {"N": n, "SSE": SSE, "MSE": MSE, "SSA": SSA, "MSA": MSA,
             "SSB": SSB, "SSAB": SSAB, "MSB": MSB, "MSAB": MSAB, "DF A": DFA,

@@ -1,7 +1,10 @@
 #include <bits/stdc++.h>
 #include <png.h>
-#include <iostream>
-#include <vector>
+// Size definition of the cross shape mask
+// Add all the values inside the mask with
+// equal weight.
+#define CROSS_SIZE 15
+#define CROSS_ARM_LENGTH 5
 using namespace std;
 
 std::vector<unsigned char> readPNGFile(const char* filename, int& width,
@@ -83,42 +86,44 @@ std::vector<unsigned char> readPNGFile(const char* filename, int& width,
 }
 
 // Function to calculate the prefix sum array
-void calculatePrefixSum(const vector<vector<double>>& a, vector<vector<double>>& s) {
+void calculatePrefixSum(const vector<vector<int>>& a,
+                        vector<vector<long long>>& s) {
     int H = a.size();
     int W = a[0].size();
-    vector<double> s1(W + 1, 0.0);
+    vector<long long> s1(W + 1, 0);
 
     for (int y = 0; y < H; ++y) {
         for (int x = 0; x < W; ++x) {
-            s1[x + 1] = s1[x] + a[y][x];
+            s1[x + 1]       = s1[x] + a[y][x];
             s[y + 1][x + 1] = s1[x + 1] + s[y][x + 1];
         }
     }
 }
 
 // Function to calculate the sum of a submatrix
-double rec_sum(const vector<vector<double>>& s, int x1, int y1, int x2, int y2) {
+long long rec_sum(const vector<vector<long long>>& s, int x1, int y1, int x2,
+                  int y2) {
     return s[y2][x2] - s[y1 - 1][x2] - s[y2][x1 - 1] + s[y1 - 1][x1 - 1];
 }
 
-int find9cross(vector<vector<double>> &a) {
+int find9cross(vector<vector<int>>& a) {
     int H = a.size();
     int W = a[0].size();
 
-    vector<vector<double>> s(H + 1, vector<double>(W + 1, 0.0));
+    vector<vector<long long>> s(H + 1, vector<long long>(W + 1, 0));
     calculatePrefixSum(a, s);
 
     // Define the cross window
-    int c_size = 15 - 1;
-    int c_corner = 5 - 1;
+    int c_size   = CROSS_SIZE - 1;
+    int c_corner = CROSS_ARM_LENGTH - 1;
 
-    vector<vector<double>> sc(H + 1, vector<double>(W + 1, 0.0));
+    vector<vector<long long>> sc(H + 1, vector<long long>(W + 1, 0));
 
     for (int y = 1; y < H - c_size; ++y) {
         for (int x = 1; x < W - c_size; ++x) {
-            int x2 = x + c_size;
-            int y2 = y + c_size;
-            double res = rec_sum(s, x, y, x2, y2);
+            int x2        = x + c_size;
+            int y2        = y + c_size;
+            long long res = rec_sum(s, x, y, x2, y2);
             res -= rec_sum(s, x, y, x + c_corner, y + c_corner);
             res -= rec_sum(s, x2 - c_corner, y, x2, y + c_corner);
             res -= rec_sum(s, x, y2 - c_corner, x + c_corner, y2);
@@ -128,29 +133,31 @@ int find9cross(vector<vector<double>> &a) {
     }
 
     // Calculate the threshold
-    vector<double> flat_sc;
+    vector<long long> flat_sc;
     for (int y = 1; y < H; ++y) {
         for (int x = 1; x < W; ++x) {
             flat_sc.push_back(sc[y][x]);
         }
     }
     sort(flat_sc.begin(), flat_sc.end());
-    double thd = flat_sc[static_cast<int>(0.98 * flat_sc.size())];
+    long long thd = flat_sc[static_cast<int>(0.98 * flat_sc.size())];
 
-    vector<tuple<double, int, int>> fsc;
+    vector<tuple<long long, int, int>> fsc;
     for (int y = 1; y < H; ++y) {
         for (int x = 1; x < W; ++x) {
             fsc.emplace_back(sc[y][x], x, y);
         }
     }
     sort(fsc.begin(), fsc.end());
+    // cout << thd << endl;
 
     vector<vector<int>> vis(H + 1, vector<int>(W + 1, 0));
-    int idx = fsc.size() - 1;
-    int cnt = 0;
+    int idx        = fsc.size() - 1;
+    int cnt        = 0;
     vector<int> dx = {-1, 0, 0, 1};
     vector<int> dy = {0, 1, -1, 0};
-
+    // cout << get<0>(fsc[idx]) << " " << get<1>(fsc[idx]) << " "
+    //      << get<2>(fsc[idx]) << endl;
     while (cnt < 9) {
         while (true) {
             auto [_, x, y] = fsc[idx];
@@ -159,17 +166,19 @@ int find9cross(vector<vector<double>> &a) {
             }
             idx--;
         }
-        vector<pair<int, int>> stack = {{get<1>(fsc[idx]), get<2>(fsc[idx])}};
+        stack<pair<int, int>> stk;
+        stk.push(make_pair(get<1>(fsc[idx]), get<2>(fsc[idx])));
         cnt++;
-        while (!stack.empty()) {
-            auto [x, y] = stack.back();
-            stack.pop_back();
+        while (!stk.empty()) {
+            auto [x, y] = stk.top();
+            stk.pop();
             vis[y][x] = cnt;
             for (int i = 0; i < 4; ++i) {
                 int xx = x + dx[i];
                 int yy = y + dy[i];
                 if (vis[yy][xx] == 0 && sc[yy][xx] > thd) {
-                    stack.emplace_back(xx, yy);
+                    stk.push(make_pair(xx, yy));
+                    vis[yy][xx] = cnt;
                 }
             }
         }
@@ -187,8 +196,20 @@ int find9cross(vector<vector<double>> &a) {
     // Output the blocks
     for (int i = 0; i < 9; ++i) {
         cout << "Block " << i + 1 << ":\n";
-        for (const auto& [x, y] : blks[i]) {
-            cout << "(" << x << ", " << y << ")\n";
+        if (!blks[i].empty()) {
+            long long avg_x = 0, avg_y = 0;
+            for (const auto& [x, y] : blks[i]) {
+                avg_x += x;
+                avg_y += y;
+            }
+            avg_x /= blks[i].size();
+            avg_y /= blks[i].size();
+
+            cout << "Block " << i + 1 << " average: ";
+            cout << "(" << fixed << setprecision(2) << avg_x << ", " << avg_y
+                 << ")\n";
+        } else {
+            cout << "Block " << i + 1 << " is empty\n";
         }
     }
 
@@ -217,13 +238,14 @@ int main() {
     // For example, to access the red component of the pixel at (x, y):
     // unsigned char red = image_data[(y * width + x) * 4];
 
-    int a[height + 5][width + 5];
-    for (y = 0; y < height; y++)
-        for (x = 0; x < width; x++) {
-            int pos = y * width + x;
+    vector<vector<int>> a(height, vector<int>(width, 0));
+    for (int y = 0; y < height; y++)
+        for (int x = 0; x < width; x++) {
+            int pos = (y * width + x) * 4;
             a[y][x] =
                 image_data[pos] + image_data[pos + 1] + image_data[pos + 2];
         }
+    find9cross(a);
 
     return 0;
 }

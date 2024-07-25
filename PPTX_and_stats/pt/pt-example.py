@@ -165,6 +165,32 @@ class TestApp(DataExplore):
         self.stats_menu = self.createPulldown(self.menu, self.stats_menu)
         self.menu.add_cascade(label='Stats', menu=self.stats_menu['var'])
 
+        self.q_menu = {
+            '01Describe': {'cmd': self.describe},
+            '02Normality': {'cmd': self.norm_test},
+            '03Confidence Intervals': {'cmd': self.confidence_interval},
+            '13Correlation': {'cmd': self.correlation},
+            '16Orthogonal Fit': {'cmd': self.ortho_fit},
+            '14Linear Fit': {'cmd': self.linear_fit},
+            '15Residual Plots': {'cmd': self.resid},
+            '17Correlation Matrix': {'cmd': self.multi_cor},
+            '22One Sample Mean t-test': {'cmd': self.mean_1sample},
+            '23One Sample Mean Z-test': {'cmd': self.mean_1sampleZ},
+            '24One Sample Stdev': {'cmd': self.var_1sample},
+            '25One Sample Proportion': {'cmd': self.prop_1sample},
+            '26Two Samples t-test': {'cmd': self.mean_2samples},
+            '27Paired t-test': {'cmd': self.paired_t},
+            '28Two Samples Proportion': {'cmd': self.prop_2samples},
+            '29Multi Sample Std Eq.': {'cmd': self.multi_var},
+            '32Oneway ANOVA': {'cmd': self.anova_1way},
+            '33Mean Comparison': {'cmd': self.JMP_t_test},
+            '34Twoway ANOVA': {'cmd': self.anova_2way},
+            '42Contingency table & Chi2': {'cmd': self.chi2table},
+            '43Proportion Chi Square': {'cmd': self.chi2prop},
+            '06sep': '', '20sep': '', '30sep': '', '40sep': ''}
+        self.stats_menu = self.createPulldown(self.menu, self.stats_menu)
+        self.menu.add_cascade(label='Stats', menu=self.stats_menu['var'])
+
         self.plots_menu = {
             '01Plot Selected': {'cmd': self.plot_selected},
             #  'cmd': lambda: self._call('plotSelected')},

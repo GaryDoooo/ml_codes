@@ -1,13 +1,12 @@
 from PIL import Image
 import numpy as np
-from locate_cross import locate_cross
 from statistics import mean
 from matplotlib import pyplot as plt
 from prettytable import PrettyTable as PT
 ############# Own modules ############
 from utilities import norm_test
 from describe import describe
-
+from locate_cross import locate_cross
 
 def save_2d_array_as_png(array, filename):
     # Ensure the array is in the correct format

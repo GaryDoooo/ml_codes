@@ -6,7 +6,7 @@ def rec_sum(x1, y1, x2, y2, s):
     return s[y2][x2] - s[y1 - 1][x2] - s[y2][x1 - 1] + s[y1 - 1][x1 - 1]
 
 
-def locate_cross(data, c_size=15,
+def locate_cross(data, c_size=15,thd_quantile=0.98,
                  c_corner=5, cross_cnt=9):
     #  print(data)
     a = np.array(data)
@@ -35,7 +35,7 @@ def locate_cross(data, c_size=15,
             res -= rs(x, y2 - c_corner, x + c_corner, y2, s)
             res -= rs(x2 - c_corner, y2 - c_corner, x2, y2, s)
             sc[y][x] = res
-    thd = np.quantile(sc, 0.98)
+    thd = np.quantile(sc, thd_quantile)
     fsc = sorted([(sc[y][x], x, y) for y in range(1, H) for x in range(1, W)])
     vis = np.zeros(s.shape)
     idx = len(fsc) - 1
@@ -59,6 +59,7 @@ def locate_cross(data, c_size=15,
                 yy = y + dy[i]
                 if vis[yy][xx] == 0 and sc[yy][xx] > thd:
                     stack.append((xx, yy))
+                    vis[yy][xx]=cnt
 
     blks = [[] for i in range(cross_cnt)]
     for y in range(1, H):

@@ -38,7 +38,23 @@ def SSA_SSB(data):
     # Both type III
 
 
-def two_way_anova(data, factor_listA=None,print_port=print,
+def SSA_SSB_simple(data):
+    l = []
+    for i, ith_A in enumerate(data):
+        for j, ith_A_jth_B in enumerate(ith_A):
+            for k in ith_A_jth_B:
+                l.append([i, j, k])
+    df = DF(l, columns=["A", "B", "Y"])
+    full_model = ols("Y ~ C(A, Sum) + C(B, Sum)",  # + C(A, Sum):C(B, Sum)",
+                     data=df).fit()
+
+    # To get the complete ANOVA table with Type 3 SS
+    anova_table = sm.stats.anova_lm(full_model, typ=3)
+    return (anova_table.sum_sq.iloc[1],  # SSA
+            anova_table.sum_sq.iloc[2])  # ,  # SSB
+
+
+def two_way_anova(data, factor_listA=None, print_port=print, interaction=True,
                   factor_listB=None, print_out=False, name_a="A", name_b="B"):
     """
     The data input should be a 3D list, the first two dims are the
@@ -54,7 +70,6 @@ def two_way_anova(data, factor_listA=None,print_port=print,
     a = len(d)
     b = len(d[0])
     y_bar = stat.mean(flat_list)
-    SSE = sum([sum((x - stat.mean(k))**2 for x in k) for j in d for k in j])
     SST = sum((x - y_bar)**2 for j in d for k in j for x in k)
 
 #######
@@ -80,29 +95,42 @@ def two_way_anova(data, factor_listA=None,print_port=print,
 #    Re_SS_B=sum([(k-y_bar_b[bi])**2 for ai in range(a)
 #                for bi in range(b) for k in d[ai][bi]])
 #    print(SST-Re_SS_B)
+    if interaction:
+        SSA, SSB, SSAB = SSA_SSB(d)
+        SSE = sum([sum((x - stat.mean(k))**2 for x in k)
+                   for j in d for k in j])
+    else:
+        SSA, SSB = SSA_SSB_simple(d)
+        SSAB = 0
+        SSE = SST - SSB - SSA - SSAB
 
-    SSA, SSB, SSAB = SSA_SSB(d)
-    #  SSAB = SST - SSE - SSA - SSB
     DFA = a - 1
     DFB = b - 1
-    DFAB = DFA * DFB
+    DFAB = DFA * DFB if interaction else 0
     DFT = n - 1
     DFE = DFT - DFA - DFB - DFAB
+
     MSA = SSA / DFA
     MSB = SSB / DFB
-    MSAB = SSAB / DFAB
     MSE = SSE / DFE
     FA = MSA / MSE
     FB = MSB / MSE
-    FAB = MSAB / MSE
     PA = 1 - f_stat.cdf(FA, DFA, DFE)
     PB = 1 - f_stat.cdf(FB, DFB, DFE)
-    PAB = 1 - f_stat.cdf(FAB, DFAB, DFE)
+    if interaction:
+        MSAB = SSAB / DFAB
+        FAB = MSAB / MSE
+        PAB = 1 - f_stat.cdf(FAB, DFAB, DFE)
+    else:
+        FAB = MSAB = PAB = -1
     #  print(y_bar, y_bar_a, y_bar_b, n_b, n_a)
 
     if print_out:
-        print=print_port
-        print("\n---- Two Way ANOVA\n\nFactor Info ----")
+        print = print_port
+        print(
+            "\n---- Two Way ANOVA ",
+            "With" if interaction else "Without",
+            " Interaction ----")
         t = PT()
         t.field_names = ["Factor", "Levels"]
         t.add_row([name_a, a])
@@ -122,17 +150,18 @@ def two_way_anova(data, factor_listA=None,print_port=print,
                    MSB, "%.3f" %
                    FB, "%.3f" %
                    PB])
-        t.add_row([name_a +
-                   "*" +
-                   name_b, DFAB, "%.3f" %
-                   SSAB, "%.3f" %
-                   MSAB, "%.3f" %
-                   FAB, "%.3f" %
-                   PAB])
+        if interaction:
+            t.add_row([name_a +
+                       "*" +
+                       name_b, DFAB, "%.3f" %
+                       SSAB, "%.3f" %
+                       MSAB, "%.3f" %
+                       FAB, "%.3f" %
+                       PAB])
         t.add_row(["Error", DFE, "%.3f" % SSE, "%.3f" % MSE, " ", " "])
         t.add_row(["Total", DFT, "%.3f" % SST, " ", " ", " "])
         print(str(t))
-        print("Note: The algo is same to Minitab 20, not JMP 17.")
+        #  print("Note: The algo is same to Minitab 20, not JMP 17.")
 
     return {"N": n, "SSE": SSE, "MSE": MSE, "SSA": SSA, "MSA": MSA,
             "SSB": SSB, "SSAB": SSAB, "MSB": MSB, "MSAB": MSAB, "DF A": DFA,
@@ -182,3 +211,19 @@ if __name__ == "__main__":
     df = DF(data, columns=['Gender', 'Group', 'Value'])
     d = group_by2factors(df["Gender"], df["Group"], df["Value"])
     two_way_anova(d, print_out=True)
+    c1 = ['A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A',
+          'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B',
+          'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C']
+
+    c2 = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5,
+          1, 1, 2, 2, 3, 3, 4, 4, 5, 5,
+          1, 1, 2, 2, 3, 3, 4, 4, 5, 5]
+
+    c3 = [167, 162, 210, 213, 187, 183, 189, 196, 156, 147,
+          155, 157, 206, 199, 182, 179, 184, 178, 143, 142,
+          152, 155, 206, 203, 180, 181, 180, 182, 146, 154]
+    d = group_by2factors(c2, c1, c3)
+    #  print(SSA_SSB_simple(d))
+    #  two_way_anova_simple(d, print_out=True)
+    two_way_anova(d, print_out=True)
+    two_way_anova(d, print_out=True, interaction=False)

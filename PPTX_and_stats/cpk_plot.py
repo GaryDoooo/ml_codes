@@ -7,19 +7,24 @@ import statistics as stat
 
 def cpk_plot(data, usl, target, lsl, print_out=False,
              use_range=False, alpha=0.05, show_plot=False,
-             filename=None, xlabel=None,
-             transparent=None):
+             filename=None, xlabel=None, print_port=print,
+             transparent=None, ax=None, show_legend=True,
+             show_within=True, show_spec=True):
 
-    fig, ax1 = plt.subplots()
+    if ax is None:
+        fig, ax1 = plt.subplots()
+    else:
+        ax1 = ax
     # Add y axis on the right side
     ax2 = ax1.twinx()
 
-    res = cpk(data, target, usl, lsl, print_out=print_out,
-              use_range=use_range, alpha=alpha)
+    res = cpk(data, target, usl, lsl, print_out=print_out, within=show_within,
+              use_range=use_range, alpha=alpha, print_port=print_port)
     # Use density=True when creating the histogram to ensure
     # the y-axis represents probability density, which is
     # necessary for a proper comparison with the normal distribution curve
     d = res["Flat List"]
+    #  print(d)
     ax2.hist(d, density=False, alpha=0.2, color='g', edgecolor='k')
     ax1.hist(d, density=True, alpha=0, color='b')
 
@@ -31,46 +36,52 @@ def cpk_plot(data, usl, target, lsl, print_out=False,
     lsl = res["LSL"]
 
     # Create x and y values for the normal distribution curve
-    xmin, xmax = plt.xlim()
+    #  xmin, xmax = plt.xlim()
+    xmin = min(d) - (max(d) - min(d)) * 0.05
+    xmax = max(d) + (max(d) - min(d)) * 0.05
     x = np.linspace(xmin, xmax, 100)
 
     # Plot the normal distribution curve for overall
     y = norm.pdf(x, mean, std)
     ax1.plot(x, y, 'k', linewidth=2, linestyle="dashed", label="Overall")
-
-    # Plot the normal distribution curve for overall
-    y = norm.pdf(x, mean, std_within)
-    ax1.plot(x, y, 'b', linewidth=1, label="Within")
+    #  print(x, y)
+    if show_within:
+        # Plot the normal distribution curve for within
+        y = norm.pdf(x, mean, std_within)
+        ax1.plot(x, y, 'b', linewidth=1, label="Within")
 
     # Add labels and title
     ax2.set_ylabel("Counts")
-    ax1.set_xlabel(xlabel)
     ax1.set_ylabel('Density')
+    if xlabel is not None:
+        ax1.set_xlabel(xlabel)
     # ax1.set_title(f'Histogram with Normal Distribution Fit (μ={mu:.2f}, σ={std:.2f})')
 
-    ax1.axvline(target, color='g', linewidth=2)
-    ax1.axvline(usl, color='r', linewidth=2)
-    ax1.axvline(lsl, color='r', linewidth=2)
-    txt_pos = max(ax1.get_ylim())
-    ax1.text(
-        target,
-        txt_pos,
-        "Target",
-        horizontalalignment='center',
-        verticalalignment='bottom')
-    ax1.text(
-        usl,
-        txt_pos,
-        "USL",
-        horizontalalignment='center',
-        verticalalignment='bottom')
-    ax1.text(
-        lsl,
-        txt_pos,
-        "LSL",
-        horizontalalignment='center',
-        verticalalignment='bottom')
-    ax1.legend(loc='best', frameon=False)
+    if show_spec:
+        ax1.axvline(target, color='g', linewidth=2)
+        ax1.axvline(usl, color='r', linewidth=2)
+        ax1.axvline(lsl, color='r', linewidth=2)
+        txt_pos = max(ax1.get_ylim())
+        ax1.text(
+            target,
+            txt_pos,
+            "Target",
+            horizontalalignment='center',
+            verticalalignment='bottom')
+        ax1.text(
+            usl,
+            txt_pos,
+            "USL",
+            horizontalalignment='center',
+            verticalalignment='bottom')
+        ax1.text(
+            lsl,
+            txt_pos,
+            "LSL",
+            horizontalalignment='center',
+            verticalalignment='bottom')
+    if show_within and show_legend:
+        ax1.legend(loc='best', frameon=False)
 
     if show_plot:
         plt.show()

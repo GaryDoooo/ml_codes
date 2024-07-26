@@ -12,6 +12,14 @@ from math import isnan
 from chi_sq import chi2_test_stdev
 from t_test import t_test_1sample
 
+def is_number(x):
+    try:
+        i=float(x)
+        if i>0 or i<=0:
+            return True
+    except:
+        pass
+    return False
 
 def is_void(x):
     if len(str(x).replace(" ", "")) == 0:

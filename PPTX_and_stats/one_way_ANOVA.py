@@ -10,8 +10,6 @@ from t_test import t_test_1sample
 
 def one_way_anova(data, labels, print_out=False, print_port=print,
                   alpha=0.05):
-    # data come in as a dict
-    # e.g. dict_data={"A":[2,1,3],"B":[3,4]}
     dict_data = make_dict(data, labels)
     groups = list(dict_data.keys())
     k = len(groups)
@@ -68,7 +66,10 @@ def one_way_anova(data, labels, print_out=False, print_port=print,
             "Note: SE Mean uses a pooled estimate of error variance = %.3f." %
             pooled_variance)
 
-    return {"F": F, "p": p}
+    return {"F": F, "p": p,
+            "df B": df_between, "df W": df_within, "df TTL": df_total,
+            "MSB": MSB, "MSW": MSW, "MSE": MSW, "MSA": MSB
+            }
 
 # The means compare each pair in JMP uses pooled t-test
 # while the pool includes all the keys, not only the two keys under testing

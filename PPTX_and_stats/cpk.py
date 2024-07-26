@@ -9,6 +9,8 @@
 from scipy.stats import chi2, norm, nct
 from scipy.optimize import root_scalar
 import statistics as stat
+from prettytable import PrettyTable as PT
+############ Own Modules ##############
 from utilities import d2_values, scale_factor_f, c4_values, grouping_by_labels, calculate_d3, calculate_d2
 
 
@@ -37,7 +39,7 @@ def cpl_cpu_95(cpx, n, df, alpha=0.05):
     return lower, upper
 
 
-def cpk_calc(mean, std, T, usl, lsl, df, N,
+def cpk_calc(mean, std, T, usl, lsl, df, N, print_port=print,
              print_out=True, name="", alpha=0.05):
     # https://www.jmp.com/support/help/en/18.0/index.shtml#page/jmp/statistical-details-for-capability-analysis.shtml
     # https://www.jmp.com/support/help/en/17.0/#page/jmp/statistical-details-for-capability-indices-for-normal-distributions.shtml
@@ -63,12 +65,22 @@ def cpk_calc(mean, std, T, usl, lsl, df, N,
     cpu_l, cpu_u = cpl_cpu_95(cpu, N, df, alpha)
 
     if print_out:
-        print("\n", name, "alpha =", alpha)
-        print("Cpk\tEst: %.3f\tLower: %.3f\tUpper: %.3f" % (cpk, cpk_l, cpk_u))
-        print("Cpl\tEst: %.3f\tLower: %.3f\tUpper: %.3f" % (cpl, cpl_l, cpl_u))
-        print("Cpu\tEst: %.3f\tLower: %.3f\tUpper: %.3f" % (cpu, cpu_l, cpu_u))
-        print("Cp\tEst: %.3f\tLower: %.3f\tUpper: %.3f" % (cp, cp_l, cp_u))
-        print("Cpm\tEst: %.3f" % cpm)
+        print = print_port
+        pct = "%.2f%%" % (100 - 100 * alpha)
+        print("\n" + name)
+        t = PT()
+        t.field_names = ["Index", "Estimate", "Lower " + pct, "Upper " + pct]
+        t.add_row(['Cpk', "%.3f" % cpk, "%.3f" % cpk_l, "%.3f" % cpk_u])
+        t.add_row(['Cpl', "%.3f" % cpl, "%.3f" % cpl_l, "%.3f" % cpl_u])
+        t.add_row(['Cpu', "%.3f" % cpu, "%.3f" % cpu_l, "%.3f" % cpu_u])
+        t.add_row(['Cp', "%.3f" % cp, "%.3f" % cp_l, "%.3f" % cp_u])
+        t.add_row(['Cpm', "%.3f" % cpm, "", ""])
+        print(str(t))
+        #  print("Cpk\tEst: %.3f\tLower: %.3f\tUpper: %.3f" % (cpk, cpk_l, cpk_u))
+        #  print("Cpl\tEst: %.3f\tLower: %.3f\tUpper: %.3f" % (cpl, cpl_l, cpl_u))
+        #  print("Cpu\tEst: %.3f\tLower: %.3f\tUpper: %.3f" % (cpu, cpu_l, cpu_u))
+        #  print("Cp\tEst: %.3f\tLower: %.3f\tUpper: %.3f" % (cp, cp_l, cp_u))
+        #  print("Cpm\tEst: %.3f" % cpm)
         #  print("Cpm\tEst: %.3f\tLower: %.3f\tUpper: %.3f" % (cpm, cpm_l, cpm_u))
     return {"cp": cp, "cpl": cpl, "cpu": cpu, "cpk": cpk, "cpm": cpm,
             "cp_l": cp_l, "cp_u": cp_u, "cpk_u": cpk_u, "cpk_l": cpk_l,
@@ -76,7 +88,8 @@ def cpk_calc(mean, std, T, usl, lsl, df, N,
             "cpu_l": cpu_l, "cpu_u": cpu_u}
 
 
-def nonconformance(data, t, lsl, usl, u, sw, so, print_out=True):
+def nonconformance(data, t, lsl, usl, u, sw, so, print_out=True,
+                   print_port=print):
     N = len(data)
     below = len([i for i in data if i < lsl])
     above = len([i for i in data if i > usl])
@@ -85,16 +98,33 @@ def nonconformance(data, t, lsl, usl, u, sw, so, print_out=True):
     ou = 1 - norm.cdf((usl - u) / so)
     ol = norm.cdf((lsl - u) / so)
     if print_out:
-        print("\n", "Nonconformance (Observation and Expected)")
-        print(
-            "Below LSL Obs. %.2f%%\tExp. Within %.2f%%\tExp. Overall %.2f%%" %
-            (below / N * 100, wl * 100, ol * 100))
-        print(
-            "Above USL Obs. %.2f%%\tExp. Within %.2f%%\tExp. Overall %.2f%%" %
-            (above / N * 100, wu * 100, ou * 100))
-        print(
-            "Total Out Obs. %.2f%%\tExp. Within %.2f%%\tExp. Overall %.2f%%" %
-            ((below + above) / N * 100, (wu + wl) * 100, (ou + ol) * 100))
+        print = print_port
+        print("\n" + "Nonconformance (Observation and Expected)")
+        t = PT()
+        t.field_names = [
+            'Portion',
+            'Observed%',
+            "Expected Within%",
+            "Expected Overall%"]
+        t.add_row(["Below LSL", "%.2f" %
+                   (below / N * 100), "%.2f" %
+                   (wl * 100), "%.2f" %
+                   (ol * 100)])
+        t.add_row(["Above USL", "%.2f" %
+                   (above / N * 100), "%.2f" %
+                   (wu * 100), "%.2f" %
+                   (ou * 100)])
+        t.add_row(["Total Out", "%.2f" %
+                   ((below + above) / N * 100), "%.2f" %
+                   ((wl + wu) * 100), "%.2f" %
+                   ((ol + ou) * 100)])
+        print(str(t))
+        #  print(
+        #      "Above USL Obs. %.2f%%\tExp. Within %.2f%%\tExp. Overall %.2f%%" %
+        #      (above / N * 100, wu * 100, ou * 100))
+        #  print(
+        #      "Total Out Obs. %.2f%%\tExp. Within %.2f%%\tExp. Overall %.2f%%" %
+        #      ((below + above) / N * 100, (wu + wl) * 100, (ou + ol) * 100))
 
     return {
         "below_s": below / N,
@@ -109,7 +139,8 @@ def nonconformance(data, t, lsl, usl, u, sw, so, print_out=True):
         "ttl_o": ou + ol}
 
 
-def cpk(data, target, usl, lsl, print_out=True, use_range=False, alpha=0.05):
+def cpk(data, target, usl, lsl, print_port=print, within=True,
+        print_out=True, use_range=False, alpha=0.05):
     try:
         # if data is a 2D list
         size_subgrp = [len(l) for l in data]
@@ -155,14 +186,22 @@ def cpk(data, target, usl, lsl, print_out=True, use_range=False, alpha=0.05):
            "Within Sigma": std_within, "Overall Sigma": std_overall,
            "N": N, "N Subgroups": sub_grps, "Stability Index": stability}
     if print_out:
+        print = print_port
+        print("\n---- Process Capabilities ----")
         for key in res:
-            print(key, "=", "%.3f" % res[key]
-                  if isinstance(res[key], float) else res[key])
-        print(within_msg)
+            if "N" in key:
+                print(key + " = %d" % int(res[key]))
+            else:
+                print(str(key) + " = %.3f" % res[key]
+                      if isinstance(res[key], float) else str(res[key]))
+        if within:
+            print(within_msg)
 
-    res["Within"] = cpk_calc(mean, std_within, target,
-                             usl, lsl, df_sub, N, alpha=alpha,
-                             name="Within", print_out=print_out)
+    if within:
+        res["Within"] = cpk_calc(mean, std_within, target,
+                                 usl, lsl, df_sub, N, alpha=alpha,
+                                 print_port=print_port,
+                                 name="Within", print_out=print_out)
     res["Overall"] = cpk_calc(
         mean,
         std_overall,
@@ -170,7 +209,7 @@ def cpk(data, target, usl, lsl, print_out=True, use_range=False, alpha=0.05):
         usl,
         lsl,
         N - 1,
-        N,
+        N, print_port=print_port,
         alpha=alpha,
         name="Overall (AKA Ppk in JMP)",
         print_out=print_out)
@@ -182,6 +221,7 @@ def cpk(data, target, usl, lsl, print_out=True, use_range=False, alpha=0.05):
         mean,
         std_within,
         std_overall,
+        print_port=print_port,
         print_out=print_out)
     res["Flat List"] = flat_list
     return res
@@ -205,8 +245,8 @@ if __name__ == "__main__":
     # dd has consistent 4 samples in each group
 
     #  cpk(data, target, usl, lsl)
-    #  cpk(data, target, usl, lsl, alpha=0.1)
-    cpk(dd, target, usl, lsl, print_out=True)
+    cpk(data, target, usl, lsl, print_out=True)
+    #  cpk(dd, target, usl, lsl, print_out=True)
     #  cpk(d, target, usl, lsl)
     #  cpk(d, target, usl, lsl, use_range=True)
     #  cpk(dd, target, usl, lsl, print_out=True, use_range=True)

@@ -3,6 +3,8 @@ import pandas as pd
 ############## Own Modules ############
 from utilities import d2_2D as d2
 from two_way_anova import two_way_anova
+from one_way_ANOVA import one_way_anova
+from utilities import grouping_by_labels
 
 
 def GRR_xbar(data, op_key="Operator", pt_key="Part", y_key="Y",
@@ -75,6 +77,7 @@ def GRR_xbar(data, op_key="Operator", pt_key="Part", y_key="Y",
         t.add_row(["Total Variation", "%.3f" % TTL, "%.3f" % (TTL * 6),
                    "%.2f" % (100)])
         print(str(t))
+        print("Number of Distinct Categories = %d" % (int(PV / GRR * 2**.5)))
         print("\nVariance Components")
         t = PT()
         t.field_names = ["Source", "VarComp", "%Contribution"]
@@ -112,8 +115,6 @@ def grr_xbar_r(y=None, op=None, part=None,
 
 
 def grr_inter(y, op, part):
-    if op is None:
-        op = [1] * len(y)
     res = two_way_anova(y, factor_listA=part, factor_listB=op,
                         print_out=False)
 
@@ -128,8 +129,6 @@ def grr_inter(y, op, part):
 
 
 def grr_simple(y, op, part):
-    if op is None:
-        op = [1] * len(y)
     res = two_way_anova(y, factor_listA=part, factor_listB=op,
                         interaction=False, print_out=False)
 
@@ -142,11 +141,26 @@ def grr_simple(y, op, part):
     return Rept, OP, 0, PP
 
 
+def grr_no_op(y, part):
+    data = grouping_by_labels(y, part)
+    part_list = list(set(part))
+    res = one_way_anova(data, part_list, print_out=False)
+    a = len(part_list)
+    n = len(y) / a
+    Rept = res['MSE']
+    PP = max(0, (res['MSA'] - Rept) / n)
+    return Rept, 0, 0, PP
+
+
 def grr_anova_EMP(y=None, op=None, part=None, inter=True,
                   print_out=False, print_port=print):
-    Rept, OP, OPP, PP = grr_inter(y, op, part)
-    if OPP == 0 or not inter:
-        Rept, OP, OPP, PP = grr_simple(y, op, part)
+    if op is None:
+        inter = False
+        Rept, OP, OPP, PP = grr_no_op(y, part)
+    else:
+        Rept, OP, OPP, PP = grr_inter(y, op, part)
+        if OPP == 0 or not inter:
+            Rept, OP, OPP, PP = grr_simple(y, op, part)
 
     # OPP: operator x part variance, e.g. someone is bad at small parts
     Repd = OP   # reproducibility by human
@@ -163,12 +177,14 @@ def grr_anova_EMP(y=None, op=None, part=None, inter=True,
                    "%.2f" % (GRR / TTL * 100)])
         t.add_row(["Repeatability", "%.3f" % Rept**.5, "%.3f" % Rept,
                    "%.2f" % (Rept / TTL * 100)])
-        t.add_row(["Reproducibility", "%.3f" % Repd**.5, "%.3f" % Repd,
-                   "%.2f" % (Repd / TTL * 100)])
+        if op is not None:
+            t.add_row(["Reproducibility", "%.3f" % Repd**.5, "%.3f" % Repd,
+                       "%.2f" % (Repd / TTL * 100)])
         t.add_row(["Product Var.", "%.3f" % PP**.5, "%.3f" % PP,
                    "%.2f" % (PP / TTL * 100)])
-        t.add_row(["Interaction", "%.3f" % OPP**.5, "%.3f" % OPP,
-                   "%.2f" % (OPP / TTL * 100)])
+        if inter:
+            t.add_row(["Interaction", "%.3f" % OPP**.5, "%.3f" % OPP,
+                       "%.2f" % (OPP / TTL * 100)])
         t.add_row(["Total Variation", "%.3f" % TTL**.5, "%.3f" % TTL,
                    "%.2f" % (100)])
         print(str(t))
@@ -179,9 +195,13 @@ def grr_anova_EMP(y=None, op=None, part=None, inter=True,
 
 def grr_anova_AIAG(y=None, op=None, part=None, inter=True,
                    print_out=False, print_port=print):
-    Rept, OP, OPP, PP = grr_inter(y, op, part)
-    if OPP == 0 or not inter:
-        Rept, OP, OPP, PP = grr_simple(y, op, part)
+    if op is None:
+        inter = False
+        Rept, OP, OPP, PP = grr_no_op(y, part)
+    else:
+        Rept, OP, OPP, PP = grr_inter(y, op, part)
+        if OPP == 0 or not inter:
+            Rept, OP, OPP, PP = grr_simple(y, op, part)
 
     # OPP: operator x part variance, e.g. someone is bad at small parts
     Repd = OP + OPP  # reproducibility by human
@@ -196,10 +216,12 @@ def grr_anova_AIAG(y=None, op=None, part=None, inter=True,
         t.field_names = ["Source", "6 x Std", ""]
         t.add_row(["Repeatability", "%.2f" % (6 * Rept**.5),
                    "Equipment Variation"])
-        t.add_row(["Reproducibility", "%.2f" % (6 * Repd**.5),
-                   "Appraiser Variation"])
-        t.add_row(["Operator", "%.2f" % (6 * OP**.5), ""])
-        t.add_row(["Op. x Product", "%.2f" % (6 * OPP**.5), ""])
+        if op is not None:
+            t.add_row(["Reproducibility", "%.2f" % (6 * Repd**.5),
+                       "Appraiser Variation"])
+            t.add_row(["Operator", "%.2f" % (6 * OP**.5), ""])
+            if inter:
+                t.add_row(["Op. x Part", "%.2f" % (6 * OPP**.5), ""])
         t.add_row(["Gauge R&R", "%.2f" % (6 * GRR**.5), ""])
         t.add_row(["Part Variation", "%.2f" % (6 * PP**.5),
                    "Part Variation"])
@@ -214,8 +236,9 @@ def grr_anova_AIAG(y=None, op=None, part=None, inter=True,
                    "%.2f" % (GRR / TTL * 100)])
         t.add_row(["Repeatability", "%.3f" % Rept**.5, "%.3f" % Rept,
                    "%.2f" % (Rept / TTL * 100)])
-        t.add_row(["Reproducibility", "%.3f" % Repd**.5, "%.3f" % Repd,
-                   "%.2f" % (Repd / TTL * 100)])
+        if op is not None:
+            t.add_row(["Reproducibility", "%.3f" % Repd**.5, "%.3f" % Repd,
+                       "%.2f" % (Repd / TTL * 100)])
         t.add_row(["Product Var.", "%.3f" % PP**.5, "%.3f" % PP,
                    "%.2f" % (PP / TTL * 100)])
         print(str(t))
@@ -250,9 +273,12 @@ if __name__ == "__main__":
     c3 = [167, 162, 210, 213, 187, 183, 189, 196, 156, 147,
           155, 157, 206, 199, 182, 179, 184, 178, 143, 142,
           152, 155, 206, 203, 180, 181, 180, 182, 146, 154]
-    grr_xbar_r(y=c3, op=c1, part=c2, print_out=True)
     grr_anova_EMP(y=c3, op=c1, part=c2, print_out=True)
     grr_anova_EMP(y=c3[:-10], op=c1[:-10], part=c2[:-10], print_out=True)
     #  print(c2[:-10])
     grr_anova_AIAG(y=c3, op=c1, part=c2, print_out=True)
     grr_anova_AIAG(y=c3[:-10], op=c1[:-10], part=c2[:-10], print_out=True)
+    grr_anova_EMP(y=c3, part=c2, print_out=True)
+    grr_master(y=c3, part=c2, print_out=True, mode="xbar")
+    grr_master(y=c3, part=c2, print_out=True, mode="aiag")
+    grr_xbar_r(y=c3, op=c1, part=c2, print_out=True)

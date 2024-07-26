@@ -15,6 +15,7 @@ from basic_dialogs import DescribeDialog, NormTestDialog, CIDialog
 from sample_test_dialog import Mean1SampleDialog, Mean1SampleZDialog, Var1SampleDialog, Mean2SampleDialog, PairedTDialog, MultiVarDialog, Prop1SDialog, Prop2SDialog
 from anova_dialog import Anova1WayDialog, TtestDialog, Anova2WayDialog
 from chi2_dialog import Chi2TableDialog, Chi2PropDialog
+from qc_dialog import GRRDialog, CpkDialog,CpkSubDialog
 
 
 class TestApp(DataExplore):
@@ -165,31 +166,13 @@ class TestApp(DataExplore):
         self.stats_menu = self.createPulldown(self.menu, self.stats_menu)
         self.menu.add_cascade(label='Stats', menu=self.stats_menu['var'])
 
-        self.q_menu = {
-            '01Describe': {'cmd': self.describe},
-            '02Normality': {'cmd': self.norm_test},
-            '03Confidence Intervals': {'cmd': self.confidence_interval},
-            '13Correlation': {'cmd': self.correlation},
-            '16Orthogonal Fit': {'cmd': self.ortho_fit},
-            '14Linear Fit': {'cmd': self.linear_fit},
-            '15Residual Plots': {'cmd': self.resid},
-            '17Correlation Matrix': {'cmd': self.multi_cor},
-            '22One Sample Mean t-test': {'cmd': self.mean_1sample},
-            '23One Sample Mean Z-test': {'cmd': self.mean_1sampleZ},
-            '24One Sample Stdev': {'cmd': self.var_1sample},
-            '25One Sample Proportion': {'cmd': self.prop_1sample},
-            '26Two Samples t-test': {'cmd': self.mean_2samples},
-            '27Paired t-test': {'cmd': self.paired_t},
-            '28Two Samples Proportion': {'cmd': self.prop_2samples},
-            '29Multi Sample Std Eq.': {'cmd': self.multi_var},
-            '32Oneway ANOVA': {'cmd': self.anova_1way},
-            '33Mean Comparison': {'cmd': self.JMP_t_test},
-            '34Twoway ANOVA': {'cmd': self.anova_2way},
-            '42Contingency table & Chi2': {'cmd': self.chi2table},
-            '43Proportion Chi Square': {'cmd': self.chi2prop},
+        self.quality_menu = {
+            '01Gauge R&R Balanced': {'cmd': self.grr},
+            '07Process Capability(Cpk)': {'cmd': self.cpk},
+            '08Cpk with Subgroups': {'cmd': self.cpksub},
             '06sep': '', '20sep': '', '30sep': '', '40sep': ''}
-        self.stats_menu = self.createPulldown(self.menu, self.stats_menu)
-        self.menu.add_cascade(label='Stats', menu=self.stats_menu['var'])
+        self.quality_menu = self.createPulldown(self.menu, self.quality_menu)
+        self.menu.add_cascade(label='Quality', menu=self.quality_menu['var'])
 
         self.plots_menu = {
             '01Plot Selected': {'cmd': self.plot_selected},
@@ -422,6 +405,26 @@ class TestApp(DataExplore):
             title='Propabilities Chi SQ Test')
         return
 
+    def grr(self):
+        _ = GRRDialog(
+            self.table, app=self,
+            df=self.table.model.df,
+            title='Guage R&R')
+        return
+
+    def cpk(self):
+        _ = CpkDialog(
+            self.table, app=self,
+            df=self.table.model.df,
+            title='Process Capability')
+        return
+
+    def cpksub(self):
+        _ = CpkSubDialog(
+            self.table, app=self,
+            df=self.table.model.df,
+            title='Process Capability with Subgroups')
+        return
 
 if __name__ == "__main__":
     app = TestApp()

@@ -15,7 +15,7 @@ from basic_dialogs import DescribeDialog, NormTestDialog, CIDialog
 from sample_test_dialog import Mean1SampleDialog, Mean1SampleZDialog, Var1SampleDialog, Mean2SampleDialog, PairedTDialog, MultiVarDialog, Prop1SDialog, Prop2SDialog
 from anova_dialog import Anova1WayDialog, TtestDialog, Anova2WayDialog
 from chi2_dialog import Chi2TableDialog, Chi2PropDialog
-from qc_dialog import GRRDialog, CpkDialog,CpkSubDialog
+from qc_dialog import GRRDialog, CpkDialog, CpkSubDialog, TIDialog
 
 
 class TestApp(DataExplore):
@@ -156,9 +156,9 @@ class TestApp(DataExplore):
             '26Two Samples t-test': {'cmd': self.mean_2samples},
             '27Paired t-test': {'cmd': self.paired_t},
             '28Two Samples Proportion': {'cmd': self.prop_2samples},
-            '29Multi Sample Std Eq.': {'cmd': self.multi_var},
+            '29Multi Stdev Test': {'cmd': self.multi_var},
             '32Oneway ANOVA': {'cmd': self.anova_1way},
-            '33Mean Comparison': {'cmd': self.JMP_t_test},
+            '33Mean Comparison t': {'cmd': self.JMP_t_test},
             '34Twoway ANOVA': {'cmd': self.anova_2way},
             '42Contingency table & Chi2': {'cmd': self.chi2table},
             '43Proportion Chi Square': {'cmd': self.chi2prop},
@@ -170,6 +170,7 @@ class TestApp(DataExplore):
             '01Gauge R&R Balanced': {'cmd': self.grr},
             '07Process Capability(Cpk)': {'cmd': self.cpk},
             '08Cpk with Subgroups': {'cmd': self.cpksub},
+            '22Tolerance Interval': {'cmd': self.ti_norm},
             '06sep': '', '20sep': '', '30sep': '', '40sep': ''}
         self.quality_menu = self.createPulldown(self.menu, self.quality_menu)
         self.menu.add_cascade(label='Quality', menu=self.quality_menu['var'])
@@ -425,6 +426,14 @@ class TestApp(DataExplore):
             df=self.table.model.df,
             title='Process Capability with Subgroups')
         return
+
+    def ti_norm(self):
+        _ = TIDialog(
+            self.table, app=self,
+            df=self.table.model.df,
+            title='Normal Dist TI')
+        return
+
 
 if __name__ == "__main__":
     app = TestApp()

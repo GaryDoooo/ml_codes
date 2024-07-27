@@ -6,9 +6,9 @@ from tkinter import TOP, LEFT, X, BOTH
 ########### Own Modules ###########
 from dialog import Dialogs
 from GRR import grr_master
-from utilities import is_void, is_number, grouping_by_labels, number_list
-#number_2lists, number_2Dlist
+from utilities import is_void, is_number, grouping_by_labels, number_list, get_number
 from cpk_plot import cpk_plot
+from ti import ti_norm
 
 
 class GRRDialog(Dialogs):
@@ -123,11 +123,11 @@ class CpkDialog(Dialogs):
                      bg='white', width=10)
         w.pack(side=LEFT, padx=2, pady=2)
 
-
         self.show_within = tk.BooleanVar(value=True)
-        w = tk.Checkbutton(m, 
-                text='Show within sigma of moving average of neighbor observations.',
-                           variable=self.show_within)
+        w = tk.Checkbutton(
+            m,
+            text='Show within sigma of moving average of neighbor observations.',
+            variable=self.show_within)
         w.pack(side=TOP, fill=BOTH, padx=2, pady=2)
 
         self.xlabel = tk.StringVar(value="")
@@ -182,6 +182,8 @@ class CpkDialog(Dialogs):
             show_spec=self.show_spec.get())
 
         return
+
+
 class CpkSubDialog(Dialogs):
     def createWidgets(self, m):
         f = tk.LabelFrame(m, text='Input Column')
@@ -339,5 +341,78 @@ class CpkSubDialog(Dialogs):
             show_legend=self.show_legend.get(),
             show_within=self.show_within.get(),
             show_spec=self.show_spec.get())
+
+        return
+
+
+class TIDialog(Dialogs):
+    def createWidgets(self, m):
+        f = tk.LabelFrame(m, text='Sample Values')
+        f.pack(side=TOP, fill=BOTH, padx=2)
+        self.xvar = tk.StringVar(value="")
+        w = ttk.Combobox(
+            f, values=self.cols, textvariable=self.xvar,
+            width=14)
+        w.pack(side=LEFT, padx=2)
+
+        master = tk.LabelFrame(m, text='Summarized Data (Overriding)')
+        master.pack(side=TOP, fill=BOTH, padx=2)
+        self.sample_mean = tk.StringVar(value="")
+        self.sample_std = tk.StringVar(value="")
+        self.sample_n = tk.StringVar(value="")
+        w = tk.Label(master, text="N")
+        w.pack(side=LEFT, fill=X, padx=2)
+        w = tk.Entry(master, textvariable=self.sample_n,
+                     bg='white', width=5)
+        w.pack(side=LEFT, padx=2, pady=2)
+        w = tk.Label(master, text="Stdev")
+        w.pack(side=LEFT, fill=X, padx=2)
+        w = tk.Entry(master, textvariable=self.sample_std,
+                     bg='white', width=5)
+        w.pack(side=LEFT, padx=2, pady=2)
+        w = tk.Label(master, text="Mean")
+        w.pack(side=LEFT, fill=X, padx=2)
+        w = tk.Entry(master, textvariable=self.sample_mean,
+                     bg='white', width=5)
+        w.pack(side=LEFT, padx=2, pady=2)
+
+        w = tk.Label(
+            m,
+            anchor="e",
+            justify=LEFT,
+            wraplength=300,
+            text="Computes an interval that contains at least the specified" +
+            " proportion of the population with (1-alpha) confidence, assuming" +
+            " Normal Distribution.")
+        w.pack(side=TOP, fill=BOTH, padx=2)
+
+        master = tk.LabelFrame(m, text='Proportion Setting')
+        master.pack(side=TOP, fill=BOTH, padx=2)
+        self.prop = tk.DoubleVar(value=0.9)
+        w = tk.Label(master, text="Specify Proportion to cover")
+        w.pack(side=LEFT, fill=X, padx=2)
+        w = tk.Entry(master, textvariable=self.prop,
+                     bg='white', width=5)
+        w.pack(side=LEFT, padx=2, pady=2)
+
+        self.add_alpha(m)
+        return
+
+    def apply(self):
+        data = number_list(self.df[self.xvar.get()])
+
+        alpha = self.alpha.get()
+        if alpha > 0.5 or alpha <= 0:
+            alpha = 0.05
+        std = get_number(self.sample_std)
+        n = get_number(self.sample_n)
+        mean = get_number(self.sample_mean)
+        P = self.prop.get()
+        if P > 1 or P <= 0:
+            P = 0.9
+
+        ti_norm(data=data, sample_n=n, sample_std=std,
+                sample_mean=mean, alpha=alpha,
+                P=P, print_out=True, print_port=self.app.print)
 
         return

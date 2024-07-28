@@ -1,5 +1,5 @@
 import pandas as pd
-from tkinter import END, StringVar, Entry
+from tkinter import END, StringVar, Entry, messagebox
 import numpy as np
 ############ pandastable #############
 from pandastable_local.core import Table
@@ -9,6 +9,7 @@ from pandastable_local.dialogs import MultipleValDialog
 #  from modified_header import MColumnHeader as ColumnHeader
 #  from modified_header import RowHeader
 from df_combine import df_combine
+from utilities import grouping_by_labels, verifyNewColName, filter_voids
 
 
 class MTable(Table):
@@ -116,30 +117,30 @@ class MTable(Table):
 
     def update_rowcolors(self):
         """Update row colors if present so that it syncs with current dataframe."""
-
-        df = self.model.df
-        rc = self.rowcolors
-        if len(df) == len(self.rowcolors):
-            rc.set_index(df.index, inplace=True)
-        elif len(df) > len(rc):
-            idx = df.index.difference(rc.index)
-            #self.rowcolors = rc.append(pd.DataFrame(index=idx))
-            self.rowcolors = pd.concat([rc, pd.DataFrame(index=idx)])
-        else:
-            idx = rc.index.difference(df.index)
-            rc.drop(idx, inplace=True)
-        # check columns
-        cols = list(rc.columns.difference(df.columns))
-        print(cols)
-        if len(cols) > 0:
-            try:
-                rc.drop(cols, inplace=True)
-            except BaseException:
-                pass
-        cols = list(df.columns.difference(rc.columns))
-        if len(cols) > 0:
-            for col in cols:
-                rc[col] = np.nan
+        #
+        #  df = self.model.df
+        #  rc = self.rowcolors
+        #  if len(df) == len(self.rowcolors):
+        #      rc.set_index(df.index, inplace=True)
+        #  elif len(df) > len(rc):
+        #      idx = df.index.difference(rc.index)
+        #      # self.rowcolors = rc.append(pd.DataFrame(index=idx))
+        #      self.rowcolors = pd.concat([rc, pd.DataFrame(index=idx)])
+        #  else:
+        #      idx = rc.index.difference(df.index)
+        #      rc.drop(idx, inplace=True)
+        #  # check columns
+        #  cols = list(rc.columns.difference(df.columns))
+        #  print(cols)
+        #  if len(cols) > 0:
+        #      try:
+        #          rc.drop(cols, inplace=True)
+        #      except BaseException:
+        #          pass
+        #  cols = list(df.columns.difference(rc.columns))
+        #  if len(cols) > 0:
+        #      for col in cols:
+        #          rc[col] = np.nan
         return
 
     def setAlignment(self, colnames=None):
@@ -273,6 +274,7 @@ class MTable(Table):
             ins_y=ins_y, ins_x=ins_x))
         self.updateModel(model)
         self.redraw()
+        self.updateIndex()
         return
 
     def paste_header(self, event=None):
@@ -299,9 +301,180 @@ class MTable(Table):
         df2_cols = df.columns.tolist()
         for x in range(len(df2_cols)):
             xx = ins_x + x
-            col_names[xx] = df2_cols[x]
+            col_names[xx] = verifyNewColName(df2_cols[x], col_names)
         new_df.columns = col_names
         model = TableModel(new_df)
         self.updateModel(model)
         self.redraw()
+        self.updateIndex(ask=False)
         return
+
+    def splitColumn(self, evt=None):
+        """
+        Split data column with a categorical column into several
+        individual columns.
+        """
+
+        df = self.model.df
+        cols = list(df)
+
+        d = MultipleValDialog(
+            title='Split Column',
+            initialvalues=(
+                cols,
+                cols),
+            labels=(
+                'Data Column',
+                'Grouping ID Column'),
+            types=(
+                'combobox',
+                'combobox'),
+            tooltips=(
+                'The data to be splitted into seperated columns',
+                'Categorical data to group the data'),
+            parent=self.parentframe)
+        if d.result is None:
+            return
+        self.storeCurrent()
+        data = df[d.results[0]]
+        grpList = df[d.results[1]]
+
+        keys = list(set(grpList))
+        resList = grouping_by_labels(data, grpList, keys=keys)
+
+        def insertCol(col1, col2):
+            """
+            Move col1 next to col2, useful for placing a new column
+            made from the first one next to it so user can see it easily
+            """
+            ind1 = self.model.df.columns.get_loc(col1)
+            ind2 = self.model.df.columns.get_loc(col2)
+            self.model.moveColumn(ind1, ind2 + 1)
+
+        for i in range(len(resList)):
+            key = verifyNewColName(str(keys[i]), cols)
+            df[key] = resList[i] + [np.nan] * \
+                (df.shape[0] - len(resList[i]))
+        self.redraw()
+        return
+
+    def stackColumn(self, evt=None):
+        """
+        Stack selected columns into two colums with data and grouping keys
+        keys are the column ids
+        """
+
+        self.storeCurrent()
+        df = self.model.df
+        selected_cols = list(df.columns[self.multiplecollist])
+        cols = list(df)
+
+        self.addColumn(newname=verifyNewColName('Stk Keys', cols))
+        self.addColumn(newname=verifyNewColName('Stk Data', cols))
+
+        resKeys, resData = [], []
+        for col in selected_cols:
+            data = list(df[col])
+            resKeys = resKeys + [col] * len(data)
+            resData = resData + data
+        [resKeys, resData] = filter_voids([resKeys, resData])
+        ins_y = 0
+        ins_x = df.shape[1] - 2
+        model = TableModel(df_combine(
+            self.model.df,
+            pd.DataFrame({'1': resKeys, '2': resData}),
+            ins_y=ins_y, ins_x=ins_x))
+        self.updateModel(model)
+
+        self.redraw()
+        self.updateIndex(ask=False)
+        return
+
+    def addColumn(self, newname=None):
+        """Add a new column"""
+
+        if newname is None:
+            coltypes = ['object', 'float64']
+            d = MultipleValDialog(title='New Column',
+                                  initialvalues=(coltypes, ''),
+                                  labels=('Column Type', 'Name'),
+                                  types=('combobox', 'string'),
+                                  parent=self.parentframe)
+            if d.result is None:
+                return
+            else:
+                dtype = d.results[0]
+                newname = d.results[1]
+        else:
+            dtype = 'object'
+
+        #  df = self.model.df
+        if newname is not None:
+            if newname in self.model.df.columns:
+                messagebox.showwarning("Name exists",
+                                       "Name already exists!",
+                                       parent=self.parentframe)
+            else:
+                self.storeCurrent()
+                self.model.addColumn(newname, dtype)
+                self.parentframe.configure(width=self.width)
+                self.update_rowcolors()
+                self.redraw()
+                self.tableChanged()
+        return
+
+    def updateIndex(self, ask=True, drop=True):
+        """Reset index and redraw row header"""
+
+        #  self.storeCurrent()
+        #  df = self.model.df
+        #  if (df.index.name is None or df.index.names[0] is None) and ask == True:
+        #      drop = messagebox.askyesno("Reset Index", "Drop the index?",
+        #                                parent=self.parentframe)
+        self.model.df.reset_index(drop=drop, inplace=True)
+        self.update_rowcolors()
+        # self.set_rowcolors_index()
+        self.redraw()
+        # self.drawSelectedCol()
+        #  if hasattr(self, 'pf'):
+        #      self.pf.updateData()
+        self.update_rowcolors()
+        self.tableChanged()
+        return
+
+    def deleteRow(self, ask=False):
+        """Delete a selected row"""
+
+        n = True
+        if ask:
+            n = messagebox.askyesno("Delete",
+                                    "Delete selected rows?",
+                                    parent=self.parentframe)
+
+        if len(self.multiplerowlist) > 1:
+            if n:
+                self.storeCurrent()
+                rows = self.multiplerowlist
+                self.model.deleteRows(rows)
+                self.setSelectedRow(0)
+                self.clearSelected()
+                self.update_rowcolors()
+                self.redraw()
+        else:
+            if n:
+                self.storeCurrent()
+                row = self.getSelectedRow()
+                self.model.deleteRows([row])
+                self.setSelectedRow(row - 1)
+                self.clearSelected()
+                self.update_rowcolors()
+                self.redraw()
+        self.updateIndex()
+        return
+
+    def colorRows(self):
+        return
+
+    def colorColumns(self):
+        return
+

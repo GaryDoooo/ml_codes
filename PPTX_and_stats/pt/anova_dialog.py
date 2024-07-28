@@ -3,9 +3,9 @@ import tkinter as tk
 from tkinter import TOP, LEFT, X, BOTH
 from numpy import nan
 ###################################
-from pandastable_local.dialogs import addListBox
+#  from pandastable_local.dialogs import addListBox
 ########### Own Modules ###########
-from dialog import Dialogs
+from dialog import Dialogs,addListBox
 from utilities import number_list
 from one_way_ANOVA import one_way_anova, JMP_ANOVA_t_test
 from two_way_anova import two_way_anova

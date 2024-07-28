@@ -1,9 +1,9 @@
 import tkinter as tk
 from tkinter import TOP, BOTH, LEFT, X, ttk
 ###################################
-from pandastable_local.dialogs import addListBox
+#  from pandastable_local.dialogs import addListBox
 ########### Own Modules ###########
-from dialog import Dialogs
+from dialog import Dialogs,addListBox
 from utilities import number_list, get_number, event_count
 from t_test import t_test_1sample, z_test_1sample, t_test_2samples, paired_t_test
 from chi_sq import var_1sample, multi_pop_var_test

@@ -12,14 +12,16 @@ from math import isnan
 from chi_sq import chi2_test_stdev
 from t_test import t_test_1sample
 
+
 def is_number(x):
     try:
-        i=float(x)
-        if i>0 or i<=0:
+        i = float(x)
+        if i > 0 or i <= 0:
             return True
-    except:
+    except BaseException:
         pass
     return False
+
 
 def is_void(x):
     if len(str(x).replace(" ", "")) == 0:
@@ -185,7 +187,7 @@ def pearson_correlation(x, y, alpha=0.05, print_out=True, print_port=print):
     if abs(r) == 1:
         p = a = b = theta = 0
     else:
-        t = r * ((n - 2) / (1 - r * r))**.5
+        t =abs( r * ((n - 2) / (1 - r * r))**.5)
         p = (1 - t_dist.cdf(t, n - 2)) * 2
 
     # Calculate ellipse
@@ -213,6 +215,7 @@ def pearson_correlation(x, y, alpha=0.05, print_out=True, print_port=print):
         print("Confidence Interval (%.3f, %.3f)" % (lo, hi))
         print("Covariance: %.3f" % cov)
         print("p-value = %.3f\tN = %d" % (p, n))
+        print("P-value is the probability of there is no relationship betweent the two populations.")
 
     return {"r": r, "r_l": lo, "r_u": hi, "cov": cov, "p": p, "N": n,
             "ellipse": {"a": a, "b": b, "theta": theta}}
@@ -483,6 +486,15 @@ def number_2Dlist(df=None, cols=None,
         print("Received %d cols of data. Found %d rows valid." % (
             len(cols), len(res)))
     return transpose_2D_list(res)
+
+
+def verifyNewColName(newName, cols):
+    cnt = 0
+    res = newName
+    while res in cols:
+        cnt += 1
+        res = newName + "_" + str(cnt)
+    return res
 
 
 if __name__ == "__main__":

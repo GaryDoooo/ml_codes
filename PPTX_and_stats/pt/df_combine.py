@@ -17,7 +17,7 @@ def df_combine(df1, df2, ins_x=0, ins_y=0):
     cols = df1.columns.tolist()
     for i in range(w - df1w):
         cols.append("C%d" % (i + 1 + df1w))
-    return pd.DataFrame(res, columns=cols)
+    return pd.DataFrame(res, columns=cols, index=range(h))
 
 
 if __name__ == "__main__":

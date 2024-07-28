@@ -165,7 +165,7 @@ class PlotViewer(Frame):
 
         side = LEFT
         #add button toolbar
-        addButton(bf, 'Plot', self.replot, images.plot(),
+        addButton(bf, 'Plot Selected', self.replot, images.plot(),
                   'plot current data', side=side, compound="left", width=16)
         addButton(bf, 'Apply Options', self.updatePlot, images.refresh(),
                   'refresh plot with current options', side=side,

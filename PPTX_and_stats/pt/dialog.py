@@ -1,5 +1,5 @@
-from pandastable_local.dialogs import BaseDialog  # , addListBox
-from tkinter import Frame, TOP, LEFT, X, BOTH
+from pandastable_local.dialogs import BaseDialog, EasyListbox
+from tkinter import Frame, TOP, LEFT, X, BOTH, Listbox, Label, Scrollbar, VERTICAL, N, S, E, W, END, EXTENDED
 import tkinter as tk
 import numpy as np
 from prettytable import PrettyTable as PT
@@ -141,12 +141,48 @@ class Dialogs(BaseDialog):
         """ Do nothing, can be updated """
         return
 
-    def error(self,msg=None):
+    def error(self, msg=None):
         if msg is None:
             return
-        t=PT()
-        t.field_names=["ERROR"]
+        t = PT()
+        t.field_names = ["ERROR"]
         t.add_row([msg])
-        self.app.print("\n"+str(t))
+        self.app.print("\n" + str(t))
         return
 
+
+class superEasyListbox(EasyListbox):
+    def __init__(
+            self,
+            parent,
+            width,
+            height,
+            yscrollcommand,
+            listItemSelected):
+        self._listItemSelected = listItemSelected
+        Listbox.__init__(self, parent,
+                         width=width, height=height,
+                         yscrollcommand=yscrollcommand,
+                         selectmode=EXTENDED, exportselection=0)
+        self.bind("<<ListboxSelect>>", self.triggerListItemSelected)
+        self.configure(background='white', foreground='black',
+                       selectbackground='#0174DF', selectforeground='white')
+        return
+
+
+def addListBox(parent, values=[], width=10, height=6, label=''):
+    """Add an EasyListBox"""
+
+    frame = Frame(parent)
+    Label(frame, text=label).grid(row=0)
+    yScroll = Scrollbar(frame, orient=VERTICAL)
+    yScroll.grid(row=1, column=1, sticky=N + S)
+    def listItemSelected(index): return index
+    lbx = superEasyListbox(frame, width, height, yScroll.set, listItemSelected)
+    lbx.grid(row=1, column=0, sticky=N + S + E + W)
+    frame.columnconfigure(0, weight=1)
+    frame.rowconfigure(0, weight=1)
+    yScroll["command"] = lbx.yview
+    for i in values:
+        lbx.insert(END, i)
+    return frame, lbx

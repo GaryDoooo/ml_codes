@@ -2,10 +2,10 @@ from tkinter import ttk
 import tkinter as tk
 from tkinter import TOP, LEFT, X, BOTH
 ###################################
-from pandastable_local.dialogs import addListBox
+#  from pandastable_local.dialogs import addListBox
 ########### Own Modules ###########
 from linear_plot import fit_plot, multi_fit
-from dialog import Dialogs
+from dialog import Dialogs, addListBox
 from Residual import linear_fit_resid_test
 from utilities import number_2lists, number_2Dlist
 

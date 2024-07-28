@@ -114,7 +114,10 @@ class TestApp(DataExplore):
             '04Value Counts': {'cmd': lambda: self._call('valueCounts')},
             '05String Operation': {'cmd': lambda: self._call('applyStringMethod')},
             '06Date/Time Conversion': {'cmd': lambda: self._call('convertDates')},
-            '22Filter Rows': {'cmd': lambda: self._call('queryBar')}}
+            '22Filter Rows': {'cmd': lambda: self._call('queryBar')},
+            '32Split Data Column': {'cmd': lambda: self._call('splitColumn')},
+            '33Stack Selected Columns': {'cmd': lambda: self._call('stackColumn')},
+            '30sep': ''}
         self.data_menu = self.createPulldown(self.menu, self.data_menu)
         self.menu.add_cascade(label='Data', menu=self.data_menu['var'])
 
@@ -176,7 +179,7 @@ class TestApp(DataExplore):
         self.menu.add_cascade(label='Quality', menu=self.quality_menu['var'])
 
         self.plots_menu = {
-            '01Plot Selected': {'cmd': self.plot_selected},
+            '01Plot Wizard': {'cmd': self.plot_selected},
             #  'cmd': lambda: self._call('plotSelected')},
             '02sep': '', '03Store plot': {
                 'cmd': self.addPlot}, '04Clear plots': {
@@ -185,6 +188,12 @@ class TestApp(DataExplore):
         self.plots_menu = self.createPulldown(self.menu, self.plots_menu)
         self.menu.add_cascade(label='Plots', menu=self.plots_menu['var'])
 
+        self.debug_menu = {
+            '01Print DF': {'cmd': self.printDF},
+            '06sep': ''}
+        self.debug_menu = self.createPulldown(self.menu, self.debug_menu)
+        self.menu.add_cascade(label='Debug', menu=self.debug_menu['var'])
+
         self.help_menu = {'01Online Help': {'cmd': self.online_documentation},
                           '02View Error Log': {'cmd': self.showErrorLog},
                           '03About': {'cmd': self.about}}
@@ -192,6 +201,10 @@ class TestApp(DataExplore):
         self.menu.add_cascade(label='Help', menu=self.help_menu['var'])
 
         self.main.config(menu=self.menu)
+        return
+
+    def printDF(self):
+        print(self.table.model.df)
         return
 
     def getCurrentTable(self):

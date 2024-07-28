@@ -3,9 +3,9 @@ import tkinter as tk
 from tkinter import TOP, LEFT, X, BOTH
 from prettytable import PrettyTable as PT
 ###################################
-from pandastable_local.dialogs import addListBox, MultipleValDialog
+from pandastable_local.dialogs import MultipleValDialog
 ########### Own Modules ###########
-from dialog import Dialogs
+from dialog import Dialogs,addListBox
 from utilities import count_2factors, number_2Dlist, transpose_2D_list, filter_voids, count_1factor, number_list
 from chi_sq import chi_square
 

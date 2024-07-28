@@ -1,4 +1,5 @@
 import statistics as stat
+import numpy as np
 from prettytable import PrettyTable as PT
 ########### Own Modules ########
 from utilities import quantiles
@@ -9,6 +10,8 @@ def describe(data, print_port=print,
                                            25, 10, 2.5, 0.5, 0]):
     mean = stat.mean(data)
     N = len(data)
+    if N<2:
+        return
     R = max(data) - min(data)
     mode = stat.mode(data)
     N_mode = len([i for i in data if i == mode])
@@ -21,11 +24,17 @@ def describe(data, print_port=print,
     SEM = std / N**.5
     var = stat.variance(data)
     coefvar = 100 * std / mean
-    kurt = N * (N + 1) / (N - 1) / (N - 2) / (N - 3) * sum(
-        ((i - mean) / std)**4 for i in data
-    ) - 3 * (N - 1)**2 / (N - 2) / (N - 3)
-    skew = N / (N - 1) / (N - 2) * sum(((i - mean) / std)**3
+    try:
+        kurt = N * (N + 1) / (N - 1) / (N - 2) / (N - 3) * sum(
+            ((i - mean) / std)**4 for i in data
+        ) - 3 * (N - 1)**2 / (N - 2) / (N - 3)
+    except:
+        kurt=np.nan
+    try:
+        skew = N / (N - 1) / (N - 2) * sum(((i - mean) / std)**3
                                        for i in data)
+    except:
+        skew=np.nan
 
     if print_out:
         print = print_port

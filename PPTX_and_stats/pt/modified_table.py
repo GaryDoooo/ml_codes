@@ -10,9 +10,23 @@ from pandastable_local.dialogs import MultipleValDialog
 #  from modified_header import RowHeader
 from df_combine import df_combine
 from utilities import grouping_by_labels, verifyNewColName, filter_voids
+from dialog import findRepDialog
 
 
 class MTable(Table):
+    def findText(self, evt=None):
+        """Simple text search in whole table"""
+
+        if hasattr(self, 'searchframe') and self.searchframe is not None:
+            return
+        self.searchframe = findRepDialog(self)
+        self.searchframe.grid(
+            row=self.queryrow,
+            column=0,
+            columnspan=3,
+            sticky='news')
+        return
+
     def fillColumn(self):
         """Fill a column with a data range"""
 
@@ -338,8 +352,9 @@ class MTable(Table):
         self.storeCurrent()
         data = df[d.results[0]]
         grpList = df[d.results[1]]
-
+        [data, grpList] = filter_voids([data, grpList])
         keys = list(set(grpList))
+
         resList = grouping_by_labels(data, grpList, keys=keys)
 
         def insertCol(col1, col2):
@@ -478,3 +493,228 @@ class MTable(Table):
     def colorColumns(self):
         return
 
+    def sortAll(self, evt=None):
+        """
+        Sort the entire table by 1-3 cols.
+        """
+
+        df = self.model.df
+        cols = [""] + list(df)
+
+        d = MultipleValDialog(
+            title='Sort All Columns',
+            initialvalues=(
+                cols,
+                True,
+                cols, True,
+                cols,
+                True),
+            labels=(
+                'Sort By',
+                'Ascending',
+                'Then By',
+                'Ascending',
+                'Then By',
+                'Ascending'),
+            types=(
+                'combobox',
+                'checkbutton',
+                'combobox',
+                'checkbutton',
+                'combobox',
+                'checkbutton'),
+            tooltips=(
+                '',
+                '',
+                '', '', '',
+                ''),
+            parent=self.parentframe)
+        if d.result is None:
+            return
+        self.storeCurrent()
+        col_list, a_list = [], []
+        for i in [0, 2, 4]:
+            if d.results[i] != "":
+                col_list.append(d.results[i])
+                a_list.append(1 if d.results[i + 1] else 0)
+            else:
+                break
+        if len(col_list) == 0:
+            return
+
+        try:
+            #  print(col_list, d.results[3])
+            df.sort_values(by=col_list, inplace=True, ascending=a_list)
+        except BaseException:
+            print('could not sort')
+
+        self.updateIndex(ask=False)
+        self.redraw()
+        return
+
+    def sortSelected(self, evt=None):
+        """
+        Sort the entire table by 1-3 cols.
+        """
+
+        df = self.model.df
+        columnIndex = self.multiplecollist
+        if isinstance(columnIndex, int):
+            columnIndex = [columnIndex]
+
+        colnames = list(df.columns[columnIndex])
+        cols = [""] + colnames
+
+        d = MultipleValDialog(
+            title='Sort Selected Columns',
+            initialvalues=(
+                cols,
+                True,
+                cols, True,
+                cols,
+                True),
+            labels=(
+                'Sort By',
+                'Ascending',
+                'Then By',
+                'Ascending',
+                'Then By',
+                'Ascending'),
+            types=(
+                'combobox',
+                'checkbutton',
+                'combobox',
+                'checkbutton',
+                'combobox',
+                'checkbutton'),
+            tooltips=(
+                '',
+                '',
+                '', '', '',
+                ''),
+            parent=self.parentframe)
+        if d.result is None:
+            return
+        self.storeCurrent()
+        col_list, a_list = [], []
+        for i in [0, 2, 4]:
+            if d.results[i] != "":
+                col_list.append(d.results[i])
+                a_list.append(1 if d.results[i + 1] else 0)
+            else:
+                break
+        if len(col_list) == 0:
+            return
+
+        dfSub = df[colnames].copy()
+        dfSub.sort_values(by=col_list, inplace=True, ascending=a_list)
+        dfSub.reset_index(drop=True, inplace=True)
+        print(dfSub)
+        #  for col in list(dfSub):
+        #      df[col] = dfSub[col]
+        df[colnames] = dfSub
+        self.redraw()
+        return
+
+    def storeCurrent(self):
+        """Store current version of the table before a major change is made"""
+
+        #  print(len(self.prevdf),self.prevdf_end)
+        prevdf = self.model.df.copy()
+        if self.prevdf is None:
+            self.prevdf = [prevdf]
+            self.prevdf_end = 1
+        else:
+            del self.prevdf[self.prevdf_end:]
+            self.prevdf.append(prevdf)
+            self.prevdf_end += 1
+            if self.prevdf_end > 5:
+                del self.prevdf[0]
+                self.prevdf_end -= 1
+        print(len(self.prevdf), self.prevdf_end)
+        return
+
+    def undo(self, event=None):
+        """Undo last major table change"""
+
+        print(len(self.prevdf), self.prevdf_end)
+        if self.prevdf is None:
+            return
+        if self.prevdf_end == 0:
+            return
+        if self.prevdf_end == len(self.prevdf):
+            self.storeCurrent()
+            self.prevdf_end -= 1
+
+        self.prevdf_end -= 1
+        prevdf = self.prevdf[self.prevdf_end]
+        self.model.df = prevdf
+        self.redraw()
+        self.updateModel(self.model)
+        print(len(self.prevdf), self.prevdf_end)
+        return
+
+    def redo(self, event=None):
+        """Redo tolast major table change"""
+
+        print(len(self.prevdf), self.prevdf_end)
+        if self.prevdf is None:
+            return
+        if self.prevdf_end + 2 > len(self.prevdf):
+            return
+        self.prevdf_end += 1
+        prevdf = self.prevdf[self.prevdf_end]
+        self.model.df = prevdf
+        self.redraw()
+        self.updateModel(self.model)
+        print(len(self.prevdf), self.prevdf_end)
+        return
+
+    def tableChanged(self):
+        """Callback to be used when dataframe changes so that other
+            widgets and data can be updated"""
+
+        self.updateFunctions()
+        self.updateWidgets()
+        try:
+            if hasattr(self, 'pf'):
+                self.pf.updateData()
+        except BaseException:
+            pass
+        return
+
+    def adjustColumnWidths(self, limit=30):
+        return
+
+    def clearDataUp(self, evt=None):
+        """Delete cells and move cells below up"""
+
+        if self.allrows:
+            self.deleteColumn()
+            return
+        if not self.editable:
+            return
+        answer = messagebox.askyesno(
+            "Clear Confirm",
+            "Clear this data and move the cells below up?",
+            parent=self.parentframe)
+        if not answer:
+            return
+
+        rows = self.multiplerowlist
+        cols = self.multiplecollist
+        df = self.model.df
+        self.storeCurrent()
+        vSet = set(df.iloc[rows, cols].values.ravel())
+        fills = 65535
+        while fills in vSet:
+            fills += 1
+        self.model.deleteCells(rows, cols, fills=fills)
+        names = df.columns[cols]
+        for col in names:
+            res = [i for i in df[col] if i != fills]
+            res = res + [np.nan] * (df.shape[0] - len(res))
+            df[col] = res
+
+        self.redraw()
+        return

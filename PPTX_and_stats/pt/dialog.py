@@ -1,8 +1,60 @@
-from pandastable_local.dialogs import BaseDialog, EasyListbox
+from pandastable_local.dialogs import BaseDialog, EasyListbox, FindReplaceDialog
 from tkinter import Frame, TOP, LEFT, X, BOTH, Listbox, Label, Scrollbar, VERTICAL, N, S, E, W, END, EXTENDED
 import tkinter as tk
 import numpy as np
 from prettytable import PrettyTable as PT
+#  import pandas as pd
+############### Own Modules ############
+from utilities import is_void
+
+
+class findRepDialog(FindReplaceDialog):
+
+    def find(self):
+        """Do string search. Creates a masked dataframe for results and then stores each cell
+        coordinate in a list."""
+
+        table = self.table
+        df = table.model.df
+        df = df.astype('object').astype('str')
+        s = self.searchvar.get()
+        case = self.casevar.get()
+        self.search_changed = False
+        self.clear()
+        if s == '':
+            return
+        s = s if case else s.upper()
+        found = df.copy()
+        for y in range(df.shape[0]):
+            for x in range(df.shape[1]):
+                found.iloc[y, x] = False
+                if is_void(df.iloc[y, x]):
+                    continue
+                a = str(df.iloc[y, x]) if case else str(df.iloc[y, x]).upper()
+                found.iloc[y, x] = (a == s)
+
+        table.highlighted = found
+        self.coords = [(x, y) for y in range(df.shape[0])
+                       for x in range(df.shape[1]) if found.iloc[y, x]]
+        self.current = 0
+        return
+
+    def replace(self):
+        """Replace all instances of search text"""
+
+        table = self.table
+        table.storeCurrent()
+        df = table.model.df
+        self.find()
+        r = self.replacevar.get()
+        for x, y in self.coords:
+            df.iloc[y, x] = r
+        table.redraw()
+        self.search_changed = True
+        return
+
+    def findNext(self):
+        return
 
 
 class Dialogs(BaseDialog):

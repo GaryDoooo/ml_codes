@@ -21,12 +21,15 @@
 
 #from __future__ import absolute_import, division, print_function
 import sys
-import math, time
-import os, types, string
+import math
+import time
+import os
+import types
+import string
 try:
     from tkinter import *
     from tkinter.ttk import *
-except:
+except BaseException:
     from Tkinter import *
     from ttk import *
 import numpy as np
@@ -35,13 +38,15 @@ from . import util
 from .dialogs import *
 import textwrap
 
+
 def createSubMenu(parent, label, commands):
-    menu = Menu(parent, tearoff = 0)
-    parent.add_cascade(label=label,menu=menu)
+    menu = Menu(parent, tearoff=0)
+    parent.add_cascade(label=label, menu=menu)
     for action in commands:
         menu.add_command(label=action, command=commands[action])
     applyStyle(menu)
     return menu
+
 
 class ColumnHeader(Canvas):
     """Class that takes it's size and rendering from a parent table
@@ -52,7 +57,7 @@ class ColumnHeader(Canvas):
         self.thefont = 'Arial 14'
         self.textcolor = 'white'
         self.bgcolor = bg
-        if table != None:
+        if table is not None:
             self.table = table
             self.model = self.table.model
             if util.check_multiindex(self.model.df.columns) == 1:
@@ -62,18 +67,18 @@ class ColumnHeader(Canvas):
             self.config(width=self.table.width, height=self.height)
             self.columnlabels = self.model.df.columns
             self.draggedcol = None
-            self.bind('<Button-1>',self.handle_left_click)
+            self.bind('<Button-1>', self.handle_left_click)
             self.bind("<ButtonRelease-1>", self.handle_left_release)
             self.bind('<B1-Motion>', self.handle_mouse_drag)
             self.bind('<Motion>', self.handle_mouse_move)
             self.bind('<Shift-Button-1>', self.handle_left_shift_click)
             self.bind('<Control-Button-1>', self.handle_left_ctrl_click)
-            self.bind("<Double-Button-1>",self.handle_double_click)
+            self.bind("<Double-Button-1>", self.handle_double_click)
             self.bind('<Leave>', self.leave)
-            if self.table.ostyp=='darwin':
-                #For mac we bind Shift, left-click to right click
+            if self.table.ostyp == 'darwin':
+                # For mac we bind Shift, left-click to right click
                 self.bind("<Button-2>", self.handle_right_click)
-                self.bind('<Shift-Button-1>',self.handle_right_click)
+                self.bind('<Shift-Button-1>', self.handle_right_click)
             else:
                 self.bind("<Button-3>", self.handle_right_click)
             self.thefont = self.table.thefont
@@ -98,10 +103,10 @@ class ColumnHeader(Canvas):
         self.height = self.table.rowheight
 
         if wrap is True:
-            #set height from longest column wrapped
+            # set height from longest column wrapped
             try:
                 c = list(df.columns.map(str).str.len())
-            except:
+            except BaseException:
                 c = [len(str(i)) for i in df.columns]
             idx = c.index(max(c))
             longest = str(df.columns[idx].encode('utf-8').decode('utf-8'))
@@ -110,22 +115,26 @@ class ColumnHeader(Canvas):
             else:
                 cw = self.table.cellwidth
 
-            tw,l = util.getTextLength(longest, cw)
+            tw, l = util.getTextLength(longest, cw)
             tr = len(textwrap.wrap(longest, l))
             if tr > 1:
-                self.height = tr*self.height
+                self.height = tr * self.height
             #print (tr, longest, textwrap.wrap(longest, l))
 
-        if self.height>250:
-            self.height=250
+        if self.height > 250:
+            self.height = 250
 
         self.tablewidth = self.table.tablewidth
         self.thefont = self.table.thefont
-        self.configure(scrollregion=(0,0,
-                                     self.table.tablewidth+self.table.x_start,
-                                     self.height))
+        self.configure(
+            scrollregion=(
+                0,
+                0,
+                self.table.tablewidth +
+                self.table.x_start,
+                self.height))
         self.config(height=self.height, bg=self.bgcolor)
-        self.delete('gridline','text')
+        self.delete('gridline', 'text')
         self.delete('rect')
         self.delete('dragrect')
         self.atdivider = None
@@ -139,25 +148,25 @@ class ColumnHeader(Canvas):
 
         if multiindex == 1:
             anchor = 'nw'
-            y=2
+            y = 2
             levels = df.columns.levels
             h = self.height
             self.height *= len(levels)
-            y=3
+            y = 3
         else:
             levels = [df.columns.values]
             h = self.height
-            y = h/2
-        i=0
-        #iterate over index levels
-        col=0
+            y = h / 2
+        i = 0
+        # iterate over index levels
+        col = 0
         for level in levels:
             values = df.columns.get_level_values(i)
             for col in self.table.visiblecols:
                 colname = values[col]
                 try:
-                    colstr = colname.encode('utf-8','ignore').decode('utf-8')
-                except:
+                    colstr = colname.encode('utf-8', 'ignore').decode('utf-8')
+                except BaseException:
                     colstr = str(colname)
 
                 if colstr in colwidths:
@@ -165,52 +174,52 @@ class ColumnHeader(Canvas):
                 else:
                     w = self.table.cellwidth
 
-                if w<=8:
-                    colname=''
+                if w <= 8:
+                    colname = ''
                 x = self.table.col_positions[col]
-                if anchor in ['w','nw']:
-                    xt = x+pad
+                if anchor in ['w', 'nw']:
+                    xt = x + pad
                 elif anchor == 'e':
-                    xt = x+w-pad
+                    xt = x + w - pad
                 elif anchor == 'center':
-                    xt = x+w/2
+                    xt = x + w / 2
 
                 colname = colstr
-                tw,length = util.getTextLength(colstr, w-pad, font=font)
+                tw, length = util.getTextLength(colstr, w - pad, font=font)
                 #print (colstr, tw)
                 if wrap is True:
-                    colname = textwrap.fill(colstr, length-1)
-                    y=3
+                    colname = textwrap.fill(colstr, length - 1)
+                    y = 3
                     anchor = 'nw'
                 else:
                     colname = colname[0:int(length)]
 
-                line = self.create_line(x, 0, x, self.height, tag=('gridline', 'vertline'),
-                                     fill='white', width=1)
-                self.create_text(xt,y,
-                                    text=colname,
-                                    fill=self.textcolor,
-                                    font=self.thefont,
-                                    tag='text', anchor=anchor)
+                line = self.create_line(x, 0, x, self.height, tag=(
+                    'gridline', 'vertline'), fill='white', width=1)
+                self.create_text(xt, y,
+                                 text=colname,
+                                 fill=self.textcolor,
+                                 font=self.thefont,
+                                 tag='text', anchor=anchor)
 
-            x = self.table.col_positions[col+1]
-            self.create_line(x,0, x, self.height, tag='gridline',
-                            fill='white', width=2)
-            i+=1
-            y=y+h-2
+            x = self.table.col_positions[col + 1]
+            self.create_line(x, 0, x, self.height, tag='gridline',
+                             fill='white', width=2)
+            i += 1
+            y = y + h - 2
         self.config(height=self.height)
         return
 
-    def handle_left_click(self,event):
+    def handle_left_click(self, event):
         """Does cell selection when left mouse button is clicked"""
 
         self.delete('rect')
         self.table.delete('entry')
         self.table.delete('multicellrect')
         colclicked = self.table.get_col_clicked(event)
-        if colclicked == None:
+        if colclicked is None:
             return
-        #set all rows for plotting if no multi selection
+        # set all rows for plotting if no multi selection
         if len(self.table.multiplerowlist) <= 1:
             self.table.allrows = True
 
@@ -218,19 +227,19 @@ class ColumnHeader(Canvas):
         if self.atdivider == 1:
             return
         self.drawRect(self.table.currentcol)
-        #also draw a copy of the rect to be dragged
+        # also draw a copy of the rect to be dragged
         self.draggedcol = None
         #  self.drawRect(self.table.currentcol, tag='dragrect',
-                        #  color='lightblue', outline='white')
-        if hasattr(self, 'rightmenu') and self.rightmenu != None:
+        #  color='lightblue', outline='white')
+        if hasattr(self, 'rightmenu') and self.rightmenu is not None:
             self.rightmenu.destroy()
-        #finally, draw the selected col on the table
+        # finally, draw the selected col on the table
         self.table.drawSelectedCol()
         self.table.drawMultipleCells()
         self.table.drawMultipleRows(self.table.multiplerowlist)
         return
 
-    def handle_left_release(self,event):
+    def handle_left_release(self, event):
         """When mouse released implement resize or col move"""
 
         #  self.delete('dragrect')
@@ -264,7 +273,7 @@ class ColumnHeader(Canvas):
     def handle_right_click(self, event):
         """respond to a right click"""
 
-        if self.table.enable_menus == False:
+        if not self.table.enable_menus:
             return
         colclicked = self.table.get_col_clicked(event)
         multicollist = self.table.multiplecollist
@@ -305,7 +314,7 @@ class ColumnHeader(Canvas):
             items in the list l"""
 
         for v in l:
-            if abs(val-v) <= d:
+            if abs(val - v) <= d:
                 return v
         return None
 
@@ -357,9 +366,9 @@ class ColumnHeader(Canvas):
         currcol = self.table.currentcol
         colclicked = self.table.get_col_clicked(event)
         if colclicked > currcol:
-            self.table.multiplecollist = list(range(currcol, colclicked+1))
+            self.table.multiplecollist = list(range(currcol, colclicked + 1))
         elif colclicked < currcol:
-            self.table.multiplecollist = list(range(colclicked, currcol+1))
+            self.table.multiplecollist = list(range(colclicked, currcol + 1))
         else:
             return
         for c in self.table.multiplecollist:
@@ -494,12 +503,12 @@ class ColumnHeader(Canvas):
         #                    'Wrap Header' : self.table.setWrap
         #                   }
         popupmenu.add_command(
-            label="Sort by " + colnames + ' \u2193',
+            label="Sort All by " + colnames + ' \u2193',
             command=lambda: self.table.sortTable(
                 ascending=[
                     1 for i in multicols]))
         popupmenu.add_command(
-            label="Sort by " + colnames + ' \u2191',
+            label="Sort All by " + colnames + ' \u2191',
             command=lambda: self.table.sortTable(
                 ascending=[
                     0 for i in multicols]))
@@ -546,6 +555,7 @@ class ColumnHeader(Canvas):
         popupmenu.post(event.x_root, event.y_root)
         applyStyle(popupmenu)
         return popupmenu
+
     def renameColumn(self):
         """Rename column"""
 
@@ -554,7 +564,7 @@ class ColumnHeader(Canvas):
         name = df.columns[col]
         new = simpledialog.askstring("New column name?", "Enter new name:",
                                      initialvalue=name)
-        if new != None:
+        if new is not None:
             if new == '':
                 messagebox.showwarning("Error", "Name should not be blank.")
                 return
@@ -568,39 +578,58 @@ class ColumnHeader(Canvas):
         """Draw a symbol to show that col can be resized when mouse here"""
 
         self.delete('resizesymbol')
-        w=self.table.cellwidth
-        h=25
-        wdth=1
-        hfac1=0.2
-        hfac2=0.4
-        x_start=self.table.x_start
-        x1,y1,x2,y2 = self.table.getCellCoords(0,col)
-        self.create_polygon(x2-3,h/4, x2-10,h/2, x2-3,h*3/4, tag='resizesymbol',
-            fill='white', outline='gray', width=wdth)
-        self.create_polygon(x2+2,h/4, x2+10,h/2, x2+2,h*3/4, tag='resizesymbol',
-            fill='white', outline='gray', width=wdth)
+        w = self.table.cellwidth
+        h = 25
+        wdth = 1
+        hfac1 = 0.2
+        hfac2 = 0.4
+        x_start = self.table.x_start
+        x1, y1, x2, y2 = self.table.getCellCoords(0, col)
+        self.create_polygon(
+            x2 - 3,
+            h / 4,
+            x2 - 10,
+            h / 2,
+            x2 - 3,
+            h * 3 / 4,
+            tag='resizesymbol',
+            fill='white',
+            outline='gray',
+            width=wdth)
+        self.create_polygon(
+            x2 + 2,
+            h / 4,
+            x2 + 10,
+            h / 2,
+            x2 + 2,
+            h * 3 / 4,
+            tag='resizesymbol',
+            fill='white',
+            outline='gray',
+            width=wdth)
         return
 
-    def drawRect(self,col, tag=None, color=None, outline=None, delete=1):
+    def drawRect(self, col, tag=None, color=None, outline=None, delete=1):
         """User has clicked to select a col"""
 
-        if tag == None:
+        if tag is None:
             tag = 'rect'
-        if color == None:
+        if color is None:
             color = self.colselectedcolor
-        if outline == None:
+        if outline is None:
             outline = 'gray25'
         if delete == 1:
             self.delete(tag)
-        w=1
-        x1,y1,x2,y2 = self.table.getCellCoords(0,col)
-        rect = self.create_rectangle(x1,y1-w,x2,self.height,
-                                  fill=color,
-                                  outline=outline,
-                                  width=w,
-                                  tag=tag)
+        w = 1
+        x1, y1, x2, y2 = self.table.getCellCoords(0, col)
+        rect = self.create_rectangle(x1, y1 - w, x2, self.height,
+                                     fill=color,
+                                     outline=outline,
+                                     width=w,
+                                     tag=tag)
         self.lower(tag)
         return
+
 
 class RowHeader(Canvas):
     """Class that displays the row headings (or DataFrame index).
@@ -610,19 +639,19 @@ class RowHeader(Canvas):
 
     def __init__(self, parent=None, table=None, width=50, bg='gray75'):
         Canvas.__init__(self, parent, bg=bg, width=width, height=None)
-        if table != None:
+        if table is not None:
             self.table = table
             self.width = width
             self.inset = 1
-            #self.color = '#C8C8C8'
+            # self.color = '#C8C8C8'
             self.textcolor = 'black'
             self.bgcolor = bg
             self.showindex = False
             self.maxwidth = 500
-            self.config(height = self.table.height)
+            self.config(height=self.table.height)
             self.startrow = self.endrow = None
             self.model = self.table.model
-            self.bind('<Button-1>',self.handle_left_click)
+            self.bind('<Button-1>', self.handle_left_click)
             self.bind("<ButtonRelease-1>", self.handle_left_release)
             self.bind("<Control-Button-1>", self.handle_left_ctrl_click)
 
@@ -639,9 +668,9 @@ class RowHeader(Canvas):
     def redraw(self, align='w', showkeys=False):
         """Redraw row header"""
 
-        self.height = self.table.rowheight * self.table.rows+10
-        self.configure(scrollregion=(0,0, self.width, self.height))
-        self.delete('rowheader','text')
+        self.height = self.table.rowheight * self.table.rows + 10
+        self.configure(scrollregion=(0, 0, self.width, self.height))
+        self.delete('rowheader', 'text')
         self.delete('rect')
 
         xstart = 1
@@ -655,22 +684,22 @@ class RowHeader(Canvas):
         index = self.model.df.index
         names = index.names
 
-        if self.table.showindex == True:
+        if self.table.showindex:
             if util.check_multiindex(index) == 1:
                 ind = index.values[v]
-                cols = [pd.Series(i).astype('object').astype(str)\
-                        .replace('nan','') for i in list(zip(*ind))]
+                cols = [pd.Series(i).astype('object').astype(str)
+                        .replace('nan', '') for i in list(zip(*ind))]
                 nl = [len(n) if n is not None else 0 for n in names]
                 l = [c.str.len().max() for c in cols]
-                #pick higher of index names and row data
-                l = list(np.maximum(l,nl))
+                # pick higher of index names and row data
+                l = list(np.maximum(l, nl))
                 widths = [i * scale + 6 for i in l]
-                xpos = [0]+list(np.cumsum(widths))[:-1]
+                xpos = [0] + list(np.cumsum(widths))[:-1]
             else:
                 ind = index[v]
                 dtype = ind.dtype
                 #print (type(ind))
-                if type(ind) is pd.CategoricalIndex:
+                if isinstance(ind, pd.CategoricalIndex):
                     ind = ind.astype('str')
                 r = ind.fillna('').astype('object').astype('str')
                 l = r.str.len().max()
@@ -679,7 +708,7 @@ class RowHeader(Canvas):
                 xpos = [xstart]
             w = np.sum(widths)
         else:
-            rows = [i+1 for i in v]
+            rows = [i + 1 for i in v]
             cols = [rows]
             l = max([len(str(i)) for i in rows])
             w = l * scale + 6
@@ -687,31 +716,31 @@ class RowHeader(Canvas):
             xpos = [xstart]
 
         self.widths = widths
-        if w>maxw:
+        if w > maxw:
             w = maxw
-        elif w<45:
+        elif w < 45:
             w = 45
 
         if self.width != w:
             self.config(width=w)
             self.width = w
 
-        i=0
+        i = 0
         for col in cols:
-            r=v[0]
+            r = v[0]
             x = xpos[i]
-            i+=1
-            #col=pd.Series(col.tolist()).replace('nan','')
+            i += 1
+            # col=pd.Series(col.tolist()).replace('nan','')
             for row in col:
                 text = row
-                x1,y1,x2,y2 = self.table.getCellCoords(r,0)
-                self.create_rectangle(x,y1,w-1,y2, #fill=self.color,
-                                        outline='white', width=1,
-                                        tag='rowheader')
-                self.create_text(x+pad,y1+h/2, text=text,
-                                  fill=self.textcolor, font=self.table.thefont,
-                                  tag='text', anchor=align)
-                r+=1
+                x1, y1, x2, y2 = self.table.getCellCoords(r, 0)
+                self.create_rectangle(x, y1, w - 1, y2,  # fill=self.color,
+                                      outline='white', width=1,
+                                      tag='rowheader')
+                self.create_text(x + pad, y1 + h / 2, text=text,
+                                 fill=self.textcolor, font=self.table.thefont,
+                                 tag='text', anchor=align)
+                r += 1
         self.config(bg=self.bgcolor)
         return
 
@@ -735,13 +764,13 @@ class RowHeader(Canvas):
             self.delete('rect')
             self.table.delete('entry')
             self.table.delete('multicellrect')
-            #set row selected
+            # set row selected
             self.table.setSelectedRow(rowclicked)
             self.table.drawSelectedRow()
             self.drawSelectedRows(self.table.currentrow)
         return
 
-    def handle_left_release(self,event):
+    def handle_left_release(self, event):
         return
 
     def handle_left_ctrl_click(self, event):
@@ -761,7 +790,7 @@ class RowHeader(Canvas):
     def handle_left_shift_click(self, event):
         """Handle shift click"""
 
-        if self.startrow == None:
+        if self.startrow is None:
             self.startrow = self.table.currentrow
         self.handle_mouse_drag(event)
         return
@@ -769,7 +798,7 @@ class RowHeader(Canvas):
     def handle_right_click(self, event):
         """respond to a right click"""
 
-        if self.table.enable_menus == False:
+        if not self.table.enable_menus:
             return
         self.delete('tooltip')
         if hasattr(self, 'rightmenu'):
@@ -784,18 +813,18 @@ class RowHeader(Canvas):
             self.cellentry.destroy()
         rowover = self.table.get_row_clicked(event)
         colover = self.table.get_col_clicked(event)
-        if rowover == None:
+        if rowover is None:
             return
         if rowover >= self.table.rows or self.startrow > self.table.rows:
             return
         else:
             self.endrow = rowover
-        #draw the selected rows
+        # draw the selected rows
         if self.endrow != self.startrow:
             if self.endrow < self.startrow:
-                rowlist=list(range(self.endrow, self.startrow+1))
+                rowlist = list(range(self.endrow, self.startrow + 1))
             else:
-                rowlist=list(range(self.startrow, self.endrow+1))
+                rowlist = list(range(self.startrow, self.endrow + 1))
             self.drawSelectedRows(rowlist)
             self.table.multiplerowlist = rowlist
             self.table.drawMultipleRows(rowlist)
@@ -811,7 +840,7 @@ class RowHeader(Canvas):
     def toggleIndex(self):
         """Toggle index display"""
 
-        if self.table.showindex == True:
+        if self.table.showindex:
             self.table.showindex = False
         else:
             self.table.showindex = True
@@ -823,25 +852,27 @@ class RowHeader(Canvas):
         """Add left and right click behaviour for canvas, should not have to override
             this function, it will take its values from defined dicts in constructor"""
 
-        defaultactions = {"Sort by index" : lambda: self.table.sortTable(index=True),
-                         "Reset index" : lambda: self.table.resetIndex(),
-                         "Toggle index" : lambda: self.toggleIndex(),
-                         "Copy index to column" : lambda: self.table.copyIndex(),
-                         "Rename index" : lambda: self.table.renameIndex(),
-                         #  "Sort columns by row" : lambda: self.table.sortColumnIndex(),
-                         "Select All" : self.table.selectAll,
-                         "Add Row(s)" : lambda: self.table.addRows(),
-                         "Delete Row(s)" : lambda: self.table.deleteRow(ask=True),
-                         "Duplicate Row(s)":  lambda: self.table.duplicateRows()
-                         #  "Set Row Color" : lambda: self.table.setRowColors(cols='all')
-                         }
-        main = ["Sort by index","Reset index","Toggle index",
+        defaultactions = {"Sort by index": lambda: self.table.sortTable(index=True),
+                          "Reset index": lambda: self.table.resetIndex(),
+                          "Toggle index": lambda: self.toggleIndex(),
+                          "Copy index to column": lambda: self.table.copyIndex(),
+                          "Rename index": lambda: self.table.renameIndex(),
+                          #  "Sort columns by row" : lambda: self.table.sortColumnIndex(),
+                          "Select All": self.table.selectAll,
+                          "Add Row(s) at bottom": lambda: self.table.addRows(),
+                          "Insert a Row here": lambda: self.table.insertRow(),
+                          "Delete Row(s)": lambda: self.table.deleteRow(ask=True),
+                          "Duplicate Row(s)": lambda: self.table.duplicateRows()
+                          #  "Set Row Color" : lambda: self.table.setRowColors(cols='all')
+                          }
+        main = ["Sort by index", "Reset index", "Toggle index",
                 "Rename index",
                 #  "Sort columns by row",
-                "Copy index to column",
-                "Add Row(s)","Delete Row(s)", "Duplicate Row(s)"]#, "Set Row Color"]
+                "Copy index to column", "Insert a Row here",
+                "Add Row(s) at bottom", "Delete Row(s)", "Duplicate Row(s)"]  # , "Set Row Color"]
 
-        popupmenu = Menu(self, tearoff = 0)
+        popupmenu = Menu(self, tearoff=0)
+
         def popupFocusOut(event):
             popupmenu.unpost()
         for action in main:
@@ -857,11 +888,11 @@ class RowHeader(Canvas):
         """Draw selected rows, accepts a list or integer"""
 
         self.delete('rect')
-        if type(rows) is not list:
-            rowlist=[]
+        if not isinstance(rows, list):
+            rowlist = []
             rowlist.append(rows)
         else:
-           rowlist = rows
+            rowlist = rows
         for r in rowlist:
             if r not in self.table.visiblerows:
                 continue
@@ -871,31 +902,38 @@ class RowHeader(Canvas):
     def drawRect(self, row=None, tag=None, color=None, outline=None, delete=1):
         """Draw a rect representing row selection"""
 
-        if tag==None:
-            tag='rect'
-        if color==None:
-            color='#0099CC'
-        if outline==None:
-            outline='gray25'
+        if tag is None:
+            tag = 'rect'
+        if color is None:
+            color = '#0099CC'
+        if outline is None:
+            outline = 'gray25'
         if delete == 1:
             self.delete(tag)
-        w=0
+        w = 0
         i = self.inset
-        x1,y1,x2,y2 = self.table.getCellCoords(row, 0)
-        rect = self.create_rectangle(0+i,y1+i,self.width-i,y2,
-                                      fill=color,
-                                      outline=outline,
-                                      width=w,
-                                      tag=tag)
+        x1, y1, x2, y2 = self.table.getCellCoords(row, 0)
+        rect = self.create_rectangle(0 + i, y1 + i, self.width - i, y2,
+                                     fill=color,
+                                     outline=outline,
+                                     width=w,
+                                     tag=tag)
         self.lift('text')
         return
+
 
 class IndexHeader(Canvas):
     """Class that displays the row index headings."""
 
-    def __init__(self, parent=None, table=None, width=40, height=25, bg='gray50'):
+    def __init__(
+            self,
+            parent=None,
+            table=None,
+            width=40,
+            height=25,
+            bg='gray50'):
         Canvas.__init__(self, parent, bg=bg, width=width, height=height)
-        if table != None:
+        if table is not None:
             self.table = table
             self.width = width
             self.height = self.table.rowheight
@@ -904,7 +942,7 @@ class IndexHeader(Canvas):
             self.bgcolor = bg
             self.startrow = self.endrow = None
             self.model = self.table.model
-            self.bind('<Button-1>',self.handle_left_click)
+            self.bind('<Button-1>', self.handle_left_click)
         return
 
     def redraw(self, align='w'):
@@ -913,8 +951,8 @@ class IndexHeader(Canvas):
         df = self.model.df
         rowheader = self.table.rowheader
         self.width = rowheader.width
-        self.delete('text','rect')
-        if self.table.showindex == False:
+        self.delete('text', 'rect')
+        if not self.table.showindex:
             return
         xstart = 1
         pad = 5
@@ -923,7 +961,7 @@ class IndexHeader(Canvas):
         self.config(height=h)
         index = df.index
         names = index.names
-        if names[0] == None:
+        if names[0] is None:
             widths = [self.width]
         else:
             widths = rowheader.widths
@@ -931,19 +969,20 @@ class IndexHeader(Canvas):
         if util.check_multiindex(df.columns) == 1:
             levels = df.columns.levels
             h = self.table.rowheight * len(levels)
-            y = self.table.rowheight/2 + 2
+            y = self.table.rowheight / 2 + 2
         else:
-            y=2
-        i=0; x=1;
+            y = 2
+        i = 0
+        x = 1
         for name in names:
-            if name != None:
-                w=widths[i]
-                self.create_text(x+pad,y+h/2,text=name,
-                                    fill=self.textcolor, font=self.table.thefont,
-                                    tag='text', anchor=align)
-                x=x+widths[i]
-                i+=1
-        #w=sum(widths)
+            if name is not None:
+                w = widths[i]
+                self.create_text(x + pad, y + h / 2, text=name,
+                                 fill=self.textcolor, font=self.table.thefont,
+                                 tag='text', anchor=align)
+                x = x + widths[i]
+                i += 1
+        # w=sum(widths)
         self.config(bg=self.bgcolor)
         return
 

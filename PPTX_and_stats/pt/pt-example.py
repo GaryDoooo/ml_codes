@@ -83,11 +83,14 @@ class TestApp(DataExplore):
             self.menu, filemenuitems, var=file_menu)
         self.menu.add_cascade(label='File', menu=self.file_menu['var'])
 
-        editmenuitems = {'01Undo Last Change': {'cmd': self.undo},
-                         '02Copy Table': {'cmd': self.copyTable},
-                         '03Paste w/o header Ctrl-V': {'cmd': lambda: self._call('paste')},
+        editmenuitems = {'01Undo': {'cmd': self.undo},
+                         '02Redo': {'cmd': lambda: self._call('redo')},
+                         '05Copy Table': {'cmd': self.copyTable},
+                         '03Paste w/o header (C-V)': {'cmd': lambda: self._call('paste')},
                          '04Paste w/ header': {'cmd': lambda: self._call('paste_header')},
                          '13Find/Replace': {'cmd': self.findText},
+                         '06Clear Selected (DEL)': {'cmd': lambda: self._call('clearData')},
+                         '07Del selected & move up': {'cmd': lambda: self._call('clearDataUp')},
                          '20sep': 'ddddd',
                          '24Preferences': {'cmd': self.currentTablePrefs}}
         self.edit_menu = self.createPulldown(self.menu, editmenuitems)
@@ -117,6 +120,8 @@ class TestApp(DataExplore):
             '22Filter Rows': {'cmd': lambda: self._call('queryBar')},
             '32Split Data Column': {'cmd': lambda: self._call('splitColumn')},
             '33Stack Selected Columns': {'cmd': lambda: self._call('stackColumn')},
+            '34Sort All Columns': {'cmd': lambda: self._call('sortAll')},
+            '35Sort Selected Colunms': {'cmd': lambda: self._call('sortSelected')},
             '30sep': ''}
         self.data_menu = self.createPulldown(self.menu, self.data_menu)
         self.menu.add_cascade(label='Data', menu=self.data_menu['var'])

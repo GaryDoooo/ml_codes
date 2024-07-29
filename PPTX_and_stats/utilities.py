@@ -187,7 +187,7 @@ def pearson_correlation(x, y, alpha=0.05, print_out=True, print_port=print):
     if abs(r) == 1:
         p = a = b = theta = 0
     else:
-        t =abs( r * ((n - 2) / (1 - r * r))**.5)
+        t = abs(r * ((n - 2) / (1 - r * r))**.5)
         p = (1 - t_dist.cdf(t, n - 2)) * 2
 
     # Calculate ellipse
@@ -291,6 +291,7 @@ def d2_values(n):
 
 def grouping_by_labels(data_list, grouping_list, keys=None):
     [data_list, grouping_list] = filter_voids([data_list, grouping_list])
+    #  print(data_list, grouping_list)
     if keys is None:
         #  print(grouping_list)
         keys = sorted(list(set(grouping_list)))

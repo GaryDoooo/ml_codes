@@ -1209,7 +1209,7 @@ class FindReplaceDialog(Frame):
         e.pack(fill=BOTH,side=TOP,expand=1,padx=2,pady=2)
         f = Frame(sf)
         f.pack(side=TOP, fill=BOTH, padx=2, pady=2)
-        addButton(f, 'Find Next', self.findNext, None, None, side=LEFT)
+        #  addButton(f, 'Find Next', self.findNext, None, None, side=LEFT)
         addButton(f, 'Find All', self.findAll, None, None, side=LEFT)
         addButton(f, 'Replace All', self.replace, None, None, side=LEFT)
         addButton(f, 'Clear', self.clear, None, None, side=LEFT)

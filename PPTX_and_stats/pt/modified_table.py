@@ -27,6 +27,21 @@ class MTable(Table):
             sticky='news')
         return
 
+    def copy(self, rows=None, cols=None):
+        """Copy cell contents from clipboard - overwrites table."""
+
+        data = self.getSelectedDataFrame()
+        try:
+            #  if len(data) == 1 and len(data.columns) == 1:
+            data.to_clipboard(index=False, header=False)
+            #  else:
+            #  data.to_clipboard()
+        except BaseException:
+            messagebox.showwarning("Warning",
+                                   "No clipboard software.\nInstall xclip",
+                                   parent=self.parentframe)
+        return
+
     def fillColumn(self):
         """Fill a column with a data range"""
 
@@ -98,7 +113,8 @@ class MTable(Table):
         elif dist == 'logistic':
             data = np.random.logistic(low, high, len(df))
         if not random:
-            step = (high - low) / len(df)
+            step = (high - low) / (len(df) - 1)
+            high += step / 10
             if add_random:
                 data += np.arange(low, high, step)
             else:

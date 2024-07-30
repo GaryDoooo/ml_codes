@@ -7,10 +7,38 @@ from statsmodels.stats.diagnostic import normal_ad
 from scipy.stats import t as t_dist
 import statistics as stat
 from math import isnan
+import re
 ######### Own Modules ############
 # from binomial import binomial
 from chi_sq import chi2_test_stdev
 from t_test import t_test_1sample
+
+
+def split_string(text, delimiters):
+    # Create a regular expression pattern from the delimiters
+    pattern = '|'.join(map(re.escape, delimiters))
+    # Split the string using the pattern
+    return re.split(pattern, text)
+
+
+def add_Y_refs(ax, y_values=[], color='gray', linestyle='dashed', label=False):
+    if isinstance(y_values, str):
+        try:
+            y_values = [float(i) for i in split_string(
+                y_values, [',', ' ', ';', ':', '|'])
+                if len(i) > 0]
+        except BaseException:
+            return
+    if isinstance(y_values, list):
+        for y in y_values:
+            ax.axhline(y, color=color, linestyle=linestyle)
+            if label:
+                ax.text(ax.get_xlim()[1], y, f'{y}',
+                        verticalalignment='center',
+                        horizontalalignment='left',
+                        #  transform=ax.get_yaxis_transform(),
+                        color=color)
+    return
 
 
 def is_number(x):
@@ -289,7 +317,7 @@ def d2_values(n):
     return d2[n] if n < 51 else d2[50]
 
 
-def grouping_by_labels(data_list, grouping_list, keys=None):
+def grouping_by_labels(data_list, grouping_list, keys=None, return_keys=False):
     [data_list, grouping_list] = filter_voids([data_list, grouping_list])
     #  print(data_list, grouping_list)
     if keys is None:
@@ -298,6 +326,8 @@ def grouping_by_labels(data_list, grouping_list, keys=None):
     res = [[] for i in range(len(keys))]
     for i, j in zip(grouping_list, data_list):
         res[keys.index(i)].append(j)
+    if return_keys:
+        return res, keys
     return res
 
 

@@ -3,14 +3,16 @@ import matplotlib.pyplot as plt
 import statistics as stat
 ####### Own modules ##########
 from ctrl_chart_const import df as Ctrl_Cht_Const
+from utilities import add_Y_refs
 
 
-def x_mR(x):  # , print_out=True, xLabels=None,max_xlabels=25):
+def x_mR(x, mr):  # , print_out=True, xLabels=None,max_xlabels=25):
 
     # Define list variable for moving ranges
-    MR = [np.nan]
-    for i in range(1, len(x)):
-        MR.append(abs(x[i] - x[i - 1]))
+    MR = [np.nan] * (mr - 1)
+    for i in range(mr - 1, len(x)):
+        l = x[i - mr + 1:i + 1]
+        MR.append(max(l) - min(l))
 
     x_bar = stat.mean(x)
     R_bar = stat.mean(MR[1:])
@@ -23,22 +25,13 @@ def x_mR(x):  # , print_out=True, xLabels=None,max_xlabels=25):
     D4 = 3.267
     R_UCL = D4 * R_bar
     R_LCL = 0
-
+    x1 = list(range(len(x)))
+    #  x2 = x1  # list(range(1, len(x)))
     return {"Y1": x, "Y2": MR, "bar1": x_bar, "ucl1": x_UCL,
             "ucl2": R_UCL, "lcl1": x_LCL, "lcl2": R_LCL,
-            "bar2": R_bar, "n": 2,
+            "bar2": R_bar, "n": 2, "X": x1,  # "X2": x2,
             "ylabel1": "Individual Values",
-            "ylabel2": "Moving Range (n=2)"}
-
-    #  return x,MR,x_bar,ucl1,ucl2,lcl2,lcl2
-
-    #  control_plot(Y1=x, Y2=MR, bar1=x_bar, ucl1=x_UCL,
-    #               ucl2=R_UCL, lcl1=x_LCL, lcl2=R_LCL,
-    #               bar2=R_bar, xLabels=xLabels,
-    #               print_out=print_out,
-    #               ylabel1="Individual Values",
-    #               ylabel2="Moving Range (n=2)",
-    #               max_label_num=max_xlabels)
+            "ylabel2": "Moving Range (n=%d)" % mr}
 
 
 # the number of samples each day need be consistent over time
@@ -59,20 +52,11 @@ def xBar_R(data):  # , print_out=True, max_xlabels=25,xLabels=None):
     D3 = Ctrl_Cht_Const["D3"][n]
     R_UCL = D4 * R_bar
     R_LCL = D3 * R_bar
-    #  if print_out:
-    #      print("n = %d" % n)
-    #
 
     return {"Y1": xbar, "Y2": R, "bar1": xbar_bar, "ucl1": xbar_ucl,
             "ucl2": R_UCL, "lcl1": xbar_lcl, "lcl2": R_LCL, "n": n,
-            "bar2": R_bar, "ylabel1": "X Bar", "ylabel2": "Range"}
-    #  control_plot(Y1=xbar, Y2=R, bar1=xbar_bar, ucl1=xbar_ucl,
-    #               ucl2=R_UCL, lcl1=xbar_lcl, lcl2=R_LCL,
-    #               bar2=R_bar, xLabels=xLabels,
-    #               print_out=print_out,
-    #               ylabel1="X Bar",
-    #               ylabel2="Range",
-    #               max_label_num=max_xlabels)
+            "bar2": R_bar, "ylabel1": "X Bar", "ylabel2": "Range",
+            "X":list(range(len(data)))}
 
 
 def xBar_S(data):  # , print_out=True, max_xlabels=25,xLabels=None):
@@ -90,20 +74,121 @@ def xBar_S(data):  # , print_out=True, max_xlabels=25,xLabels=None):
     S_UCL = B4 * S_bar
     S_LCL = B3 * S_bar
 
-    #  if print_out:
-    #      print("n = %d" % n)
-    #
     return {"Y1": xbar, "Y2": S, "bar1": xbar_bar, "ucl1": xbar_ucl,
             "ucl2": S_UCL, "lcl1": xbar_lcl, "lcl2": S_LCL, "n": n,
             "bar2": S_bar, "ylabel1": "X Bar", "ylabel2": "Stdev"}
 
-    #  control_plot(Y1=xbar, Y2=S, bar1=xbar_bar, ucl1=xbar_ucl,
-    #               ucl2=S_UCL, lcl1=xbar_lcl, lcl2=S_LCL,
-    #               bar2=S_bar, xLabels=xLabels,
-    #               print_out=print_out,
-    #               ylabel1="X Bar",
-    #               ylabel2="Stdev",
-    #               max_label_num=max_xlabels)
+
+def x_plot(data, bar1=None,
+           ucl1=None, lcl1=None, bar2=None,
+           ucl2=None, lcl2=None, xLabels=None,
+           print_out=False, max_label_num=25,
+           ylabel1=None, ylabel2=None,
+           xlabel=None, ax=None, print_port=print,
+           axs=None, fig=None, refY1=None, refY2=None,
+           one_chart=False, show_plot=False,
+           chart_two_only=False, mr_range=2,
+           filename=None, plot_type="x_mR"):
+
+    plot_type = plot_type.upper()
+    if "BAR" in plot_type and "R" in plot_type.replace("BAR", ""):
+        s = xBar_R(data)
+    elif "BAR" in plot_type and "S" in plot_type:
+        s = xBar_S(data)
+    else:
+        if mr_range > len(data) or mr_range < 2:
+            mr_range = 2
+        s = x_mR(data, mr_range)
+
+    bar1 = bar1 if bar1 is not None else s["bar1"]
+    bar2 = bar2 if bar2 is not None else s["bar2"]
+    ucl1 = ucl1 if ucl1 is not None else s["ucl1"]
+    ucl2 = ucl2 if ucl2 is not None else s["ucl2"]
+    lcl1 = lcl1 if lcl1 is not None else s["lcl1"]
+    lcl2 = lcl2 if lcl2 is not None else s["lcl2"]
+    ylabel1 = ylabel1 if ylabel1 is not None else s["ylabel1"]
+    ylabel2 = ylabel2 if ylabel2 is not None else s["ylabel2"]
+    n = s["n"]
+
+    if ax is not None:
+        #  one_chart = True
+        axs = [ax, ax]
+    elif one_chart:
+        fig, ax = plt.subplots(1)  # , figsize=(15, 15))
+        axs = [ax, ax]
+    else:
+        if fig is None or axs is None:
+            # , figsize=(15, 15), sharex=True)
+            fig, axs = plt.subplots(2)
+        # Remove vertical space between Axes
+        fig.subplots_adjust(hspace=0)
+
+    min_x = min(s["X"]) - (max(s["X"]) - min(s["X"])) * 0.05
+    max_x = max(s["X"]) + (max(s["X"]) - min(s["X"])) * 0.05
+    if not chart_two_only:
+        axs[0].plot(s["X"], s["Y1"], linestyle='-', marker='o', color='black',
+                    linewidth=1, markersize=3)
+        axs[0].axhline(bar1, color='blue')
+        axs[0].axhline(ucl1, color='red', linestyle='dashed')
+        axs[0].axhline(lcl1, color='red', linestyle='dashed')
+        add_Y_refs(ax=axs[0], y_values=refY1)
+        axs[0].set(ylabel=ylabel1)
+        axs[0].set_xlim(left=min_x, right=max_x)
+
+    if not one_chart:
+        axs[1].plot(s["X"], s["Y2"], linestyle='-', marker='o', color='black',
+                    linewidth=1, markersize=3)
+        axs[1].axhline(bar2, color='blue')
+        axs[1].axhline(ucl2, color='red', linestyle='dashed')
+        axs[1].axhline(lcl2, color='red', linestyle='dashed')
+        axs[1].set_ylim(bottom=0)
+        add_Y_refs(ax=axs[1], y_values=refY2)
+        axs[1].set(ylabel=ylabel2)
+        axs[1].set_xlim(left=min_x, right=max_x)
+
+    if xLabels is not None:
+        step = 1
+        if len(xLabels) > max_label_num:
+            step = len(xLabels) / max_label_num
+            if step > int(step):
+                step = int(step) + 1
+            else:
+                step = int(step)
+        axs[1].set_xticks(range(len(xLabels)), xLabels,
+                          rotation='vertical')
+        axs[1].set_xticks(axs[1].get_xticks()[::step])
+
+    if xlabel is not None:
+        axs[1].set(xlabel=xlabel)
+
+    if show_plot:
+        plt.show()
+
+    if filename is not None:
+        fname = str(filename) + '.png'
+        plt.savefig(
+            fname,
+            dpi=200,
+            format='png')
+
+    if print_out:
+        print = print_port
+        print("\n---- Control Chart ----")
+        if not chart_two_only:
+            print("\n" + ylabel1)
+            print("LCL=%.2f\tmean = %.2f\tUCL=%.2f" % (
+                lcl1, bar1, ucl1))
+        if not one_chart:
+            print("\n" + ylabel2)
+            print("LCL=%.2f\tmean = %.2f\tUCL=%.2f" % (
+                lcl2, bar2, ucl2))
+        #  print("n = %d" % n)
+
+    res = {"lcl1": lcl1, "bar1": bar1, "ucl1": ucl1,
+           "lcl2": lcl2, "bar2": bar2, "ucl2": ucl2,
+           "n": n}
+
+    return res
 
 
 def p_np_plot(p=None, n=1,
@@ -167,94 +252,3 @@ def p_np_plot(p=None, n=1,
     if print_out:
         print(ylabel)
         print("mean = %.4f" % (p_bar))
-
-
-def x_plot(data, bar1=None,
-           ucl1=None, lcl1=None, bar2=None,
-           ucl2=None, lcl2=None, xLabels=None,
-           print_out=False, max_label_num=25,
-           ylabel1=None, ylabel2=None,
-           xlabel=None, ax=None,
-           one_chart=False, show_plot=False,
-           filename=None, plot_type="x_mR"):
-
-    plot_type = plot_type.upper()
-    if "BAR" in plot_type and "R" in plot_type.replace("BAR", ""):
-        s = xBar_R(data)
-    elif "BAR" in plot_type and "S" in plot_type:
-        s = xBar_S(data)
-    else:
-        s = x_mR(data)
-
-    bar1 = bar1 if bar1 is not None else s["bar1"]
-    bar2 = bar2 if bar2 is not None else s["bar2"]
-    ucl1 = ucl1 if ucl1 is not None else s["ucl1"]
-    ucl2 = ucl2 if ucl2 is not None else s["ucl2"]
-    lcl1 = lcl1 if lcl1 is not None else s["lcl1"]
-    lcl2 = lcl2 if lcl2 is not None else s["lcl2"]
-    ylabel1 = ylabel1 if ylabel1 is not None else s["ylabel1"]
-    ylabel2 = ylabel2 if ylabel2 is not None else s["ylabel2"]
-    n = s["n"]
-
-    if ax is not None:
-        one_chart = True
-        axs = [ax, ax]
-    elif one_chart:
-        fig, ax = plt.subplots(1)  # , figsize=(15, 15))
-        axs = [ax, ax]
-    else:
-        fig, axs = plt.subplots(2)  # , figsize=(15, 15), sharex=True)
-        # Remove vertical space between Axes
-        fig.subplots_adjust(hspace=0)
-
-    axs[0].plot(s["Y1"], linestyle='-', marker='o', color='black',
-                linewidth=1, markersize=3)
-    axs[0].axhline(bar1, color='blue')
-    axs[0].axhline(ucl1, color='red', linestyle='dashed')
-    axs[0].axhline(lcl1, color='red', linestyle='dashed')
-    axs[0].set(ylabel=ylabel1)
-
-    if not one_chart:
-        axs[1].plot(s["Y2"], linestyle='-', marker='o', color='black',
-                    linewidth=1, markersize=3)
-        axs[1].axhline(bar2, color='blue')
-        axs[1].axhline(ucl2, color='red', linestyle='dashed')
-        axs[1].axhline(lcl2, color='red', linestyle='dashed')
-        axs[1].set_ylim(bottom=0)
-        axs[1].set(ylabel=ylabel2)
-
-    if xLabels is not None:
-        step = 1
-        if len(xLabels) > max_label_num:
-            step = int(len(xLabels) / max_label_num + 1)
-        axs[1].set_xticks(range(len(xLabels)), xLabels,
-                          rotation='vertical')
-        axs[1].set_xticks(axs[1].get_xticks()[::step])
-
-    if xlabel is not None:
-        axs[1].set(xlabel=xlabel)
-
-    if show_plot:
-        plt.show()
-
-    if filename is not None:
-        fname = str(filename) + '.png'
-        plt.savefig(
-            fname,
-            dpi=200,
-            format='png')
-
-    if print_out:
-        print(ylabel1)
-        print("LCL=%.2f\tmean = %.2f\tUCL=%.2f" % (
-            lcl1, bar1, ucl1))
-        print(ylabel2)
-        print("LCL=%.2f\tmean = %.2f\tUCL=%.2f" % (
-            lcl2, bar2, ucl2))
-        print("n =", n)
-
-    res = {"lcl1": lcl1, "bar1": bar1, "ucl1": ucl1,
-           "lcl2": lcl2, "bar2": bar2, "ucl2": ucl2,
-           "n": n}
-
-    return res

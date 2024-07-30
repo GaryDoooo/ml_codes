@@ -41,7 +41,7 @@ def resid_test(data, y_est, print_out=False, show_plot=False,
     fit_plot(y_est, data, linear=True, print_out=False, ax=axs[0][1],
              xlabel="Fitted Value", ylabel="Residual")
 
-    x_plot(data, ax=axs[0][0], xlabel="Observation Order", ylabel1="Residual")
+    x_plot(data, ax=axs[0][0], xlabel="Observation Order", ylabel1="Residual",one_chart=True)
 
     if fig is not None:
         fig.suptitle("SW p-value = %.3f   AD p-value = %.3f" % (

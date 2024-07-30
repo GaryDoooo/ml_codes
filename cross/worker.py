@@ -8,6 +8,7 @@ from utilities import norm_test
 from describe import describe
 from locate_cross import locate_cross
 
+
 def save_2d_array_as_png(array, filename):
     # Ensure the array is in the correct format
     array = np.asarray(array, dtype=np.uint8)
@@ -62,7 +63,24 @@ def check_1d2p(d):
     return False
 
 
-def double_line(filename):
+def cal_fwhm(y):
+    try:
+        y = [float(i) for i in y]
+        hy = max(y) / 2
+        left = 0
+        while y[left] < hy:
+            left += 1
+        left = (hy - y[left - 1]) / (y[left] - y[left - 1]) + float(left - 1)
+        right = len(y) - 1
+        while y[right] < hy:
+            right -= 1
+        right = (hy - y[right]) / (y[right + 1] - y[right]) + float(right)
+    except BaseException:
+        return -1
+    return right - left
+
+
+def double_line(filename, save_png=True):
     image = Image.open(filename)
 
     # Convert the image to grayscale
@@ -91,6 +109,7 @@ def double_line(filename):
     fig, axs = plt.subplots(3, 3)
     t = PT()
     mads, msks, md2s, md1s = [], [], [], []
+    mvars, mstds, mfwhms = [], [], []
     t.field_names = ["Pos", "Cross@xy", "AD", "Skew", "D2", "D1", "Lvl"]
     for x1, y1, x2, y2 in subs:
         sub = a[y1:y2, x1:x2]
@@ -104,6 +123,7 @@ def double_line(filename):
         i = cnt - 1
         #  print(x, y)
         ad, sk, d2, d1 = [], [], [], []
+        var, std, fwhm = [], [], []
         for dy in [-40, -20, 20, 40]:
             try:
                 l = [sub[y + dy][_] for _ in range(x - 20, x + 21)]
@@ -118,6 +138,9 @@ def double_line(filename):
                 sk.append(abs(r2['skew']))
                 d2.append(check_2d2p(l))
                 d1.append(check_1d2p(l))
+                var.append(r2['var'])
+                std.append(r2['stdev'])
+                fwhm.append(cal_fwhm(l))
             except BaseException:
                 pass
             #  print(cnt, r['shapiro s'], r["AD s"], r2["skew"],
@@ -149,19 +172,25 @@ def double_line(filename):
             msks.append(msk)
             md1s.append(md1)
             md2s.append(md2)
+            mvars.append(mean(var))
+            mstds.append(mean(std))
+            mfwhms.append(mean(fwhm))
         except BaseException:
             lvls.append(0)
 
     plt.tight_layout()
-    plt.savefig('png/1.png')
+    if save_png:
+        plt.savefig('png/1.png')
     plt.close()
-    save_2d_array_as_png(a[114:1050, 1032:1811], 'png/2.png')
+    if save_png:
+        save_2d_array_as_png(a[114:1050, 1032:1811], 'png/2.png')
 
     return {"str": res + str(t), "lvl": lvls, "data": [
-        mads, msks, md1s, md2s]}
+        mads, msks, md1s, md2s, mvars, mstds, mfwhms]}
 
 
 if __name__ == "__main__":
     fn = input("")
     r = double_line(fn)
-    print(r['str'])
+    #  print(r['str'])
+    print(r['data'])

@@ -16,6 +16,7 @@ from sample_test_dialog import Mean1SampleDialog, Mean1SampleZDialog, Var1Sample
 from anova_dialog import Anova1WayDialog, TtestDialog, Anova2WayDialog
 from chi2_dialog import Chi2TableDialog, Chi2PropDialog
 from qc_dialog import GRRDialog, CpkDialog, CpkSubDialog, TIDialog
+from ctrlchart_dialog import IMRDialog, IDialog, MRDialog,XBRDialog
 
 
 class TestApp(DataExplore):
@@ -83,14 +84,15 @@ class TestApp(DataExplore):
             self.menu, filemenuitems, var=file_menu)
         self.menu.add_cascade(label='File', menu=self.file_menu['var'])
 
-        editmenuitems = {'01Undo': {'cmd': self.undo},
+        editmenuitems = {'01Undo (C-Z)': {'cmd': self.undo},
                          '02Redo': {'cmd': lambda: self._call('redo')},
-                         '05Copy Table': {'cmd': self.copyTable},
                          '03Paste w/o header (C-V)': {'cmd': lambda: self._call('paste')},
                          '04Paste w/ header': {'cmd': lambda: self._call('paste_header')},
-                         '13Find/Replace': {'cmd': self.findText},
-                         '06Clear Selected (DEL)': {'cmd': lambda: self._call('clearData')},
+                         '05Copy Table': {'cmd': self.copyTable},
+                         '06Copy Selected (C-C)': {'cmd': lambda: self._call('copy')},
                          '07Del selected & move up': {'cmd': lambda: self._call('clearDataUp')},
+                         '08Clear Selected (DEL)': {'cmd': lambda: self._call('clearData')},
+                         '13Find/Replace (C-F)': {'cmd': self.findText},
                          '20sep': 'ddddd',
                          '24Preferences': {'cmd': self.currentTablePrefs}}
         self.edit_menu = self.createPulldown(self.menu, editmenuitems)
@@ -176,9 +178,13 @@ class TestApp(DataExplore):
 
         self.quality_menu = {
             '01Gauge R&R Balanced': {'cmd': self.grr},
-            '07Process Capability(Cpk)': {'cmd': self.cpk},
+            '07Process Capability (Cpk)': {'cmd': self.cpk},
             '08Cpk with Subgroups': {'cmd': self.cpksub},
             '22Tolerance Interval': {'cmd': self.ti_norm},
+            '32Control Chart I/MR': {'cmd': self.cChartIMR},
+            '33Control Chart I': {'cmd': self.cChartI},
+            '34Control Chart MR': {'cmd': self.cChartMR},
+            '35Control Chart xBar/R':{'cmd':self.cChartXBR},
             '06sep': '', '20sep': '', '30sep': '', '40sep': ''}
         self.quality_menu = self.createPulldown(self.menu, self.quality_menu)
         self.menu.add_cascade(label='Quality', menu=self.quality_menu['var'])
@@ -450,6 +456,33 @@ class TestApp(DataExplore):
             self.table, app=self,
             df=self.table.model.df,
             title='Normal Dist TI')
+        return
+
+    def cChartIMR(self):
+        _ = IMRDialog(
+            self.table, app=self,
+            df=self.table.model.df,
+            title='Control Chart I/MR')
+        return
+
+    def cChartI(self):
+        _ = IDialog(
+            self.table, app=self,
+            df=self.table.model.df,
+            title='Control Chart I')
+        return
+
+    def cChartMR(self):
+        _ = MRDialog(
+            self.table, app=self,
+            df=self.table.model.df,
+            title='Control Chart MR')
+        return
+    def cChartXBR(self):
+        _ = XBRDialog(
+            self.table, app=self,
+            df=self.table.model.df,
+            title='Control Chart X Bar/R')
         return
 
 

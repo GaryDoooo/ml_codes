@@ -102,6 +102,24 @@ def main2(listfile):
     record.close()
 
 
+def main3():
+
+    directory_path = './png'
+    png_files = get_png_files(directory_path)
+    # Create a presentation object
+
+    for cnt, file in enumerate(png_files):
+        try:
+            res = double_line(file, save_png=False)
+            #  add_slide(prs, res['str'])
+            print(file + "," + str(
+                res['lvl']) + str(res['data']))
+        except BaseException:
+            pass
+
+
+
 if __name__ == "__main__":
-    listfile = input("")
-    main2(listfile)
+    #  listfile = input("")
+    #  main2(listfile)
+    main3()

@@ -273,6 +273,7 @@ class Table(Canvas):
         self.bind("<Control-z>", self.undo)
         self.bind("<Control-a>", self.selectAll)
         self.bind("<Control-f>", self.findText)
+        self.bind("<Control-c>", self.copy)
 
         self.bind("<Right>", self.handle_arrow_keys)
         self.bind("<Left>", self.handle_arrow_keys)

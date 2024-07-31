@@ -31,6 +31,7 @@ class LinearFitDialog(Dialogs):
             width=14)
         w.pack(side=LEFT, padx=2)
         self.ellipse = tk.BooleanVar(value=False)
+        self.red_ellipse = tk.BooleanVar(value=False)
         self.linear = tk.BooleanVar(value=True)
         self.ortho = tk.BooleanVar(value=False)
         self.ortho_ratio = tk.DoubleVar(value=1)
@@ -48,6 +49,9 @@ class LinearFitDialog(Dialogs):
         w.pack(side=LEFT, padx=2, pady=2)
         w = tk.Checkbutton(master, text='Correlation Ellipse',
                            variable=self.ellipse)
+        w.pack(side=LEFT, padx=2, pady=2)
+        w = tk.Checkbutton(master, text='Ellipse Outline',
+                           variable=self.red_ellipse)
         w.pack(side=LEFT, padx=2, pady=2)
 
         master = tk.LabelFrame(m, text='Linear Fit')
@@ -89,20 +93,30 @@ class LinearFitDialog(Dialogs):
 
         self.get_plot_settings()
 
-        fit_plot(x, y, ax=pf.ax, print_port=self.app.print,
-                 alpha=self.alpha.get(),
-                 ortho_ratio=self.ortho_ratio.get(),
-                 ellipse=self.ellipse.get(),
-                 linear=self.linear.get(), show_CI=self.show_CI.get(),
-                 ortho=self.ortho.get(), show_PI=self.show_PI.get(),
-                 xlabel=self.xlabel if self.xlabel != "" else self.xvar.get(),
-                 ylabel=self.ylabel if self.ylabel != "" else self.yvar.get(),
-                 x_min=self.x_min, y_min=self.y_min,
-                 x_max=self.x_max, y_max=self.y_max,
-                 ax_margin=self.ax_margin,
-                 show_legend=self.show_legend, grid=self.grid,
-                 scatter=self.scatter.get(), print_out=True
-                 )
+        fit_plot(
+            x,
+            y,
+            ax=pf.ax,
+            print_port=self.app.print,
+            alpha=self.alpha.get(),
+            ortho_ratio=self.ortho_ratio.get(),
+            ellipse=self.ellipse.get(),
+            red_ellipse=self.red_ellipse.get(),
+            linear=self.linear.get(),
+            show_CI=self.show_CI.get(),
+            ortho=self.ortho.get(),
+            show_PI=self.show_PI.get(),
+            xlabel=self.xlabel if self.xlabel != "" else self.xvar.get(),
+            ylabel=self.ylabel if self.ylabel != "" else self.yvar.get(),
+            x_min=self.x_min,
+            y_min=self.y_min,
+            x_max=self.x_max,
+            y_max=self.y_max,
+            ax_margin=self.ax_margin,
+            show_legend=self.show_legend,
+            grid=self.grid,
+            scatter=self.scatter.get(),
+            print_out=True)
         return
 
 
@@ -173,12 +187,16 @@ class MCorDialog(Dialogs):
         w.pack(side=LEFT, fill=X, padx=10)
 
         self.ax_margin = tk.DoubleVar(value=0.1)
+        self.red_ellipse = tk.BooleanVar(value=False)
         master = tk.LabelFrame(m, text='Plot Setting')
         master.pack(side=TOP, fill=BOTH, padx=2)
         w = tk.Label(master, text="Margin (0.1=10%% of data range)")
         w.pack(side=LEFT, fill=X, padx=2)
         w = tk.Entry(master, textvariable=self.ax_margin,
                      bg='white', width=5)
+        w.pack(side=LEFT, padx=2, pady=2)
+        w = tk.Checkbutton(master, text='Ellipse Outline',
+                           variable=self.red_ellipse)
         w.pack(side=LEFT, padx=2, pady=2)
         self.add_alpha(m)
         return
@@ -193,7 +211,7 @@ class MCorDialog(Dialogs):
 
         data = number_2Dlist(df=self.df, cols=self.grpcols,
                              print_out=True, print_port=self.app.print)
-        pf = self.app.showPlotViewer()
+        pf = self.app.showPlotViewer(figsize=(7, 7))
         axs = []
         n = len(data)
         try:
@@ -211,7 +229,14 @@ class MCorDialog(Dialogs):
                 )
             axs.append(r)
 
-        multi_fit(data, self.grpcols, print_out=True,
-                  print_port=self.app.print, axs=axs, fig=pf.fig,
-                  alpha=alpha, ax_margin=ax_margin)
+        multi_fit(
+            data,
+            self.grpcols,
+            print_out=True,
+            print_port=self.app.print,
+            axs=axs,
+            fig=pf.fig,
+            alpha=alpha,
+            ax_margin=ax_margin,
+            red_ellipse=self.red_ellipse.get())
         return

@@ -8,7 +8,7 @@ from collections import OrderedDict
 
 
 class plot_viewer(PlotViewer):
-    def __init__(self, table, parent=None, showoptions=True):
+    def __init__(self, table, parent=None, showoptions=True, figsize=(10, 7)):
 
         self.parent = parent
         self.table = table
@@ -29,6 +29,7 @@ class plot_viewer(PlotViewer):
             self.main.geometry(g)
         self.orient = VERTICAL
         self.style = None
+        self.figsize = figsize
         self.setupGUI()
         #  self.updateStyle()
         self.currentdir = os.path.expanduser('~')
@@ -44,9 +45,10 @@ class plot_viewer(PlotViewer):
         # frame for figure
         self.plotfr = Frame(self.m)
         # add it to the panedwindow
+        print(self.figsize)
         self.fig, self.canvas = addFigure(
             self.plotfr, figure=Figure(
-                figsize=(10, 7), dpi=100, facecolor='white'))
+                figsize=self.figsize, dpi=100, facecolor='white'))
         #  self.ax = self.fig.add_subplot(111)
 
         #self.m.add(self.plotfr, weight=12)

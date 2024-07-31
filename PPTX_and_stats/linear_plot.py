@@ -19,6 +19,7 @@ def fit_plot(x, y, alpha=0.05, print_out=False,
              x_min=None, x_max=None,
              y_min=None, y_max=None,
              scatter=True, ax=None,
+             red_ellipse=False, dot_size=20,
              ax_margin=0.1, print_port=print):
 
     print = print_port
@@ -38,9 +39,10 @@ def fit_plot(x, y, alpha=0.05, print_out=False,
 
     if scatter:
         ax.scatter(x, y, color='blue', alpha=1 / (len(x))**.2,
-                   label='Data points')
+                   label='Data points', s=dot_size)
 
     if ellipse:
+        ax.set_box_aspect(1)
         correlation = pearson_correlation(x, y, alpha=alpha, print_port=print,
                                           print_out=print_out)
         res["Pearson"] = correlation
@@ -56,7 +58,8 @@ def fit_plot(x, y, alpha=0.05, print_out=False,
         y_line = np.mean(y) + a * np.cos(theta) * np.sin(t) + \
             b * np.sin(theta) * np.cos(t)
         ax.fill(x_line, y_line, alpha=0.1, facecolor='blue', edgecolor='none')
-        #  ax.plot(x_line, y_line)
+        if red_ellipse:
+            ax.plot(x_line, y_line, color='red', linewidth=1)
 
     if ortho:
         ortho_res = orthogonal_fit(
@@ -148,7 +151,7 @@ def fit_plot(x, y, alpha=0.05, print_out=False,
 
 
 def multi_fit(data, labels, print_out=False, print_port=print,
-              axs=None, fig=None, alpha=0.05,
+              axs=None, fig=None, alpha=0.05, red_ellipse=False,
               show_plot=False, filename=None, ax_margin=0.1):
 
     t = PT(["\\"] + labels)
@@ -181,6 +184,7 @@ def multi_fit(data, labels, print_out=False, print_port=print,
     # Remove vertical space between Axes
     fig.subplots_adjust(hspace=0)
     fig.subplots_adjust(wspace=0)
+    dot_size = max(20 / n, 1)
 
     for x in range(len(data) - 1):
         for y in range(1, len(data)):
@@ -188,10 +192,12 @@ def multi_fit(data, labels, print_out=False, print_port=print,
             if x >= y:
                 axs[fy][fx].axis('off')
             else:
+                #  axs[fy][fx].set_aspect('equal')
                 fit_plot(data[x], data[y], ax_margin=ax_margin,
                          ellipse=True, ax=axs[fy][fx], alpha=alpha,
                          xlabel=labels[x] if y == n - 1 else None,
-                         ylabel=labels[y] if x == 0 else None)
+                         ylabel=labels[y] if x == 0 else None,
+                         red_ellipse=red_ellipse, dot_size=dot_size)
                 if x > 0:
                     axs[fy][fx].get_yaxis().set_visible(False)
     if show_plot:

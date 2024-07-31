@@ -261,14 +261,14 @@ class TestApp(DataExplore):
         self._call('plotSelected')
         return
 
-    def showPlotViewer(self, parent=None):
+    def showPlotViewer(self, parent=None,figsize=(10,7)):
         """Create plot frame"""
 
         if hasattr(self.table, 'pf') and self.table.pf is not None:
             self.addPlot()
             self.table.pf.close()
 
-        self.table.pf = plot_viewer(table=self.table, parent=parent)
+        self.table.pf = plot_viewer(table=self.table, parent=parent,figsize=figsize)
         if hasattr(self.table, 'child') and self.table.child is not None:
             self.table.child.pf = self.table.pf
         return self.table.pf

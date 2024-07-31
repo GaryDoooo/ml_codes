@@ -256,8 +256,8 @@ class XBRDialog(IMRDialog):
             if gid not in list(self.df):
                 self.error("Can't get valid a grouping method.")
                 return
-            data = grouping_by_labels(self.df[xid],
-                                      self.df[gid])
+            data, keys = grouping_by_labels(self.df[xid],
+                                            self.df[gid], return_keys=True)
         else:
             gsize = int(gsize)
             l = list(self.df[xid])
@@ -266,7 +266,7 @@ class XBRDialog(IMRDialog):
 
         if self.xlabelID.get() == "":
             if gsize is None:
-                xlabels=
+                xlabels = keys
             xlabels = list(range(1, len(data) + 1))
         else:
             ids = self.df[self.xlabelID.get()]

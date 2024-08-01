@@ -8,10 +8,8 @@ def rec_sum(x1, y1, x2, y2, s):
 
 def locate_cross(data, c_size=15,thd_quantile=0.98,
                  c_corner=5, cross_cnt=9):
-    #  print(data)
     a = np.array(data)
     H, W = a.shape
-    #  print(H, W)
     s = np.zeros((H + 1, W + 1))
     s1 = np.zeros((W + 1))
     for y in range(H):

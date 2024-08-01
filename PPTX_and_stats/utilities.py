@@ -431,6 +431,7 @@ def norm_test(data, print_out=False, print_port=print):
         print("\n---- Normality Test ----")
         print(f"Shapiro-Wilk test\tstats {s1:.3f}\tp-value {p1:.3f}")
         print(f"Anderson Darling test\tstats {s2:.3f}\tp-value {p2:.3f}")
+        print("P-value indicates the probability of sampling from a normal distributed population.")
     return {"shapiro s": s1, "shapiro p": p1, "AD s": s2, "AD p": p2}
 
 

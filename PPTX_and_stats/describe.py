@@ -10,7 +10,7 @@ def describe(data, print_port=print,
                                            25, 10, 2.5, 0.5, 0]):
     mean = stat.mean(data)
     N = len(data)
-    if N<2:
+    if N < 2:
         return
     R = max(data) - min(data)
     mode = stat.mode(data)
@@ -28,13 +28,13 @@ def describe(data, print_port=print,
         kurt = N * (N + 1) / (N - 1) / (N - 2) / (N - 3) * sum(
             ((i - mean) / std)**4 for i in data
         ) - 3 * (N - 1)**2 / (N - 2) / (N - 3)
-    except:
-        kurt=np.nan
+    except BaseException:
+        kurt = np.nan
     try:
         skew = N / (N - 1) / (N - 2) * sum(((i - mean) / std)**3
-                                       for i in data)
-    except:
-        skew=np.nan
+                                           for i in data)
+    except BaseException:
+        skew = np.nan
 
     if print_out:
         print = print_port
@@ -74,3 +74,6 @@ def describe(data, print_port=print,
 
 if __name__ == "__main__":
     describe([1, 1, 2, 2, 3, 4, 1], print_out=True)
+    describe([1, 1, 2, 3, 3, 3, 3, 4, 1, 1, 1, 1, 1, 1], print_out=True)
+    from scipy.stats import skew
+    print(skew([1, 1, 2, 3, 3, 3, 3, 4, 1, 1, 1, 1, 1, 1]))

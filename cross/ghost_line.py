@@ -1,10 +1,32 @@
 from PIL import Image
 import numpy as np
-from statistics import mean
+from statistics import mean, stdev, mode
 from statsmodels.stats.diagnostic import normal_ad
-from scipy.stats import skew
 ############# Own modules ############
 from locate_cross import locate_cross
+
+D1D2_THRESHOLD_RATIO = 0.5
+
+#  D1D2_LVLS = [1, .7, .2]
+#
+#  OC_LVLS = [2.5, 1.75, 1]
+#
+#  AD_VALUE_TRIGGER = 9
+#  SKEW_TRIGGER = .4
+
+
+def skew(data):
+    u = mean(data)
+    N = len(data)
+    if N < 2:
+        return
+    std = stdev(data)
+    try:
+        skew = N / (N - 1) / (N - 2) * sum(((i - u) / std)**3
+                                           for i in data)
+    except BaseException:
+        skew = np.nan
+    return skew
 
 
 def make_list(data, u=0):
@@ -17,41 +39,107 @@ def derivative_forward(data):
     return [data[i + 1] - data[i] for i in range(len(data) - 1)]
 
 
-def compress_list(lst):
-    return [x for i, x in enumerate(lst) if i == 0 or x != lst[i - 1]]
+def peak2(l, thd):
+    """
+    starting from a max point to find if a point over the threshold after negative value appeared
+    or from a min poin to find if a point over the thd after positive value appeared.
+    """
+    starting_sign = np.sign(l[0])
+    has_opposite = False
+    for i in l:
+        if starting_sign * np.sign(i) < 0:
+            has_opposite = True
+        if i > thd and has_opposite and l[0] > 0:
+            return True
+        if i < thd and has_opposite and l[0] < 0:
+            return True
+    return False
+
+
+def two_maxima(data, positive=True):
+    if positive:
+        m = max(data)
+    else:
+        m = min(data)
+    thd = m * D1D2_THRESHOLD_RATIO
+    peak_idx = data.index(m)
+    if peak2(data[peak_idx:], thd):
+        return True
+    if peak2(data[:peak_idx][::-1], thd):
+        return True
+    return False
 
 
 def check_2d2p(d):
     d2 = derivative_forward(derivative_forward(
         [float(i) for i in d]))
-    thd = min(d2) * .5
-    l = [0 if i >= thd else 1 for i in d2
-         if i > 0 or i < thd]
-    return len(compress_list(l)) > 3
+    return two_maxima(d2, positive=False)
+    #  thd = min(d2) * D1D2_THRESHOLD_RATIO
+    #  l = [0 if i >= thd else 1 for i in d2
+    #       if i > 0 or i < thd]
+    #  return len(compress_list(l)) > 3
 
 
 def check_1d2p(d):
-    def peak2(l, thd):
-        has_neg = False
-        for i in l:
-            if i < 0:
-                has_neg = True
-            if i > thd and has_neg:
-                return True
-        return False
     d1 = derivative_forward([float(i) for i in d])
-    thd = max(d1) * .5
-    peak = d1.index(max(d1))
-    if peak2(d1[peak:], thd):
+    if two_maxima(d1, positive=True):
         return True
-    if peak2(d1[:peak][::-1], thd):
-        return True
-    return False
+    return two_maxima(d1, positive=False)
+    #  thd = max(d1) * D1D2_THRESHOLD_RATIO
+    #  peak = d1.index(max(d1))
+    #  if peak2(d1[peak:], thd):
+    #      return True
+    #  if peak2(d1[:peak][::-1], thd):
+    #      return True
+    #  return False
 
 
 def norm_test(data):
     s2, _ = normal_ad(np.array(data))
     return s2
+
+
+def off_center(ll):
+    return abs(mean(ll) - mode(ll))
+
+
+def score(data):
+
+    [mad, msk, md1, md2, moc] = data
+
+    #  def levels(value, lvls):
+    #      for i, lvl in enumerate(lvls):
+    #          if value > lvl:
+    #              return 3 - i
+    #      return 0
+    #
+    #  d1d2 = levels(md1 + md2 / 2, D1D2_LVLS)
+    #  mad_msk = mad < AD_VALUE_TRIGGER or msk > SKEW_TRIGGER
+    #  oc = levels(moc, OC_LVLS)
+
+    #  print(d1d2, oc, mad_msk)
+    #  return 1
+    #  res=1
+    #  if (d1d1|oc)==1:
+    #      res=2
+    #  elif
+    intercept = 2.14
+    res = intercept
+    res += mad * (-0.0986)
+    res += (mad - 9.83) * (md1 - 0.164) * (-0.169)
+    res += (mad - 9.83) * (md2 - 0.372) * (-0.183)
+    res += moc * 0.419
+    res += (md1 - 0.164) * (md2 - 0.372) * (moc - 1.08) * 2.44
+    res += (mad - 9.83) * (md1 - 0.164) * (md2 - 0.372) * (moc - 1.08) * 0.519
+    return res
+
+
+def to_lvl(s):
+    if s < 1.5:
+        return 1
+    if s >= 3.5:
+        return 4
+    return int(s + .5)
 
 
 def double_line(filename):
@@ -69,51 +157,53 @@ def double_line(filename):
             (x1, y3, x2, y4), (x3, y3, x4, y4), (x5, y3, x6, y4),
             (x1, y5, x2, y6), (x3, y5, x4, y6), (x5, y5, x6, y6)]
 
-    lvls, mads, msks, md2s, md1s = [], [], [], [], []
+    #  lvls, mads, msks, md2s, md1s = [], [], [], [], []
+    #  mocs = []
+    res_list = [[] for i in range(7)]
+    cross_sections = []
     for x1, y1, x2, y2 in subs:
         sub = a[y1:y2, x1:x2]
         try:
             r = locate_cross(sub, cross_cnt=1)
         except BaseException:
-            lvls.append(0)
+            for lst in res_list:
+                lst.append(-1)
             continue
         x, y = r[0]
-        ad, sk, d2, d1 = [], [], [], []
+        oc, ad, sk, d2, d1 = [], [], [], [], []
         for dy in [-40, -20, 20, 40]:
             try:
                 l = [sub[y + dy][_] for _ in range(x - 20, x + 21)]
                 x0 = x - 20 + l.index(max(l))
                 l = [sub[y + dy][_] for _ in range(x0 - 20, x0 + 20)]
+                cross_sections.append(l)
                 ll = make_list(l)
                 ad.append(norm_test(ll))
-                sk.append(skew(ll))
+                sk.append(abs(skew(ll)))
                 d2.append(check_2d2p(l))
                 d1.append(check_1d2p(l))
+                oc.append(off_center(ll))
             except BaseException:
                 pass
-        lvl = 1
+        #  lvl = 1
         try:
-            mad, msk, md2, md1 = mean(ad), mean(sk), mean(d2), mean(d1)
-            if md2 + md1 > 1:
-                lvl = 4
-            else:
-                if md2 > .2 or md1 > .2:
-                    lvl = 2
-                if mad < 9 or msk > .4:
-                    lvl += 1
-            lvls.append(lvl)
-            mads.append(mad)
-            msks.append(msk)
-            md1s.append(md1)
-            md2s.append(md2)
+            #  mad, msk, md2, md1
+            res = [mean(ad), mean(sk), mean(d1), mean(d2), mean(oc)]
+            #  moc = mean(oc)
+            fitted_score = score(res)
+            for lst, i in zip(res_list,
+                              [to_lvl(fitted_score), fitted_score] + res):
+                lst.append(i)
         except BaseException:
-            lvls.append(0)
+            for lst in res_list:
+                lst.append(-2)
 
-    return {"lvl": lvls, "data": [
-        mads, msks, md1s, md2s]}
+    return {"lvl": res_list[0], "data": res_list[1:],
+            "cross sections": cross_sections}
+    #  [mads, msks, md1s, md2s, mocs]}
 
 
 if __name__ == "__main__":
     fn = input("")
     r = double_line(fn)
-    print(r['str'])
+    print(fn, ",", str(r['lvl']), str(r['data']))

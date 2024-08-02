@@ -15,7 +15,7 @@ def main3():
     directory_path = './png'
     png_files = get_png_files(directory_path)
 
-    for file in png_files:
+    for file in png_files[:10]:
         try:
             #  print(file)
             res = double_line(file)

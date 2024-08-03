@@ -103,9 +103,68 @@ def off_center(ll):
     return abs(mean(ll) - mode(ll))
 
 
-def score(data):
+def calculate_model(AD, D1, D2, OC, skew):
+    # Define the coefficients
+    coefficients = [
+        1.8474584,
+        -0.089558,
+        0.9231891,
+        -0.145991,
+        0.5767543,
+        0.2355008,
+        6.5093376,
+        -1.196248,
+        0.4846924,
+        -0.505861,
+        0.5910252
+    ]
+
+    # Define the mean values used in the model
+    AD_mean = 8.72075
+    D1_mean = 0.275
+    D2_mean = 0.48958
+    skew_mean = 0.15617
+    OC_mean = 1.13154
+
+    # Calculate each term
+    terms = [
+        1,  # Intercept
+        AD,
+        D1,
+        (AD - AD_mean) * (D1 - D1_mean),
+        D2,
+        (AD - AD_mean) * (D1 - D1_mean) * (D2 - D2_mean),
+        (skew - skew_mean) * (D1 - D1_mean) * (D2 - D2_mean),
+        (AD - AD_mean) * (skew - skew_mean) * (D1 - D1_mean) * (D2 - D2_mean),
+        OC,
+        (D1 - D1_mean) * (OC - OC_mean),
+        (AD - AD_mean) * (skew - skew_mean) * (D1 - D1_mean) * (OC - OC_mean)
+    ]
+
+    # Calculate the result
+    result = sum(coef * term for coef, term in zip(coefficients, terms))
+
+    return result
+
+
+def fit_score_and_lvl(data):
 
     [mad, msk, md1, md2, moc] = data
+    s = calculate_model(mad, md1, md2, moc, msk)
+    if s < 1.5:
+        lvl = 1
+    elif s >= 3.5:
+        lvl = 4
+    else:
+        lvl = int(s + .5)
+    if lvl == 1:
+        if mad < 9 and md1 + md2 > 0.45:
+            lvl = 2
+        elif mad < 6.1 and md1 + md2 > .2:
+            lvl = 2
+    if lvl == 3 and md1 + md2 > 1.9:
+        lvl = 4
+    return s, lvl
 
     #  def levels(value, lvls):
     #      for i, lvl in enumerate(lvls):
@@ -123,23 +182,15 @@ def score(data):
     #  if (d1d1|oc)==1:
     #      res=2
     #  elif
-    intercept = 2.14
-    res = intercept
-    res += mad * (-0.0986)
-    res += (mad - 9.83) * (md1 - 0.164) * (-0.169)
-    res += (mad - 9.83) * (md2 - 0.372) * (-0.183)
-    res += moc * 0.419
-    res += (md1 - 0.164) * (md2 - 0.372) * (moc - 1.08) * 2.44
-    res += (mad - 9.83) * (md1 - 0.164) * (md2 - 0.372) * (moc - 1.08) * 0.519
-    return res
-
-
-def to_lvl(s):
-    if s < 1.5:
-        return 1
-    if s >= 3.5:
-        return 4
-    return int(s + .5)
+    #  intercept = 2.14
+    #  res = intercept
+    #  res += mad * (-0.0986)
+    #  res += (mad - 9.83) * (md1 - 0.164) * (-0.169)
+    #  res += (mad - 9.83) * (md2 - 0.372) * (-0.183)
+    #  res += moc * 0.419
+    #  res += (md1 - 0.164) * (md2 - 0.372) * (moc - 1.08) * 2.44
+    #  res += (mad - 9.83) * (md1 - 0.164) * (md2 - 0.372) * (moc - 1.08) * 0.519
+    #  return res
 
 
 def double_line(filename):
@@ -190,9 +241,9 @@ def double_line(filename):
             #  mad, msk, md2, md1
             res = [mean(ad), mean(sk), mean(d1), mean(d2), mean(oc)]
             #  moc = mean(oc)
-            fitted_score = score(res)
+            fitted_score, lvl = fit_score_and_lvl(res)
             for lst, i in zip(res_list,
-                              [to_lvl(fitted_score), fitted_score] + res):
+                              [lvl, fitted_score] + res):
                 lst.append(i)
         except BaseException:
             for lst in res_list:

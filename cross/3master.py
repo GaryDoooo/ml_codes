@@ -6,9 +6,26 @@ from pptx.util import Inches, Pt
 from prettytable import PrettyTable as PT
 from PIL import Image
 from matplotlib import pyplot as plt
+import time
+import random
 ########### Own Module #########
 from ghost_line import double_line
 from worker import save_2d_array_as_png
+
+
+def get_random_number():
+    # Get the current time in microseconds
+    microseconds = int(time.time() * 1e6)
+
+    # Seed the random number generator with the microseconds
+    random.seed(microseconds)
+
+    # Generate a random number
+    return random.random()
+
+
+PNG_FILE1 = 'png/' + str(get_random_number()) + '.png'
+PNG_FILE2 = 'png/' + str(get_random_number()) + '.png'
 
 
 def ppt_pngs(filename, css):
@@ -17,7 +34,7 @@ def ppt_pngs(filename, css):
     grayscale_image = image.convert('L')
     # Convert the grayscale image to a 2D NumPy array
     a = np.array(grayscale_image)
-    save_2d_array_as_png(a[114:1050, 1032:1811], 'png/2.png')
+    save_2d_array_as_png(a[114:1050, 1032:1811], PNG_FILE2)
 
     fig, axs = plt.subplots(3, 3)
     if len(css) == 36:
@@ -26,7 +43,7 @@ def ppt_pngs(filename, css):
                 l = css[i * 4 + j]
                 ax = axs[int(i / 3)][i % 3]
                 ax.plot(l, alpha=.5)
-    plt.savefig('png/1.png')
+    plt.savefig(PNG_FILE1)
     plt.close()
     return
 
@@ -56,13 +73,13 @@ def add_slide(prs, txt):
     p.font.name = 'Courier New'
 
     # Add the plot image on the right
-    img_path = 'png/1.png'
+    img_path = PNG_FILE1
     left = Inches(.5)
     top = Inches(4)
     height = Inches(4.5)
     slide.shapes.add_picture(img_path, left, top, height=height)
     # Add the plot image on the right
-    img_path = 'png/2.png'
+    img_path = PNG_FILE2
     left = Inches(8)
     top = Inches(.5)
     height = Inches(8)

@@ -11,12 +11,12 @@ from modified_table import MTable as Table
 from plots import plot_viewer
 from txt_output import txt_viewer
 from fit_dialog import LinearFitDialog, CorrelationDialog, OrthoFitDialog, ResidDialog, MCorDialog
-from basic_dialogs import DescribeDialog, NormTestDialog, CIDialog
+from basic_dialogs import DescribeDialog, NormTestDialog, CIDialog, MultiDescribeDialog
 from sample_test_dialog import Mean1SampleDialog, Mean1SampleZDialog, Var1SampleDialog, Mean2SampleDialog, PairedTDialog, MultiVarDialog, Prop1SDialog, Prop2SDialog
 from anova_dialog import Anova1WayDialog, TtestDialog, Anova2WayDialog
 from chi2_dialog import Chi2TableDialog, Chi2PropDialog
 from qc_dialog import GRRDialog, CpkDialog, CpkSubDialog, TIDialog
-from ctrlchart_dialog import IMRDialog, IDialog, MRDialog,XBRDialog
+from ctrlchart_dialog import IMRDialog, IDialog, MRDialog, XBRDialog
 
 
 class TestApp(DataExplore):
@@ -152,8 +152,9 @@ class TestApp(DataExplore):
 
         self.stats_menu = {
             '01Describe': {'cmd': self.describe},
-            '02Normality': {'cmd': self.norm_test},
-            '03Confidence Intervals': {'cmd': self.confidence_interval},
+            '02Describe MutliVar': {'cmd': self.multi_describe},
+            '04Normality': {'cmd': self.norm_test},
+            '05Confidence Intervals': {'cmd': self.confidence_interval},
             '13Correlation': {'cmd': self.correlation},
             '16Orthogonal Fit': {'cmd': self.ortho_fit},
             '14Linear Fit': {'cmd': self.linear_fit},
@@ -184,7 +185,7 @@ class TestApp(DataExplore):
             '32Control Chart I/MR': {'cmd': self.cChartIMR},
             '33Control Chart I': {'cmd': self.cChartI},
             '34Control Chart MR': {'cmd': self.cChartMR},
-            '35Control Chart xBar/R':{'cmd':self.cChartXBR},
+            '35Control Chart xBar/R': {'cmd': self.cChartXBR},
             '06sep': '', '20sep': '', '30sep': '', '40sep': ''}
         self.quality_menu = self.createPulldown(self.menu, self.quality_menu)
         self.menu.add_cascade(label='Quality', menu=self.quality_menu['var'])
@@ -261,14 +262,17 @@ class TestApp(DataExplore):
         self._call('plotSelected')
         return
 
-    def showPlotViewer(self, parent=None,figsize=(10,7)):
+    def showPlotViewer(self, parent=None, figsize=(10, 7)):
         """Create plot frame"""
 
         if hasattr(self.table, 'pf') and self.table.pf is not None:
             self.addPlot()
             self.table.pf.close()
 
-        self.table.pf = plot_viewer(table=self.table, parent=parent,figsize=figsize)
+        self.table.pf = plot_viewer(
+            table=self.table,
+            parent=parent,
+            figsize=figsize)
         if hasattr(self.table, 'child') and self.table.child is not None:
             self.table.child.pf = self.table.pf
         return self.table.pf
@@ -306,6 +310,13 @@ class TestApp(DataExplore):
 
     def describe(self):
         _ = DescribeDialog(
+            self.table, app=self,
+            df=self.table.model.df,
+            title='Stats Summary')
+        return
+
+    def multi_describe(self):
+        _ = MultiDescribeDialog(
             self.table, app=self,
             df=self.table.model.df,
             title='Stats Summary')
@@ -478,6 +489,7 @@ class TestApp(DataExplore):
             df=self.table.model.df,
             title='Control Chart MR')
         return
+
     def cChartXBR(self):
         _ = XBRDialog(
             self.table, app=self,

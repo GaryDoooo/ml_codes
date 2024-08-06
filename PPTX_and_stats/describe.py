@@ -65,11 +65,43 @@ def describe(data, print_port=print,
             t.add_row(["%.2f%%" % i, "%.3f" % j])
         print(str(t))
 
-    return {"N": N, "mean": mean, "stdev": std, "SEM": SEM, "var": var,
-            "coefvar": coefvar, "sum": sum(data), "min": min(data),
-            "max": max(data), "Q1": qnt[0], "Q3": qnt[1], "median": median,
-            "range": R, "IQR": IQR, "mode": mode, "n mode": N_mode,
-            "skew": skew, "kurt": kurt, "quantiles": qnt2}
+    return {
+        "N": N,
+        "mean": mean,
+        "stdev": std,
+        "SEM": SEM,
+        "var": var,
+        "coefvar": coefvar,
+        "sum": sum(data),
+        "min": min(data),
+        "max": max(data),
+        "Q1": qnt[0],
+        "Q3": qnt[1],
+        "median": median,
+        "range": R,
+        "IQR": IQR,
+        "mode": mode,
+        "n mode": N_mode,
+        "skew": skew,
+        "kurt": kurt,
+        "quantiles": qnt2,
+        "Mean": mean,
+        "Standard Deviation": std,
+        "Variance": var,
+        "Maximum": max(data),
+        "Median": median,
+        "First Quartile": qnt[0],
+        "Third Quartile": qnt[1],
+        "SE of Mean": SEM,
+        "Coefficient of Variation": coefvar,
+        "Sum": sum(data),
+        "Minimum": min(data),
+        "Range": R,
+        "Skewness": skew,
+        "Kurtosis": kurt,
+        "Mode": mode,
+        "N of Mode": N_mode,
+        "Interquartile Range": IQR}
 
 
 if __name__ == "__main__":

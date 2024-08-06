@@ -16,7 +16,7 @@ from sample_test_dialog import Mean1SampleDialog, Mean1SampleZDialog, Var1Sample
 from anova_dialog import Anova1WayDialog, TtestDialog, Anova2WayDialog
 from chi2_dialog import Chi2TableDialog, Chi2PropDialog
 from qc_dialog import GRRDialog, CpkDialog, CpkSubDialog, TIDialog
-from ctrlchart_dialog import IMRDialog, IDialog, MRDialog, XBRDialog
+from ctrlchart_dialog import IMRDialog, IDialog, MRDialog, XBRDialog, XBSDialog
 
 
 class TestApp(DataExplore):
@@ -186,6 +186,7 @@ class TestApp(DataExplore):
             '33Control Chart I': {'cmd': self.cChartI},
             '34Control Chart MR': {'cmd': self.cChartMR},
             '35Control Chart xBar/R': {'cmd': self.cChartXBR},
+            '36Control Chart xBar/S': {'cmd': self.cChartXBS},
             '06sep': '', '20sep': '', '30sep': '', '40sep': ''}
         self.quality_menu = self.createPulldown(self.menu, self.quality_menu)
         self.menu.add_cascade(label='Quality', menu=self.quality_menu['var'])
@@ -495,6 +496,13 @@ class TestApp(DataExplore):
             self.table, app=self,
             df=self.table.model.df,
             title='Control Chart X Bar/R')
+        return
+
+    def cChartXBS(self):
+        _ = XBSDialog(
+            self.table, app=self,
+            df=self.table.model.df,
+            title='Control Chart X Bar/S')
         return
 
 

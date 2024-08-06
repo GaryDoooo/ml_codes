@@ -244,8 +244,13 @@ class XBRDialog(IMRDialog):
 
         return
 
-    def get_data(self):
+    def r_or_s(self):
         self.plot_type = "XBAR_R"
+        return
+
+    def get_data(self):
+        self.r_or_s()
+        #  self.plot_type = "XBAR_R"
         gsize = get_number(self.gsize)
         xid = self.xvar.get()
         if xid not in list(self.df):
@@ -280,3 +285,9 @@ class XBRDialog(IMRDialog):
 
         fig, ax, axs = self.get_axs()
         return data, xlabels, fig, ax, axs
+
+
+class XBSDialog(XBRDialog):
+    def r_or_s(self):
+        self.plot_type = "XBAR_S"
+        return

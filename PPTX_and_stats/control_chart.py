@@ -56,7 +56,7 @@ def xBar_R(data):  # , print_out=True, max_xlabels=25,xLabels=None):
     return {"Y1": xbar, "Y2": R, "bar1": xbar_bar, "ucl1": xbar_ucl,
             "ucl2": R_UCL, "lcl1": xbar_lcl, "lcl2": R_LCL, "n": n,
             "bar2": R_bar, "ylabel1": "X Bar", "ylabel2": "Range",
-            "X":list(range(len(data)))}
+            "X": list(range(len(data)))}
 
 
 def xBar_S(data):  # , print_out=True, max_xlabels=25,xLabels=None):
@@ -76,7 +76,8 @@ def xBar_S(data):  # , print_out=True, max_xlabels=25,xLabels=None):
 
     return {"Y1": xbar, "Y2": S, "bar1": xbar_bar, "ucl1": xbar_ucl,
             "ucl2": S_UCL, "lcl1": xbar_lcl, "lcl2": S_LCL, "n": n,
-            "bar2": S_bar, "ylabel1": "X Bar", "ylabel2": "Stdev"}
+            "bar2": S_bar, "ylabel1": "X Bar", "ylabel2": "Stdev",
+            "X": list(range(len(data)))}
 
 
 def x_plot(data, bar1=None,
@@ -193,18 +194,24 @@ def x_plot(data, bar1=None,
 
 def p_np_plot(p=None, n=1,
               bar1=None, ucl1=None, lcl1=None, xLabels=None,
-              print_out=True, max_label_num=25,
-              ylabel="P"):
+              print_out=False, max_label_num=25, print_port=print,
+              ylabel="P",NP=False,
+              xlabel=None, ax=None,fig=None, refY=None, 
+              filename=None):
 
     if isinstance(n, int):
         nlist = [n] * len(p)
     else:
         nlist = n
+    
 
     p_bar = sum([i * j for i, j in zip(p, nlist)]) / sum(nlist)
     ucl_list = [p_bar + 3 * (p_bar * (1 - p_bar) / i)**.5 for i in nlist]
     lcl_list = [max(0, p_bar - 3 * (p_bar * (1 - p_bar) / i)**.5)
                 for i in nlist]
+    if NP:
+        p_bar*=n[0]
+        
 
     xs = [-.5]
     for _ in range(len(p)):
@@ -250,5 +257,9 @@ def p_np_plot(p=None, n=1,
     plt.show()
 
     if print_out:
+        print = print_port
+        print("\n---- Control Chart ----")
         print(ylabel)
         print("mean = %.4f" % (p_bar))
+
+    return

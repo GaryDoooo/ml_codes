@@ -2,38 +2,41 @@ from tkinter import ttk
 import tkinter as tk
 from tkinter import TOP, LEFT, BOTH, X
 from scipy.stats import probplot
+from prettytable import PrettyTable as PT
 ########### Own Modules ###########
 from dialog import Dialogs, addListBox
 from describe import describe
 from utilities import norm_test, number_list, mean_std_CIs
 
 
-class MCorDialog(Dialogs):
+class MultiDescribeDialog(Dialogs):
     def createWidgets(self, m):
-        f = tk.LabelFrame(m, text='Variables')
+        f = tk.LabelFrame(m, text='Data')
         f.pack(side=TOP, fill=BOTH, padx=2)
         w, self.grpvar = addListBox(
             f, values=self.cols, width=20, label='columns')
         w.pack(side=LEFT, fill=X, padx=10)
 
-    #  return {"N": N, "mean": mean, "stdev": std, "SEM": SEM, "var": var,
-    #          "coefvar": coefvar, "sum": sum(data), "min": min(data),
-    #          "max": max(data), "Q1": qnt[0], "Q3": qnt[1], "median": median,
-    #          "range": R, "IQR": IQR, "mode": mode, "n mode": N_mode,
-    #          "skew": skew, "kurt": kurt, "quantiles": qnt2}
-        self.ax_margin = tk.DoubleVar(value=0.1)
-        self.red_ellipse = tk.BooleanVar(value=False)
-        master = tk.LabelFrame(m, text='Plot Setting')
-        master.pack(side=TOP, fill=BOTH, padx=2)
-        w = tk.Label(master, text="Margin (0.1=10%% of data range)")
-        w.pack(side=LEFT, fill=X, padx=2)
-        w = tk.Entry(master, textvariable=self.ax_margin,
-                     bg='white', width=5)
-        w.pack(side=LEFT, padx=2, pady=2)
-        w = tk.Checkbutton(master, text='Ellipse Outline',
-                           variable=self.red_ellipse)
-        w.pack(side=LEFT, padx=2, pady=2)
-        self.add_alpha(m)
+        self.picks = dict()
+        self.names = ["N", "Mean", "Standard Deviation", "Variance",
+                      "Minimum",
+                      "First Quartile", "Median", "Third Quartile", "Maximum",
+                      "SE of Mean", "Coefficient of Variation", "Sum",
+                      "Range", "Interquartile Range",
+                      "Skewness", "Kurtosis", "Mode", "N of Mode"]
+
+        f = tk.LabelFrame(m, text='Statistics')
+        f.pack(side=TOP, fill=BOTH, padx=2)
+        for i, name in enumerate(self.names):
+            self.picks[name] = tk.BooleanVar(value=True)
+            if i % 6 == 0:
+                master = ttk.Frame(f)
+                master.pack(side=LEFT, padx=2)
+            slave = ttk.Frame(master)
+            slave.pack(side=TOP, fill=BOTH, padx=2, pady=2)
+            w = tk.Checkbutton(slave, text=name,
+                               variable=self.picks[name])
+            w.pack(side=LEFT)
         return
 
     def ok(self):
@@ -43,37 +46,28 @@ class MCorDialog(Dialogs):
         return
 
     def apply(self):
-
-        data = number_2Dlist(df=self.df, cols=self.grpcols,
-                             print_out=True, print_port=self.app.print)
-        pf = self.app.showPlotViewer(figsize=(7, 7))
-        axs = []
-        n = len(data)
-        try:
-            ax_margin = self.ax_margin.get()
-            alpha = self.alpha.get()
-        except BaseException:
-            ax_margin = 0.1
-            alpha = 0.05
-
-        for y in range(n - 1):
-            r = []
-            for x in range(1, n):
-                r.append(
-                    pf.fig.add_subplot(n - 1, n - 1, y * (n - 1) + x)
-                )
-            axs.append(r)
-
-        multi_fit(
-            data,
-            self.grpcols,
-            print_out=True,
-            print_port=self.app.print,
-            axs=axs,
-            fig=pf.fig,
-            alpha=alpha,
-            ax_margin=ax_margin,
-            red_ellipse=self.red_ellipse.get())
+        res = dict()
+        for col in self.grpcols:
+            res[col] = describe(
+                number_list(
+                    self.df[col],
+                    col_name=col,
+                    print_out=True,
+                    print_port=self.app.print),
+                print_out=False)
+        self.app.print("\n---- Statitstics ----")
+        t = PT()
+        t.field_names = [""] + self.grpcols
+        for name in self.names:
+            if self.picks[name].get():
+                row = [name]
+                for col in self.grpcols:
+                    if "N" in name:
+                        row.append("%d" % res[col][name])
+                    else:
+                        row.append("%.3f" % res[col][name])
+                t.add_row(row)
+        self.app.print(str(t))
         return
 
 

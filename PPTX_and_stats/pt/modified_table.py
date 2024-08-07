@@ -9,11 +9,29 @@ from pandastable_local.dialogs import MultipleValDialog
 #  from modified_header import MColumnHeader as ColumnHeader
 #  from modified_header import RowHeader
 from df_combine import df_combine
-from utilities import grouping_by_labels, verifyNewColName, filter_voids
+from utilities import grouping_by_labels, verifyNewColName, filter_voids, is_void
 from dialog import findRepDialog
 
 
 class MTable(Table):
+    def row1ToHeader(self):
+        """
+        Put row one contents to header, and have priority
+        """
+        df = self.model.df
+        cols = list(df)
+        new_headers = []
+        for x in range(len(cols)):
+            if is_void(df.iloc[0, x]):
+                new_name = cols[x]
+            else:
+                new_name = df.iloc[0, x]
+            new_headers.append(
+                verifyNewColName(new_name, new_headers))
+        df.columns = new_headers
+        self.redraw()
+        return
+
     def findText(self, evt=None):
         """Simple text search in whole table"""
 

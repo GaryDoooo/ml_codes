@@ -7,7 +7,7 @@ from tkinter import TOP, LEFT, X, BOTH, RIGHT
 ########### Own Modules ###########
 from dialog import Dialogs
 from utilities import is_number, number_list, filter_voids, grouping_by_labels, get_number
-from control_chart import x_plot
+from control_chart import x_plot, p_np_plot, cu_plot
 
 
 class IMRDialog(Dialogs):
@@ -291,3 +291,257 @@ class XBSDialog(XBRDialog):
     def r_or_s(self):
         self.plot_type = "XBAR_S"
         return
+
+
+class NPDialog(IMRDialog):
+    def input_data(self, m):
+        f = tk.LabelFrame(m, text='Input Column')
+        f.pack(side=TOP, fill=BOTH, padx=2)
+        self.xvar = tk.StringVar(value="")
+        w = tk.Label(f, text="Y, n Defective")
+        w.pack(side=LEFT, fill=X, padx=2)
+        w = ttk.Combobox(
+            f, values=self.cols, textvariable=self.xvar,
+            width=14)
+        w.pack(side=LEFT, padx=2)
+        self.N = tk.IntVar(value=200)
+        w = tk.Label(f, text="n Trials")
+        w.pack(side=LEFT, fill=X, padx=2)
+        w = tk.Entry(f, textvariable=self.N,
+                     bg='white', width=10)
+        w.pack(side=LEFT, padx=2, pady=2)
+
+        self.plot_type = "NP"
+        return
+
+    def more_settings(self, m):
+        self.x_options(m)
+        self.y_options(m, label1="")
+        self.y_refs(m, label1=" ")
+        self.one_chart = False
+        self.chart_two_only = False
+        return
+
+    def get_axs(self):
+        pf = self.app.showPlotViewer()
+        fig = pf.fig
+        pf.ax = pf.fig.add_subplot(111)
+        return fig, pf.ax, None
+
+    def get_data(self):
+        xlabels = None
+        if self.xlabelID.get() == "":
+            data = number_list(self.df[self.xvar.get()])
+            xlabels = list(range(1, len(data) + 1))
+        else:
+            ids = self.df[self.xlabelID.get()]
+            x = self.df[self.xvar.get()]
+            [x, ids] = filter_voids([x, ids])
+            data, xlabels = [], []
+            for i, j in zip(x, ids):
+                if is_number(i):
+                    data.append(float(i))
+                    xlabels.append(j)
+        fig, ax, _ = self.get_axs()
+        n = float(self.N.get())
+        defect_rate = [i / n for i in data]
+        return defect_rate, xlabels, fig, ax, n
+
+    def apply(self):
+        data, xlabels, fig, ax, n = self.get_data()
+        NP = ("NP" == self.plot_type)
+        print(NP)
+        if self.y1label.get() == "":
+            if NP:
+                ylabel = "Count (" + self.xvar.get() + ")"
+            else:
+                ylabel = "Proportion (" + self.xvar.get() + ")"
+        else:
+            ylabel = self.y1label.get()
+        if self.xlabel.get() == "":
+            if self.xlabelID.get() == "":
+                xlabel = "Subgroup"
+            else:
+                xlabel = self.xlabelID.get()
+        else:
+            xlabel = self.xlabel.get()
+        p_np_plot(
+            p=data, xLabels=xlabels,
+            xlabel=xlabel,
+            #  "Subgroup" if self.xlabel.get() == "" else self.xlabel.get(),
+            ylabel=ylabel,
+            #  "NP" if self.y1label.get() == "" else self.y1label.get(),
+            max_label_num=self.max_x_labels.get(),
+            refY=self.y1ref.get(),
+            print_out=True,
+            n=n, NP=NP,
+            fig=fig, ax=ax,
+            print_port=self.app.print)
+
+        return
+
+
+class PDialog(NPDialog):
+    def input_data(self, m):
+        f = tk.LabelFrame(m, text='Input Column')
+        f.pack(side=TOP, fill=BOTH, padx=2)
+        self.xvar = tk.StringVar(value="")
+        w = tk.Label(f, text="Y, n Defective")
+        w.pack(side=LEFT, fill=X, padx=2)
+        w = ttk.Combobox(
+            f, values=self.cols, textvariable=self.xvar,
+            width=14)
+        w.pack(side=LEFT, padx=2)
+        self.N = tk.StringVar(value="")
+        w = tk.Label(f, text="n Trials")
+        w.pack(side=LEFT, fill=X, padx=2)
+        w = ttk.Combobox(
+            f, values=self.cols, textvariable=self.N,
+            width=14)
+        w.pack(side=LEFT, padx=2)
+
+        self.plot_type = "P"
+        return
+
+    def get_data(self):
+        xlabels = None
+        if self.xlabelID.get() == "":
+            #  data = number_list(self.df[self.xvar.get()])
+            x = self.df[self.xvar.get()]
+            n = self.df[self.N.get()]
+            [x, n] = filter_voids([x, n])
+            n_list, data = [], []
+            for i, k in zip(x, n):
+                if is_number(i) and is_number(k):
+                    data.append(float(i) / float(k))
+                    n_list.append(float(k))
+            xlabels = list(range(1, len(data) + 1))
+        else:
+            ids = self.df[self.xlabelID.get()]
+            x = self.df[self.xvar.get()]
+            n = self.df[self.N.get()]
+            [x, ids, n] = filter_voids([x, ids, n])
+            n_list, data, xlabels = [], [], []
+            for i, j, k in zip(x, ids, n):
+                if is_number(i) and is_number(k):
+                    data.append(float(i) / float(k))
+                    xlabels.append(j)
+                    n_list.append(float(k))
+
+        fig, ax, _ = self.get_axs()
+        return data, xlabels, fig, ax, n_list
+
+
+class CDialog(NPDialog):
+    def input_data(self, m):
+        f = tk.LabelFrame(m, text='Input Column')
+        f.pack(side=TOP, fill=BOTH, padx=2)
+        self.xvar = tk.StringVar(value="")
+        w = tk.Label(f, text="Y, n Defective")
+        w.pack(side=LEFT, fill=X, padx=2)
+        w = ttk.Combobox(
+            f, values=self.cols, textvariable=self.xvar,
+            width=14)
+        w.pack(side=LEFT, padx=2)
+        self.plot_type = "C"
+        return
+
+    def get_data(self):
+        xlabels = None
+        if self.xlabelID.get() == "":
+            data = number_list(self.df[self.xvar.get()])
+            xlabels = list(range(1, len(data) + 1))
+        else:
+            ids = self.df[self.xlabelID.get()]
+            x = self.df[self.xvar.get()]
+            [x, ids] = filter_voids([x, ids])
+            data, xlabels = [], []
+            for i, j in zip(x, ids):
+                if is_number(i):
+                    data.append(float(i))
+                    xlabels.append(j)
+        fig, ax, _ = self.get_axs()
+        return data, xlabels, fig, ax, 1
+
+    def apply(self):
+        data, xlabels, fig, ax, n = self.get_data()
+        C = ("C" == self.plot_type)
+        if self.y1label.get() == "":
+            if C:
+                ylabel = "Count (" + self.xvar.get() + ")"
+            else:
+                ylabel = "Count per unit for " + self.xvar.get()
+        else:
+            ylabel = self.y1label.get()
+        if self.xlabel.get() == "":
+            if self.xlabelID.get() == "":
+                xlabel = "Subgroup"
+            else:
+                xlabel = self.xlabelID.get()
+        else:
+            xlabel = self.xlabel.get()
+        cu_plot(
+            c=data, xLabels=xlabels,
+            xlabel=xlabel,
+            #  "Subgroup" if self.xlabel.get() == "" else self.xlabel.get(),
+            ylabel=ylabel,
+            #  "NP" if self.y1label.get() == "" else self.y1label.get(),
+            max_label_num=self.max_x_labels.get(),
+            refY=self.y1ref.get(),
+            print_out=True,
+            n=n, C=C,
+            fig=fig, ax=ax,
+            print_port=self.app.print)
+
+        return
+
+
+class UDialog(CDialog):
+    def input_data(self, m):
+        f = tk.LabelFrame(m, text='Input Column')
+        f.pack(side=TOP, fill=BOTH, padx=2)
+        self.xvar = tk.StringVar(value="")
+        w = tk.Label(f, text="Y, n Defective")
+        w.pack(side=LEFT, fill=X, padx=2)
+        w = ttk.Combobox(
+            f, values=self.cols, textvariable=self.xvar,
+            width=14)
+        w.pack(side=LEFT, padx=2)
+        self.N = tk.StringVar(value="")
+        w = tk.Label(f, text="Unit Size")
+        w.pack(side=LEFT, fill=X, padx=2)
+        w = ttk.Combobox(
+            f, values=self.cols, textvariable=self.N,
+            width=14)
+        w.pack(side=LEFT, padx=2)
+
+        self.plot_type = "U"
+        return
+
+    def get_data(self):
+        xlabels = None
+        if self.xlabelID.get() == "":
+            #  data = number_list(self.df[self.xvar.get()])
+            x = self.df[self.xvar.get()]
+            n = self.df[self.N.get()]
+            [x, n] = filter_voids([x, n])
+            n_list, data = [], []
+            for i, k in zip(x, n):
+                if is_number(i) and is_number(k):
+                    data.append(float(i) / float(k))
+                    n_list.append(float(k))
+            xlabels = list(range(1, len(data) + 1))
+        else:
+            ids = self.df[self.xlabelID.get()]
+            x = self.df[self.xvar.get()]
+            n = self.df[self.N.get()]
+            [x, ids, n] = filter_voids([x, ids, n])
+            n_list, data, xlabels = [], [], []
+            for i, j, k in zip(x, ids, n):
+                if is_number(i) and is_number(k):
+                    data.append(float(i) )
+                    xlabels.append(j)
+                    n_list.append(float(k))
+
+        fig, ax, _ = self.get_axs()
+        return data, xlabels, fig, ax, n_list

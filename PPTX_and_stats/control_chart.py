@@ -195,23 +195,24 @@ def x_plot(data, bar1=None,
 def p_np_plot(p=None, n=1,
               bar1=None, ucl1=None, lcl1=None, xLabels=None,
               print_out=False, max_label_num=25, print_port=print,
-              ylabel="P",NP=False,
-              xlabel=None, ax=None,fig=None, refY=None, 
+              ylabel="P", NP=False,
+              xlabel=None, ax=None, fig=None, refY=None,
               filename=None):
 
-    if isinstance(n, int):
+    if not isinstance(n, list):
         nlist = [n] * len(p)
     else:
         nlist = n
-    
 
     p_bar = sum([i * j for i, j in zip(p, nlist)]) / sum(nlist)
     ucl_list = [p_bar + 3 * (p_bar * (1 - p_bar) / i)**.5 for i in nlist]
     lcl_list = [max(0, p_bar - 3 * (p_bar * (1 - p_bar) / i)**.5)
                 for i in nlist]
     if NP:
-        p_bar*=n[0]
-        
+        p_bar *= nlist[0]
+        ucl_list = np.array(ucl_list) * nlist[0]
+        lcl_list = np.array(lcl_list) * nlist[0]
+        p = np.array(p) * nlist[0]
 
     xs = [-.5]
     for _ in range(len(p)):
@@ -227,7 +228,8 @@ def p_np_plot(p=None, n=1,
         lcl_ys.append(lcl)
         lcl_ys.append(lcl)
 
-    fig, ax = plt.subplots(1, figsize=(15, 15))
+    if None in [ax, fig]:
+        fig, ax = plt.subplots(1, figsize=(15, 15))
 
     ax.plot(p, linestyle='-', marker='o', color='black')
 
@@ -245,15 +247,21 @@ def p_np_plot(p=None, n=1,
         ax.plot(xs, lcl_ys, color='red')
 
     ax.set(ylabel=ylabel)
+    add_Y_refs(ax=ax, y_values=refY)
 
     if xLabels is not None:
         step = 1
         if len(xLabels) > max_label_num:
-            step = int(len(xLabels) / max_label_num + 1)
+            step = len(xLabels) / max_label_num
+            if step > int(step):
+                step = int(step) + 1
+            else:
+                step = int(step)
         ax.set_xticks(range(len(xLabels)), xLabels,
                       rotation='vertical')
         ax.set_xticks(ax.get_xticks()[::step])
-
+    if xlabel is not None:
+        ax.set(xlabel=xlabel)
     plt.show()
 
     if print_out:
@@ -261,5 +269,85 @@ def p_np_plot(p=None, n=1,
         print("\n---- Control Chart ----")
         print(ylabel)
         print("mean = %.4f" % (p_bar))
+        if NP:
+            print("UCL = %.3f   LCL=%.3f" % (ucl_list[0], lcl_list[0]))
+
+    return
+
+
+def cu_plot(c=None, n=1,
+            bar1=None, ucl1=None, lcl1=None, xLabels=None,
+            print_out=False, max_label_num=25, print_port=print,
+            ylabel="P", C=False,
+            xlabel=None, ax=None, fig=None, refY=None,
+            filename=None):
+    p = c
+    if not isinstance(n, list):
+        nlist = [n] * len(p)
+    else:
+        nlist = n
+
+    c_bar = sum(c) / sum(nlist)
+    ucl_list = [c_bar + 3 * (c_bar / i)**.5 for i in nlist]
+    lcl_list = [max(0, c_bar - 3 * (c_bar / i)**.5) for i in nlist]
+    c = [float(i) / float(j) for i, j in zip(c, nlist)]
+    xs = [-.5]
+    for _ in range(len(p)):
+        xs.append(xs[-1] + 1)
+        xs.append(xs[-1])
+    xs = xs[:-1]
+
+    lcl_ys, ucl_ys = [], []
+    for ucl in ucl_list:
+        ucl_ys.append(ucl)
+        ucl_ys.append(ucl)
+    for lcl in lcl_list:
+        lcl_ys.append(lcl)
+        lcl_ys.append(lcl)
+
+    if None in [ax, fig]:
+        fig, ax = plt.subplots(1, figsize=(15, 15))
+
+    ax.plot(c, linestyle='-', marker='o', color='black')
+
+    if bar1 is not None:
+        c_bar = bar1
+    ax.axhline(c_bar, color='blue')
+
+    if ucl1 is not None:
+        ax.axhline(ucl1, color='red', linestyle='dashed')
+    else:
+        ax.plot(xs, ucl_ys, color='red')
+    if lcl1 is not None:
+        ax.axhline(lcl1, color='red', linestyle='dashed')
+    else:
+        ax.plot(xs, lcl_ys, color='red')
+
+    ax.set(ylabel=ylabel)
+    add_Y_refs(ax=ax, y_values=refY)
+
+    if xLabels is not None:
+        step = 1
+        if len(xLabels) > max_label_num:
+            step = len(xLabels) / max_label_num
+            if step > int(step):
+                step = int(step) + 1
+            else:
+                step = int(step)
+        ax.set_xticks(range(len(xLabels)), xLabels,
+                      rotation='vertical')
+        ax.set_xticks(ax.get_xticks()[::step])
+    if xlabel is not None:
+        ax.set(xlabel=xlabel)
+
+    plt.show()
+
+    if print_out:
+        print = print_port
+        print("\n---- Control Chart ----")
+        print(ylabel)
+        print("mean = %.4f" % (c_bar))
+        if C:
+            print("UCL = %.3f   LCL=%.3f" % (ucl_list[0], lcl_list[0]))
 
     return

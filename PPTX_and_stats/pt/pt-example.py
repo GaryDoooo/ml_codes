@@ -16,7 +16,7 @@ from sample_test_dialog import Mean1SampleDialog, Mean1SampleZDialog, Var1Sample
 from anova_dialog import Anova1WayDialog, TtestDialog, Anova2WayDialog
 from chi2_dialog import Chi2TableDialog, Chi2PropDialog
 from qc_dialog import GRRDialog, CpkDialog, CpkSubDialog, TIDialog
-from ctrlchart_dialog import IMRDialog, IDialog, MRDialog, XBRDialog, XBSDialog
+from ctrlchart_dialog import IMRDialog, IDialog, MRDialog, XBRDialog, XBSDialog, NPDialog, PDialog, CDialog, UDialog
 
 
 class TestApp(DataExplore):
@@ -124,7 +124,8 @@ class TestApp(DataExplore):
             '33Stack Selected Columns': {'cmd': lambda: self._call('stackColumn')},
             '34Sort All Columns': {'cmd': lambda: self._call('sortAll')},
             '35Sort Selected Colunms': {'cmd': lambda: self._call('sortSelected')},
-            '30sep': ''}
+            '42Copy Row 1 to Headers': {'cmd': lambda: self._call('row1ToHeader')},
+            '30sep': '', '40sep': ''}
         self.data_menu = self.createPulldown(self.menu, self.data_menu)
         self.menu.add_cascade(label='Data', menu=self.data_menu['var'])
 
@@ -187,19 +188,23 @@ class TestApp(DataExplore):
             '34Control Chart MR': {'cmd': self.cChartMR},
             '35Control Chart xBar/R': {'cmd': self.cChartXBR},
             '36Control Chart xBar/S': {'cmd': self.cChartXBS},
+            '42Control Chart NP': {'cmd': self.cChartNP},
+            '43Control Chart P': {'cmd': self.cChartP},
+            '44Control Chart C': {'cmd': self.cChartC},
+            '45Control Chart U': {'cmd': self.cChartU},
             '06sep': '', '20sep': '', '30sep': '', '40sep': ''}
         self.quality_menu = self.createPulldown(self.menu, self.quality_menu)
         self.menu.add_cascade(label='Quality', menu=self.quality_menu['var'])
 
         self.plots_menu = {
             '01Plot Wizard': {'cmd': self.plot_selected},
-            #  'cmd': lambda: self._call('plotSelected')},
-            '02sep': '', '03Store plot': {
-                'cmd': self.addPlot}, '04Clear plots': {
-                'cmd': self.updatePlotsMenu}, '05PDF report': {
-                    'cmd': self.pdfReport}, '06sep': ''}
+            '53Store plot': {'cmd': self.addPlot},
+            '54Clear plots': {'cmd': self.updatePlotsMenu},
+            '55PDF report': {'cmd': self.pdfReport},
+            '02sep': '', '10sep': '', '60sep': ''}
         self.plots_menu = self.createPulldown(self.menu, self.plots_menu)
         self.menu.add_cascade(label='Plots', menu=self.plots_menu['var'])
+        self.plot_menu_orig_len = len(self.plots_menu)
 
         self.debug_menu = {
             '01Print DF': {'cmd': self.printDF},
@@ -253,7 +258,7 @@ class TestApp(DataExplore):
         if clear:
             self.plots = {}
         menu = self.plots_menu['var']
-        menu.delete(6, menu.index(END))
+        menu.delete(self.plot_menu_orig_len - 1, menu.index(END))
         return
 
     def plot_selected(self):
@@ -503,6 +508,34 @@ class TestApp(DataExplore):
             self.table, app=self,
             df=self.table.model.df,
             title='Control Chart X Bar/S')
+        return
+
+    def cChartNP(self):
+        _ = NPDialog(
+            self.table, app=self,
+            df=self.table.model.df,
+            title='Control Chart NP')
+        return
+
+    def cChartP(self):
+        _ = PDialog(
+            self.table, app=self,
+            df=self.table.model.df,
+            title='Control Chart P')
+        return
+
+    def cChartC(self):
+        _ = CDialog(
+            self.table, app=self,
+            df=self.table.model.df,
+            title='Control Chart C')
+        return
+
+    def cChartU(self):
+        _ = UDialog(
+            self.table, app=self,
+            df=self.table.model.df,
+            title='Control Chart U')
         return
 
 

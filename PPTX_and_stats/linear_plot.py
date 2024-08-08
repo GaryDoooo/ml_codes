@@ -150,9 +150,9 @@ def fit_plot(x, y, alpha=0.05, print_out=False,
     return res
 
 
-def multi_fit(data, labels, print_out=False, print_port=print,
-              axs=None, fig=None, alpha=0.05, red_ellipse=False,
-              show_plot=False, filename=None, ax_margin=0.1):
+def multi_fit_orig(data, labels, print_out=False, print_port=print,
+                   axs=None, fig=None, alpha=0.05, red_ellipse=False,
+                   show_plot=False, filename=None, ax_margin=0.1):
 
     t = PT(["\\"] + labels)
     t2 = PT(["\\"] + labels)
@@ -182,10 +182,10 @@ def multi_fit(data, labels, print_out=False, print_port=print,
     if axs is None or fig is None:
         fig, axs = plt.subplots(n - 1, n - 1)  # , sharex=True, sharey=True)
     # Remove vertical space between Axes
-    fig.subplots_adjust(hspace=0)
-    fig.subplots_adjust(wspace=0)
-    dot_size = max(20 / n, 1)
-
+    dot_size = max(20 * (1 / n)**.25, 1)
+    #  fig.set_size_inches(7, 7)
+    #  for ax in np.array(axs).flatten():
+    #      ax.set_box_aspect(1)
     for x in range(len(data) - 1):
         for y in range(1, len(data)):
             fx, fy = x, y - 1
@@ -200,6 +200,123 @@ def multi_fit(data, labels, print_out=False, print_port=print,
                          red_ellipse=red_ellipse, dot_size=dot_size)
                 if x > 0:
                     axs[fy][fx].get_yaxis().set_visible(False)
+                #      axs[fy][fx].tick_params(
+                #          axis='y', which='both', left=False, labelleft=False)
+                if y < n - 1:
+                    axs[fy][fx].get_xaxis().set_visible(False)
+
+    fig.subplots_adjust(hspace=0)
+    # I don't know why 0 doesn't work, somehow -.5 is fine
+    fig.subplots_adjust(wspace=0)
+    #  fig.tight_layout()
+    #  for ax in np.array(axs).flatten():
+    #      print(str(ax.get_position()))
+    if show_plot:
+        plt.show()
+    if filename is not None:
+        fname = str(filename) + '.png'
+        plt.savefig(
+            fname,
+            dpi=200,
+            format='png')
+    return res
+
+
+def create_inset_grid(ax, n):
+    # Calculate the size of each inset subplot
+    inset_size = 1.0 / n  # Size of each subplot as a fraction of the main Axes
+    inset_axes = []  # 2D list to store inset Axes
+
+    for i in range(n):
+        row_axes = []
+        for j in range(n):
+            # Calculate the position of each inset subplot
+            x0 = j * inset_size
+            y0 = 1 - (i + 1) * inset_size
+            inset_ax = ax.inset_axes(
+                [x0, y0, inset_size, inset_size], transform=ax.transAxes)
+
+            #  Example plot for each inset
+            #  x = np.linspace(0, 10, 100)
+            #  inset_ax.plot(x, np.sin(x + i + j), label=f'Inset {i*n + j + 1}')
+            #  inset_ax.set_title(f'Inset {i*n + j + 1}', fontsize=8)
+            #  inset_ax.set_xticks([])
+            #  inset_ax.set_yticks([])
+
+            # Append the inset Axes to the row list
+            row_axes.append(inset_ax)
+
+        # Append the row of Axes to the 2D list
+        inset_axes.append(row_axes)
+
+    return inset_axes
+
+
+def multi_fit(data, labels, print_out=False, print_port=print,
+              ax=None, fig=None, alpha=0.05, red_ellipse=False,
+              show_plot=False, filename=None, ax_margin=0.1):
+
+    t = PT(["\\"] + labels)
+    t2 = PT(["\\"] + labels)
+    cor_res = []
+    n = len(data)
+    for y in range(n):
+        res_tmp = []
+        row = [labels[y]]
+        row2 = [labels[y]]
+        for x in range(n):
+            r = pearson_correlation(data[x], data[y], print_out=False)
+            row.append("%.3f" % r["r"])
+            row2.append("%.3f" % r["p"])
+            res_tmp.append(r)
+        cor_res.append(res_tmp)
+        t.add_row(row)
+        t2.add_row(row2)
+    res = {"pearson": cor_res}
+
+    if print_out:
+        print = print_port
+        print("\n---- Pearson correlation coefficient ----")
+        print(str(t))
+        print("\n---- Pearson correlation p-value  ----")
+        print(str(t2))
+
+    if ax is None or fig is None:
+        # n - 1, n - 1)  # , sharex=True, sharey=True)
+        fig, ax = plt.subplots(1)
+    ax.set_box_aspect(1)
+    ax.axis('off')
+
+    axs = create_inset_grid(ax, n - 1)
+    # Remove vertical space between Axes
+    dot_size = max(20 * (1 / n)**.25, 1)
+    #  fig.set_size_inches(7, 7)
+    #  for ax in np.array(axs).flatten():
+    #      ax.set_box_aspect(1)
+    for x in range(len(data) - 1):
+        for y in range(1, len(data)):
+            fx, fy = x, y - 1
+            if x >= y:
+                axs[fy][fx].axis('off')
+            else:
+                #  axs[fy][fx].set_aspect('equal')
+                fit_plot(data[x], data[y], ax_margin=ax_margin,
+                         ellipse=True, ax=axs[fy][fx], alpha=alpha,
+                         xlabel=labels[x] if y == n - 1 else None,
+                         ylabel=labels[y] if x == 0 else None,
+                         red_ellipse=red_ellipse, dot_size=dot_size)
+                if x > 0:
+                    axs[fy][fx].get_yaxis().set_visible(False)
+                #      axs[fy][fx].tick_params(
+                #          axis='y', which='both', left=False, labelleft=False)
+                if y < n - 1:
+                    axs[fy][fx].get_xaxis().set_visible(False)
+
+    #  fig.subplots_adjust(hspace=0)
+    #  fig.subplots_adjust(wspace=0)
+    #  fig.tight_layout()
+    #  for ax in np.array(axs).flatten():
+    #      print(str(ax.get_position()))
     if show_plot:
         plt.show()
     if filename is not None:

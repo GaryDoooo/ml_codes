@@ -211,9 +211,8 @@ class MCorDialog(Dialogs):
 
         data = number_2Dlist(df=self.df, cols=self.grpcols,
                              print_out=True, print_port=self.app.print)
-        pf = self.app.showPlotViewer(figsize=(7, 7))
-        axs = []
-        n = len(data)
+        #  axs = []
+        #  n = len(data)
         try:
             ax_margin = self.ax_margin.get()
             alpha = self.alpha.get()
@@ -221,20 +220,24 @@ class MCorDialog(Dialogs):
             ax_margin = 0.1
             alpha = 0.05
 
-        for y in range(n - 1):
-            r = []
-            for x in range(1, n):
-                r.append(
-                    pf.fig.add_subplot(n - 1, n - 1, y * (n - 1) + x)
-                )
-            axs.append(r)
+        pf = self.app.showPlotViewer(figsize=(7, 7))
+        #  for y in range(n - 1):
+        #      r = []
+        #      for x in range(1, n):
+        #          r.append(
+        #              pf.fig.add_subplot(n - 1, n - 1, y * (n - 1) + x)
+        #          )
+        #      axs.append(r)
+        # Adjust the spacing between subplots using the Figure object
+        #  pf.fig.subplots_adjust(hspace=0)
+        master_ax = pf.fig.add_subplot(1,1,1)
 
         multi_fit(
             data,
             self.grpcols,
             print_out=True,
             print_port=self.app.print,
-            axs=axs,
+            ax=master_ax,
             fig=pf.fig,
             alpha=alpha,
             ax_margin=ax_margin,

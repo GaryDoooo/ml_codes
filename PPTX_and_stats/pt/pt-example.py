@@ -201,7 +201,7 @@ class TestApp(DataExplore):
             '53Store plot': {'cmd': self.addPlot},
             '54Clear plots': {'cmd': self.updatePlotsMenu},
             '55PDF report': {'cmd': self.pdfReport},
-            '12
+            #  '12
             '02sep': '', '10sep': '', '60sep': ''}
         self.plots_menu = self.createPulldown(self.menu, self.plots_menu)
         self.menu.add_cascade(label='Plots', menu=self.plots_menu['var'])

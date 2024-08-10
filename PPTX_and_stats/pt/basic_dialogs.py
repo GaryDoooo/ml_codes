@@ -7,6 +7,51 @@ from prettytable import PrettyTable as PT
 from dialog import Dialogs, addListBox
 from describe import describe
 from utilities import norm_test, number_list, mean_std_CIs
+from dist_fit import compare_dist
+
+
+class FitDistDialog(Dialogs):
+    def createWidgets(self, m):
+        f = tk.LabelFrame(m, text='Data')
+        f.pack(side=TOP, fill=BOTH, padx=2)
+        self.xvar = tk.StringVar(value="")
+        w = ttk.Combobox(
+            f, values=self.cols, textvariable=self.xvar,
+            width=14)
+        w.pack(side=LEFT, padx=2)
+
+        self.dists = [
+            "Normal",
+            "Student's t",
+            "Gamma",
+            "Lognormal",
+            "Exponential",
+            "Weibull"]
+        self.picks = dict()
+
+        f = tk.LabelFrame(m, text='Models')
+        f.pack(side=TOP, fill=BOTH, padx=2)
+        for i, name in enumerate(self.dists):
+            self.picks[name] = tk.BooleanVar(value=False)
+            w = tk.Checkbutton(f, text=name,
+                               variable=self.picks[name])
+            w.pack(side=LEFT)
+        return
+
+    def apply(self):
+        col = self.xvar.get()
+        data = number_list(
+            self.df[col],
+            col_name=col,
+            print_out=True,
+            print_port=self.app.print)
+        selected = []
+        for key in self.dists:
+            if self.picks[key].get():
+                selected.append(key)
+        compare_dist(data, print_out=True, print_port=self.app.print,
+                     selected=selected)
+        return
 
 
 class MultiDescribeDialog(Dialogs):

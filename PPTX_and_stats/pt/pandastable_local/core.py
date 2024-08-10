@@ -131,7 +131,7 @@ class Table(Canvas):
         self.child = None
         self.queryrow = 4
         self.childrow = 5
-        self.currentdir = os.path.expanduser('~')
+        self.currentdir = os.getcwd() # os.path.expanduser('~')
         self.loadPrefs()
         self.setFont()
         # set any options passed in kwargs to overwrite defaults and prefs
@@ -3924,13 +3924,14 @@ class Table(Canvas):
             model = TableModel(rows=rows, columns=cols)
             self.updateModel(model)
             self.redraw()
+            self.filename=None
         return
 
     def load(self, filename=None):
         """load from a file"""
         if filename is None:
             filename = filedialog.askopenfilename(
-                parent=self.master, defaultextension='.mpk', initialdir=os.getcwd(), filetypes=[
+                parent=self.master, defaultextension='.mpk', initialdir=self.currentdir, filetypes=[
                     ("pickle", "*.pickle"), ("All files", "*.*")])
         if not os.path.exists(filename):
             print('file does not exist')
@@ -3942,6 +3943,7 @@ class Table(Canvas):
             model.load(filename, filetype)
             self.updateModel(model)
             self.filename = filename
+            self.currentdir = os.path.basename(filename)
             self.adjustColumnWidths()
             self.redraw()
             # prog_bar.pb_stop()
@@ -3970,10 +3972,11 @@ class Table(Canvas):
         """Import from csv file"""
 
         if self.importpath is None:
-            self.importpath = os.getcwd()
+            self.importpath =self.currentdir # os.getcwd()
         if filename is None:
             filename = filedialog.askopenfilename(parent=self.master,
                                                   defaultextension='.csv',
+                                                  title='Import from CSV',
                                                   initialdir=self.importpath,
                                                   filetypes=[("csv", "*.csv"),
                                                              ("tsv", "*.tsv"),
@@ -3992,6 +3995,7 @@ class Table(Canvas):
         self.updateModel(model)
         self.redraw()
         self.importpath = os.path.dirname(filename)
+        self.filename=None
         return
 
     def importHDF(self, filename=None, dialog=False, **kwargs):
@@ -4019,7 +4023,9 @@ class Table(Canvas):
         if filename is None:
             filename = filedialog.askopenfilename(parent=self.master,
                                                   defaultextension='.xls',
-                                                  initialdir=os.getcwd(),
+                                                  title='Import from Excel',
+                                                  initialdir=self.currentdir,
+                                                  #  initialdir=os.getcwd(),
                                                   filetypes=[("xls", "*.xls"),
                                                              ("xlsx", "*.xlsx"),
                                                              ("All files", "*.*")])
@@ -4038,6 +4044,7 @@ class Table(Canvas):
 
         df = xl.parse(d.results[0])
         model = TableModel(dataframe=df)
+        self.filename=None
         self.updateModel(model)
         self.redraw()
         return

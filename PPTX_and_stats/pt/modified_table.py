@@ -1,10 +1,11 @@
 import pandas as pd
 from tkinter import END, StringVar, Entry, messagebox
 import numpy as np
+import os
 ############ pandastable #############
 from pandastable_local.core import Table
 from pandastable_local.data import TableModel
-from pandastable_local.dialogs import MultipleValDialog
+from pandastable_local.dialogs import MultipleValDialog, filedialog
 ############## Own Module ###############
 #  from modified_header import MColumnHeader as ColumnHeader
 #  from modified_header import RowHeader
@@ -14,6 +15,23 @@ from dialog import findRepDialog
 
 
 class MTable(Table):
+    def doExport(self, filename=None):
+        """Do a simple export of the cell contents to csv"""
+
+        if filename is None:
+            filename = filedialog.asksaveasfilename(parent=self.master,
+                                                    defaultextension='.csv',
+                                                    initialdir=self.currentdir,
+                                                    #  initialdir=os.getcwd(),
+                                                    title='Export to CSV',
+                                                    filetypes=[("csv", "*.csv"),
+                                                               #  ("excel", "*.xls"),
+                                                               #  ("html", "*.html"),
+                                                               ("All files", "*.*")])
+        if filename:
+            self.model.save(filename)
+        return
+
     def row1ToHeader(self):
         """
         Put row one contents to header, and have priority

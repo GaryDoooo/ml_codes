@@ -1,17 +1,17 @@
-from tkinter import Frame, Menu, BOTH, Toplevel, END
+from tkinter import Frame, Menu, BOTH, Toplevel, END, Tk, PhotoImage
 import pickle
 import os
 import platform
 import time
 ###############################
 from pandastable_local import config, plotting
-from pandastable_local.app import DataExplore
 ######## Own Module ###########
+from modified_app import Minijmp_pre
 from modified_table import MTable as Table
 from plots import plot_viewer
 from txt_output import txt_viewer
 from fit_dialog import LinearFitDialog, CorrelationDialog, OrthoFitDialog, ResidDialog, MCorDialog
-from basic_dialogs import DescribeDialog, NormTestDialog, CIDialog, MultiDescribeDialog
+from basic_dialogs import DescribeDialog, NormTestDialog, CIDialog, MultiDescribeDialog, FitDistDialog
 from sample_test_dialog import Mean1SampleDialog, Mean1SampleZDialog, Var1SampleDialog, Mean2SampleDialog, PairedTDialog, MultiVarDialog, Prop1SDialog, Prop2SDialog
 from anova_dialog import Anova1WayDialog, TtestDialog, Anova2WayDialog
 from chi2_dialog import Chi2TableDialog, Chi2PropDialog
@@ -19,7 +19,7 @@ from qc_dialog import GRRDialog, CpkDialog, CpkSubDialog, TIDialog
 from ctrlchart_dialog import IMRDialog, IDialog, MRDialog, XBRDialog, XBSDialog, NPDialog, PDialog, CDialog, UDialog
 
 
-class TestApp(DataExplore):
+class Minijmp(Minijmp_pre):
     """Basic test frame for the table"""
 
     def __init__(self, parent=None):
@@ -27,7 +27,7 @@ class TestApp(DataExplore):
         Frame.__init__(self)
         self.main = self.master
         self.main.geometry('600x400+50+100')
-        self.main.title('Table app')
+        #  self.main.title('Untitled - Minijmp')
 
         # Get platform into a variable
         self.currplatform = platform.system()
@@ -47,16 +47,16 @@ class TestApp(DataExplore):
         config.apply_options(options, self.table)
         self.table.show()
         self.createMenuBar()
-        #  self.setupGUI()
         self.setStyles()
         self.clipboarddf = None
         self.projopen = False
         self.plots = dict()
         self.table.tOut = None
 
-        #  self.newProject()
         self.main.protocol('WM_DELETE_WINDOW', self.quit)
         self.main.lift()
+        self.pickle_fname = None
+        self.update_title()
         return
 
     def createMenuBar(self):
@@ -66,16 +66,13 @@ class TestApp(DataExplore):
         file_menu = Menu(self.menu, tearoff=0)
         # add recent first
         #  self.createRecentMenu(file_menu)
-        filemenuitems = {'01New Project': {'cmd': lambda: self._call('new')},
-                         '02Open Project': {'cmd': lambda: self._call('load')},
-                         #  '03Close': {'cmd': self.closeProject},
-                         '04Save': {'cmd': lambda: self._call('save')},
-                         '05Save As': {'cmd': lambda: self._call('saveAs')},
+        filemenuitems = {'01New Project': {'cmd': self.new_file},
+                         '02Open Project': {'cmd': self.load_file},
+                         '04Save': {'cmd': self.save_file},
+                         '05Save As': {'cmd': self.save_as_file},
                          '06sep': '',
-                         '07Import CSV': {'cmd': lambda: self._call('importCSV')},
-                         #  '08Import HDF5': {'cmd': self.importHDF},
-                         #  '09Import from URL': {'cmd': self.importURL},
-                         '10Import Excel': {'cmd': lambda: self._call('loadExcel')},
+                         '07Import CSV': {'cmd': self.import_csv},
+                         '10Import Excel': {'cmd': self.load_excel},
                          '10Export CSV': {'cmd': lambda: self._call('doExport')},
                          '11sep': '',
                          '12Quit': {'cmd': self.quit}}
@@ -156,6 +153,7 @@ class TestApp(DataExplore):
             '02Describe MutliVar': {'cmd': self.multi_describe},
             '04Normality': {'cmd': self.norm_test},
             '05Confidence Intervals': {'cmd': self.confidence_interval},
+            '06Fit Distributions': {'cmd': self.fit_dist},
             '13Correlation': {'cmd': self.correlation},
             '16Orthogonal Fit': {'cmd': self.ortho_fit},
             '14Linear Fit': {'cmd': self.linear_fit},
@@ -220,6 +218,47 @@ class TestApp(DataExplore):
         self.menu.add_cascade(label='Help', menu=self.help_menu['var'])
 
         self.main.config(menu=self.menu)
+        return
+
+    def update_title(self):
+        self.pickle_fname = self.table.filename
+        if self.pickle_fname is not None:
+            file_name_with_extension = os.path.basename(self.pickle_fname)
+            self.main.title(file_name_with_extension + " - Minijmp")
+        else:
+            self.main.title("Untitled - Minijmp")
+        return
+
+    def new_file(self):
+        self._call('new')
+        self.update_title()
+        return
+
+    def load_file(self):
+        self._call('load')
+        self.update_title()
+        return
+
+    def save_file(self):
+        if self.pickle_fname is None:
+            self.save_as_file()
+        else:
+            self._call('save')
+        return
+
+    def save_as_file(self):
+        self._call('saveAs')
+        self.update_title()
+        return
+
+    def import_csv(self):
+        self._call('importCSV')
+        self.update_title()
+        return
+
+    def load_excel(self):
+        self._call('loadExcel')
+        self.update_title()
         return
 
     def printDF(self):
@@ -539,8 +578,32 @@ class TestApp(DataExplore):
             title='Control Chart U')
         return
 
+    def fit_dist(self):
+        _ = FitDistDialog(
+            self.table, app=self,
+            df=self.table.model.df,
+            title='Fit Distributions')
+        return
+
+
+def main():
+    # Create the main window
+    root = Tk()
+    icon = PhotoImage(file="icon.png")
+    root.iconphoto(True, icon)
+
+    # Create an instance of the custom frame
+    _ = Minijmp(root)
+
+    # Run the application
+    root.mainloop()
+    return
+
 
 if __name__ == "__main__":
-    app = TestApp()
-    # launch the app
-    app.mainloop()
+    main()
+
+#  if __name__ == "__main__":
+#      app = Minijmp()
+#      # launch the app
+#      app.mainloop()

@@ -5,7 +5,7 @@ import numpy as np
 from prettytable import PrettyTable as PT
 #  import pandas as pd
 ############### Own Modules ############
-from utilities import is_void
+from utilities import is_void, get_number
 
 
 class findRepDialog(FindReplaceDialog):
@@ -94,15 +94,16 @@ class Dialogs(BaseDialog):
         return
 
     def add_xy_plot_settings(self, m):
+        self.add_x_plot_settings(m)
+        self.add_y_plot_settings(m)
+        self.add_misc_plot_settings(m)
+        return
+
+    def add_x_plot_settings(self, m):
         self.xlabel = tk.StringVar(value="")
-        self.ylabel = tk.StringVar(value="")
-        self.grid = tk.BooleanVar(value=False)
-        self.show_legend = tk.BooleanVar(value=False)
         self.x_min = tk.StringVar(value="Auto")
         self.x_max = tk.StringVar(value="Auto")
-        self.y_min = tk.StringVar(value="Auto")
-        self.y_max = tk.StringVar(value="Auto")
-        self.ax_margin = tk.DoubleVar(value=0.1)
+
         master = tk.LabelFrame(m, text='X Axis')
         master.pack(side=TOP, fill=BOTH, padx=2)
         w = tk.Label(master, text="Label")
@@ -120,6 +121,12 @@ class Dialogs(BaseDialog):
         w = tk.Entry(master, textvariable=self.x_max,
                      bg='white', width=5)
         w.pack(side=LEFT, padx=2, pady=2)
+        return
+
+    def add_y_plot_settings(self, m):
+        self.ylabel = tk.StringVar(value="")
+        self.y_min = tk.StringVar(value="Auto")
+        self.y_max = tk.StringVar(value="Auto")
 
         master = tk.LabelFrame(m, text='Y Axis')
         master.pack(side=TOP, fill=BOTH, padx=2)
@@ -138,6 +145,12 @@ class Dialogs(BaseDialog):
         w = tk.Entry(master, textvariable=self.y_max,
                      bg='white', width=5)
         w.pack(side=LEFT, padx=2, pady=2)
+        return
+
+    def add_misc_plot_settings(self, m):
+        self.grid = tk.BooleanVar(value=False)
+        self.show_legend = tk.BooleanVar(value=False)
+        self.ax_margin = tk.DoubleVar(value=0.1)
 
         master = tk.LabelFrame(m, text='Plot Setting')
         master.pack(side=TOP, fill=BOTH, padx=2)
@@ -166,25 +179,25 @@ class Dialogs(BaseDialog):
         return
 
     def get_plot_settings(self):
-        try:
-            self.x_max = float(self.x_max.get())
-        except BaseException:
-            self.x_max = None
-        try:
-            self.x_min = float(self.x_min.get())
-        except BaseException:
-            self.x_min = None
-        try:
-            self.y_max = float(self.y_max.get())
-        except BaseException:
-            self.y_max = None
-        try:
-            self.y_min = float(self.y_min.get())
-        except BaseException:
-            self.y_min = None
+        self.get_x_plot_settings()
+        self.get_y_plot_settings()
+        self.get_misc_plot_settings()
+        return
+
+    def get_x_plot_settings(self):
+        self.x_max = get_number(self.x_max)
+        self.x_min = get_number(self.x_min)
+        self.xlabel = None if self.xlabel.get() == "" else self.xlabel.get()
+        return
+
+    def get_y_plot_settings(self):
+        self.y_max = get_number(self.y_max)
+        self.y_min = get_number(self.y_min)
+        self.ylabel = None if self.ylabel.get() == "" else self.ylabel.get()
+        return
+
+    def get_misc_plot_settings(self):
         self.ax_margin = self.ax_margin.get()
-        self.xlabel = self.xlabel.get()
-        self.ylabel = self.ylabel.get()
         self.show_legend = self.show_legend.get()
         self.grid = self.grid.get()
         return

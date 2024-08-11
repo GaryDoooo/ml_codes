@@ -8,6 +8,7 @@ from scipy.stats import t as t_dist
 import statistics as stat
 from math import isnan
 import re
+from pandas import DataFrame as DF
 ######### Own Modules ############
 # from binomial import binomial
 from chi_sq import chi2_test_stdev
@@ -496,6 +497,15 @@ def get_number(x):
 
 def transpose_2D_list(matrix):
     return list(map(list, zip(*matrix)))
+
+
+def stack_df_num_cols(df=None, cols=None):
+    data = []
+    for key in cols:
+        for i in df[key]:
+            if is_number(i):
+                data.append([key, float(i)])
+    return DF(data, columns=["Labels", "Values"])
 
 
 def number_2Dlist(df=None, cols=None,

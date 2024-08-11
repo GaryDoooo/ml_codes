@@ -17,6 +17,7 @@ from anova_dialog import Anova1WayDialog, TtestDialog, Anova2WayDialog
 from chi2_dialog import Chi2TableDialog, Chi2PropDialog
 from qc_dialog import GRRDialog, CpkDialog, CpkSubDialog, TIDialog
 from ctrlchart_dialog import IMRDialog, IDialog, MRDialog, XBRDialog, XBSDialog, NPDialog, PDialog, CDialog, UDialog
+from sb_hist_dialog import singleHistoDialog, multiHistoDialog
 
 
 class Minijmp(Minijmp_pre):
@@ -199,8 +200,9 @@ class Minijmp(Minijmp_pre):
             '53Store plot': {'cmd': self.addPlot},
             '54Clear plots': {'cmd': self.updatePlotsMenu},
             '55PDF report': {'cmd': self.pdfReport},
-            #  '12
-            '02sep': '', '10sep': '', '60sep': ''}
+            '12Histogram & Dist. Fit': {'cmd': self.singleHisto},
+            '13Histogram w/ Groups': {'cmd': self.multiHisto},
+            '02sep': '', '50sep': '', '60sep': ''}
         self.plots_menu = self.createPulldown(self.menu, self.plots_menu)
         self.menu.add_cascade(label='Plots', menu=self.plots_menu['var'])
         self.plot_menu_orig_len = len(self.plots_menu)
@@ -308,11 +310,12 @@ class Minijmp(Minijmp_pre):
         self._call('plotSelected')
         return
 
-    def showPlotViewer(self, parent=None, figsize=(10, 7)):
+    def showPlotViewer(self, parent=None, figsize=(10, 7), save_last=True):
         """Create plot frame"""
 
         if hasattr(self.table, 'pf') and self.table.pf is not None:
-            self.addPlot()
+            if save_last:
+                self.addPlot()
             self.table.pf.close()
 
         self.table.pf = plot_viewer(
@@ -583,6 +586,20 @@ class Minijmp(Minijmp_pre):
             self.table, app=self,
             df=self.table.model.df,
             title='Fit Distributions')
+        return
+
+    def singleHisto(self):
+        _ = singleHistoDialog(
+            self.table, app=self,
+            df=self.table.model.df,
+            title='Histogram + Distribution Fit')
+        return
+
+    def multiHisto(self):
+        _ = multiHistoDialog(
+            self.table, app=self,
+            df=self.table.model.df,
+            title='Histogram with Groups')
         return
 
 

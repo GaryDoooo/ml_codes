@@ -18,6 +18,7 @@ from chi2_dialog import Chi2TableDialog, Chi2PropDialog
 from qc_dialog import GRRDialog, CpkDialog, CpkSubDialog, TIDialog
 from ctrlchart_dialog import IMRDialog, IDialog, MRDialog, XBRDialog, XBSDialog, NPDialog, PDialog, CDialog, UDialog
 from sb_hist_dialog import singleHistoDialog, multiHistoDialog
+from sb_box_dialog import singleBoxDialog, multiBoxDialog
 
 
 class Minijmp(Minijmp_pre):
@@ -202,6 +203,8 @@ class Minijmp(Minijmp_pre):
             '55PDF report': {'cmd': self.pdfReport},
             '12Histogram & Dist. Fit': {'cmd': self.singleHisto},
             '13Histogram w/ Groups': {'cmd': self.multiHisto},
+            '15Box Plot Multiple Y': {'cmd': self.singleBox},
+            '16Box Plot w/ Groups': {'cmd': self.multiBox},
             '02sep': '', '50sep': '', '60sep': ''}
         self.plots_menu = self.createPulldown(self.menu, self.plots_menu)
         self.menu.add_cascade(label='Plots', menu=self.plots_menu['var'])
@@ -600,6 +603,20 @@ class Minijmp(Minijmp_pre):
             self.table, app=self,
             df=self.table.model.df,
             title='Histogram with Groups')
+        return
+
+    def singleBox(self):
+        _ = singleBoxDialog(
+            self.table, app=self,
+            df=self.table.model.df,
+            title='Box Plot')
+        return
+
+    def multiBox(self):
+        _ = multiBoxDialog(
+            self.table, app=self,
+            df=self.table.model.df,
+            title='Box Plot with Groups')
         return
 
 

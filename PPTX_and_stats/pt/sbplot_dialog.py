@@ -14,11 +14,11 @@ class SBDialog(Dialogs):
         #  self.palette = 'pastel'
         bf = Frame(self.main)
         bf.pack(side=TOP, fill=BOTH)
-        b = Button(bf, text="Preview", command=self.preview)
+        b = Button(bf, text="Plot", command=self.preview)
         b.pack(side=LEFT, fill=X, expand=1, pady=2)
-        b = Button(bf, text="Done", command=self.done)
-        b.pack(side=LEFT, fill=X, expand=1, pady=2)
-        b = Button(bf, text="Cancel", command=self.quit)
+        #  b = Button(bf, text="Done", command=self.done)
+        #  b.pack(side=LEFT, fill=X, expand=1, pady=2)
+        b = Button(bf, text="Close", command=self.quit)
         b.pack(side=LEFT, fill=X, expand=1, pady=2)
         b = Button(bf, text="Help", command=self.help)
         b.pack(side=LEFT, fill=X, expand=1, pady=2)
@@ -143,3 +143,7 @@ class SBDialog(Dialogs):
     def rgb_to_hex(self, rgb):
         # Convert RGB tuple to hex color
         return '#%02x%02x%02x' % tuple(int(c * 255) for c in rgb)
+
+    def rgb_to_hex_darker(self, rgb):
+        # Convert RGB tuple to hex color
+        return '#%02x%02x%02x' % tuple(int(c * c * 255) for c in rgb)

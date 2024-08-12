@@ -38,7 +38,10 @@ def histo_n_fit(df=None, xkey=None,
                 xlabel=None, x_max=None, x_min=None,
                 bins='auto', binwidth=None,
                 stat='count', rv=None, ax=None, fig=None,
-                ax_margin=0.1, legend=False, grid=False):
+                ax_margin=0.1, legend=False, grid=False,
+                fill_color='lightblue', edge_color='k',
+                fit_color='k'
+                ):
     if df is None or xkey is None:
         return
 
@@ -55,7 +58,7 @@ def histo_n_fit(df=None, xkey=None,
         ax.grid(grid, zorder=1)
 
     sb.histplot(data=df, x=xkey, ax=ax, zorder=2,
-                color='lightblue', edgecolor='k', linewidth=1,
+                color=fill_color, edgecolor=edge_color, linewidth=1,
                 stat=stat, bins=bins, binwidth=binwidth,
                 legend=False,
                 label=xkey if xlabel is None else xlabel)
@@ -67,7 +70,7 @@ def histo_n_fit(df=None, xkey=None,
                     legend=False)
         rvx = np.linspace(x_min, x_max, 100)
         rvy = rv.pdf(rvx)
-        ax2.plot(rvx, rvy, 'k', linewidth=2, label="Fitted Dist.",
+        ax2.plot(rvx, rvy, color=fit_color, linewidth=2, label="Fitted Dist.",
                  zorder=3)
 
     if xlabel is not None:

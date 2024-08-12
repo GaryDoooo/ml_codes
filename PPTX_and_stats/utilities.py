@@ -34,10 +34,9 @@ def add_Y_refs(ax, y_values=[], color='gray', linestyle='dashed', label=False):
         for y in y_values:
             ax.axhline(y, color=color, linestyle=linestyle)
             if label:
-                ax.text(ax.get_xlim()[1], y, f'{y}',
+                ax.text(ax.get_xlim()[1]*1.01, y, f'{y}',
                         verticalalignment='center',
                         horizontalalignment='left',
-                        #  transform=ax.get_yaxis_transform(),
                         color=color)
     return
 

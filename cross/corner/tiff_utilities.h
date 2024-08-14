@@ -4,7 +4,9 @@
 
 #define TIFF_TO_INT_DECIMAL 1000
 
-std::vector<int> read_tiff_file(const char* filename, int& width, int& height);
+// std::vector<int> read_tiff_file(const char* filename, int& width, int& height,int);
+std::vector<int> read_tiff_file(const char* filename, int& width, int& height,
+                           int decimal_multiple = TIFF_TO_INT_DECIMAL); 
 
 std::vector<int> shrinkImageByAveraging(const std::vector<int>& image,
                                         int originalWidth, int originalHeight,

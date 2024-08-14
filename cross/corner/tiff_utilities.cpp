@@ -5,7 +5,8 @@
 #define TIFF_TO_INT_DECIMAL 1000
 using namespace std;
 
-vector<int> read_tiff_file(const char* filename, int& width, int& height) {
+vector<int> read_tiff_file(const char* filename, int& width, int& height,
+                           int decimal_multiple = TIFF_TO_INT_DECIMAL) {
     // Open the TIFF file
     TIFF* tiff = TIFFOpen(filename, "r");
     if (!tiff) {
@@ -34,11 +35,10 @@ vector<int> read_tiff_file(const char* filename, int& width, int& height) {
 
     // Process the image data as needed
 
-    // vector<vector<double>> a(height, vector<double>(width, 0));
     vector<int> image(width * height);
     for (int i = 0; i < image.size(); i++) {
         if (imageData[i] < 0) imageData[i] = 0;
-        image[i] = int(imageData[i] * TIFF_TO_INT_DECIMAL + 0.5);
+        image[i] = int(imageData[i] * decimal_multiple + 0.5);
     }
 
     return image;

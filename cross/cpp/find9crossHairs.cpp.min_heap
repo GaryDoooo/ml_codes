@@ -1,0 +1,217 @@
+#include <algorithm>
+#include <iostream>
+#include <numeric>
+#include <queue>
+#include <stack>
+#include <vector>
+/////// Own Modules ///////
+#include "tiff_utilities.h"
+
+using namespace std;
+
+struct point {
+    int x, y;
+};
+
+struct sc_xy {
+    long long sc;
+    int x, y;
+    // Constructor for convenience
+    //     Item(int p, string n) : priority(p), name(n) {}
+    // sc_xy(long long sc, int x, int y) : sc(sc), x(x), y(y) {}
+};
+
+struct cmp_sc_xy {
+    bool operator()(const sc_xy& a, const sc_xy& b) { return a.sc > b.sc; }
+};
+
+long long rec_sum(int x1, int y1, int x2, int y2,
+                  const vector<vector<long long>>& s) {
+    return s[y2][x2] - s[y1 - 1][x2] - s[y2][x1 - 1] + s[y1 - 1][x1 - 1];
+}
+
+vector<point> locate_cross(const vector<int>& data, int width, int c_size = 31,
+                           double thd_quantile = 0.98, int c_corner = 10,
+                           int cross_cnt = 9) {
+    int H = data.size() / width;
+    int W = width;
+
+    // Convert input data to a 2D array
+    vector<vector<int>> a(H, vector<int>(W));
+    for (int i = 0; i < H; ++i) {
+        for (int j = 0; j < W; ++j) {
+            a[i][j] = static_cast<int>(
+                data[i * width + j]); // Convert to long long for calculations
+        }
+    }
+
+    vector<vector<long long>> s(H + 1, vector<long long>(W + 1, 0));
+    vector<long long> s1(W + 1, 0);
+
+    for (int y = 0; y < H; ++y) {
+        for (int x = 0; x < W; ++x) {
+            s1[x + 1] = s1[x] + a[y][x];
+            s[y + 1][x + 1] = s1[x + 1] + s[y][x + 1];
+        }
+    }
+
+    c_size -= 1;
+    c_corner -= 1;
+
+    vector<vector<long long>> sc(s.size(), vector<long long>(s[0].size(), 0));
+
+    for (int y = 1; y < H - c_size; ++y) {
+        for (int x = 1; x < W - c_size; ++x) {
+            int x2 = x + c_size;
+            int y2 = y + c_size;
+            long long res = rec_sum(x, y, x2, y2, s);
+            res -= rec_sum(x, y, x + c_corner, y + c_corner, s);
+            res -= rec_sum(x2 - c_corner, y, x2, y + c_corner, s);
+            res -= rec_sum(x, y2 - c_corner, x + c_corner, y2, s);
+            res -= rec_sum(x2 - c_corner, y2 - c_corner, x2, y2, s);
+            sc[y][x] = res;
+        }
+    }
+
+    // vector<long long> flat_sc;
+    // for (int y = 1; y < H; ++y) {
+    //     for (int x = 1; x < W; ++x) {
+    //         flat_sc.push_back(sc[y][x]);
+    //     }
+    // }
+
+    long long heap_size = (long long)(H * W * thd_quantile);
+    priority_queue<sc_xy, vector<sc_xy>, cmp_sc_xy> pq;
+    for (int y = 1; y < H; y++)
+        for (int x = 1; x < W; x++) {
+            if (pq.size() < heap_size) {
+                // pq.push(sc[y][x], x, y);
+                sc_xy tmp;
+                tmp.sc = sc[y][x];
+                tmp.x = x;
+                tmp.y = y;
+                pq.push(tmp);
+            } else {
+                auto t = pq.top();
+                if (t.sc < sc[y][x]) {
+                    sc_xy tmp;
+                    tmp.sc = sc[y][x];
+                    tmp.x = x;
+                    tmp.y = y;
+                    pq.push(tmp);
+                    pq.pop();
+                }
+            }
+        }
+    // sort(flat_sc.begin(), flat_sc.end());
+    // long long thd = flat_sc[(int)(flat_sc.size() * thd_quantile)];
+    long long thd = pq.top().sc;
+
+    vector<tuple<long long, int, int>> fsc;
+    // for (int y = 1; y < H; ++y) {
+    //     for (int x = 1; x < W; ++x) {
+    //         fsc.emplace_back(sc[y][x], x, y);
+    //     }
+    // }
+    //
+    // sort(fsc.begin(), fsc.end());
+    while (!pq.empty()) {
+        fsc.emplace_back(pq.top().sc, pq.top().x, pq.top().y);
+        pq.pop();
+    }
+
+    vector<vector<int>> vis(s.size(), vector<int>(s[0].size(), 0));
+    int idx = fsc.size() - 1;
+    int cnt = 0;
+
+    vector<int> dx{-1, 0, 0, 1};
+    vector<int> dy{0, 1, -1, 0};
+
+    while (cnt < cross_cnt) {
+        while (true) {
+            auto [_, x, y] = fsc[idx];
+            if (vis[y][x] == 0) {
+                break;
+            }
+            idx--;
+        }
+
+        stack<pair<int, int>> stack;
+        // stack.push({fsc[idx].get<1>(), fsc[idx].get<2>()});
+        stack.push(make_pair(get<1>(fsc[idx]), get<2>(fsc[idx])));
+        cnt++;
+
+        while (!stack.empty()) {
+            auto [x, y] = stack.top();
+            stack.pop();
+            vis[y][x] = cnt;
+
+            for (int i = 0; i < dx.size(); ++i) {
+                int xx = x + dx[i];
+                int yy = y + dy[i];
+                if (vis[yy][xx] == 0 && sc[yy][xx] > thd) {
+                    stack.push({xx, yy});
+                    vis[yy][xx] = cnt;
+                }
+            }
+        }
+    }
+
+    vector<vector<pair<int, int>>> blks(cross_cnt);
+
+    for (int y = 1; y < H; ++y) {
+        for (int x = 1; x < W; ++x) {
+            if (vis[y][x] > 0) {
+                blks[vis[y][x] - 1].emplace_back(x, y);
+            }
+        }
+    }
+
+    vector<point> res(cross_cnt);
+    for (size_t i = 0; i < blks.size(); ++i) {
+        if (!blks[i].empty()) {
+            long long sum_x = accumulate(
+                blks[i].begin(), blks[i].end(), static_cast<long long>(0),
+                [](long long acc, const pair<int, int>& p) {
+                    return acc + p.first;
+                });
+
+            long long sum_y = accumulate(
+                blks[i].begin(), blks[i].end(), static_cast<long long>(0),
+                [](long long acc, const pair<int, int>& p) {
+                    return acc + p.second;
+                });
+
+            res[i].x =
+                static_cast<int>(sum_x / blks[i].size() + c_size / 2) - 1;
+            res[i].y =
+                static_cast<int>(sum_y / blks[i].size() + c_size / 2) - 1;
+        }
+    }
+
+    return res;
+}
+
+int main() {
+    int w = 0, h = 0;
+    string filename;
+    cin >> filename;
+    vector<int> imageData = read_tiff_file(filename.c_str(), w, h, 100);
+    if (w == 0) {
+        std::cerr << "Could not open the TIFF file." << std::endl;
+        return -1;
+    }
+    int newH, newW;
+    auto imS = shrinkImageByAveraging(imageData, w, h, 10, newW, newH);
+    auto crosses = locate_cross(imS, newW, 15, .98, 5, 9);
+
+    // auto crosses = locate_cross(imageData, w);
+
+    // Output the results
+    for (const auto& cross : crosses) {
+        cout << "Cross located at: (" << cross.x << ", " << cross.y << ")\n";
+    }
+
+    return 0;
+}
+

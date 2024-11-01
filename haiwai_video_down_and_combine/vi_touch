@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# Check if at least one parameter is provided
+if [ "$#" -gt 0 ]; then
+  # Assign the first parameter to a variable
+  FILENAME="$1"
+
+  # Check if the file exists
+  if [ -e "$FILENAME" ]; then
+    # If the file exists, execute the specified command
+    echo "File '$FILENAME' exists. Executing the command."
+    # Replace the following line with your specified command
+    # Example command: cat the file
+    cat "$FILENAME"
+  else
+    # If the file does not exist, create it using touch
+    echo "File '$FILENAME' does not exist. Creating the file."
+    touch "$FILENAME"
+    # Optionally, you can execute a command after creating the file
+    # Example command: echo a message into the file
+#    echo "This is a new file." > "$FILENAME"
+  fi
+else
+  # If no parameters are provided, print a message
+  echo "No filename provided. Please specify a filename as a parameter."
+fi
+
+docker run --rm -v /usr/share/zoneinfo:/usr/share/zoneinfo \
+    -v /home/du/code/flake8:/root/.flake8 \
+    -v $(pwd):/home/du/mnt -it --user root vi3 /home/du/startvi $@
+
+

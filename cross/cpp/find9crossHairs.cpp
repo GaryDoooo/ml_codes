@@ -185,15 +185,17 @@ findIntersection(const std::tuple<double, double, double>& line1,
 
     // Calculate the determinant
     double determinant = (A1 * B2) - (A2 * B1);
-
+    double x = 1e9, y = 1e9;
     if (determinant == 0) {
-        throw std::runtime_error(
-            "The lines are parallel and do not intersect.");
+        cout << "lines parallel" << endl;
+
+        // throw std::runtime_error(
+        //     "The lines are parallel and do not intersect.");
     }
 
     // Calculate intersection point
-    double x = (B1 * C2 - B2 * C1) / determinant;
-    double y = (C1 * A2 - C2 * A1) / determinant;
+    x = (B1 * C2 - B2 * C1) / determinant;
+    y = (C1 * A2 - C2 * A1) / determinant;
 
     return std::make_tuple(x, y);
 }

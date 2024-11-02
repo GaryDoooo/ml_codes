@@ -62,7 +62,6 @@ struct node {
     int good;
     int neighbor[4];
 };
-
 int opposite_direction[4] = {1, 0, 3, 2};
 double min_d[4] = {-5, 175, 85, 265}; // in degree
 double max_d[4] = {5, 185, 95, 275};
@@ -271,35 +270,10 @@ vector<point> find121crossHairs(const vector<int>& imageData, int w, int h,
             }
         }
     res.clear();
-    vector<int> cols;
-    vector<int> rows;
     for (int i = 1; i < n_tail; i++)
-        if (nodes[i].good) {
-            if (count_row(i) < 8 or count_col(i) < 8)
-                nodes[i].good = 0;
-            else {
-                cols.push_back(nodes[i].p.x);
-                rows.push_back(nodes[i].p.y);
-            }
-        }
-    sort(cols.begin(), cols.end());
-    sort(rows.begin(), rows.end());
-    for (int i = 0; i < rows.size();) {
-        int row = i, gap = (int)(median_dis[2] * .2);
-        while (rows[row] + gap > rows[i] and i < rows.size())
-            i++;
-        int mid_y = (rows[row] + rows[i - 1]) / 2;
-        for (int j = 0; j < cols.size();) {
-            int col = j, gap = (int)(median_dis[0] * .2);
-            while (cols[col] + gap > cols[j] and j < cols.size())
-                j++;
-            int mid_x = (cols[col] + cols[j - 1]) / 2;
-            res.push_back(crop_and_cross_hatch(
-                mid_x, mid_y, cross_hatch_crop_half_with, imageData, w, h));
-        }
-    }
-
-    // res.push_back(nodes[i].p);
+        if (nodes[i].good)
+            if (count_row(i) > 8 and count_col(i) > 8)
+                res.push_back(nodes[i].p);
 
     return res;
 }
@@ -355,41 +329,27 @@ string removeBeforeLastSlash(const std::string& input) {
     return input; // Return the original string if no '/' is found
 }
 
-int main(int argc, char* argv[]) {
-    // int main() {
+int main() {
     int w, h;
     string filename;
     cin >> filename;
 
-    // vector<int> imageData_orig = read_tiff_file(filename.c_str(), w, h, 100);
-    vector<int> imageData = read_tiff_file(filename.c_str(), w, h, 100);
+    vector<int> imageData_orig = read_tiff_file(filename.c_str(), w, h, 100);
     if (w == 0) {
         std::cerr << "Could not open the TIFF file." << std::endl;
         return -1;
     }
 
-    // vector<int> imageData = cropImage(imageData_orig, w, h, w / 10 * 2, h /
-    // 10,
-    //                                   w / 10 * 8, h / 10 * 9);
-    //
-    // w = w / 10 * 6 + 1;
-    // h = h / 10 * 8 + 1;
+    vector<int> imageData = cropImage(imageData_orig, w, h, w / 10 * 2, h / 10,
+                                      w / 10 * 8, h / 10 * 9);
+
+    w = w / 10 * 6 + 1;
+    h = h / 10 * 8 + 1;
 
     vector<point> res = find121crossHairs(imageData, w, h);
 
-    cout << "[";
-    for (auto p : res)
-        cout << "[" << p.x << "," << p.y << "],";
-    cout << "]" << endl;
-    bool debug_mode = false;
-    for (int i = 0; i < argc; ++i) {
-        std::string arg = argv[i];
-        if (arg == "--debug")
-            debug_mode = true;
-    }
-    if (debug_mode)
-        output_image_x5(imageData, w, h, res,
-                        "output" + removeBeforeLastSlash(filename));
+    output_image_x5(imageData, w, h, res,
+                    "output" + removeBeforeLastSlash(filename));
 
     return 0;
 }

@@ -1,9 +1,9 @@
 #include <algorithm>
 #include <cmath>
-#include <cstring>
 #include <iostream>
-#include <set>
 #include <stack>
+// #include <unordered_set>
+#include <set>
 #include <vector>
 /////// Own Modules ///////
 #include "find9crossHairs.h"
@@ -24,10 +24,10 @@ double getAngleToXAxis(double x, double y) {
     }
     if (angleDegrees > 350)
         angleDegrees = 360 - angleDegrees;
-    // if (x == 0)
-    //     angleDegrees = (y > 0 ? 90 : 270);
-    // if (y == 0)
-    //     angleDegrees = (x > 0 ? 0 : 180);
+    if (x == 0)
+        angleDegrees = (y > 0 ? 90 : 270);
+    if (y == 0)
+        angleDegrees = (x > 0 ? 0 : 180);
     return angleDegrees;
 }
 
@@ -62,7 +62,6 @@ struct node {
     int good;
     int neighbor[4];
 };
-
 int opposite_direction[4] = {1, 0, 3, 2};
 double min_d[4] = {-5, 175, 85, 265}; // in degree
 double max_d[4] = {5, 185, 95, 275};
@@ -71,6 +70,7 @@ node nodes[1000];
 int n_tail = 1, vis[500];
 int max_neighbor_dis = 500;
 set<pair<int, int>> pos_visited;
+double median_dis[4];
 
 int find_neighbor_in5degree(int start, int direction, bool check_good = false) {
     int res = 0;
@@ -115,6 +115,31 @@ int count(int node_idx, int dir) {
 int count_col(int node_idx) { return count(node_idx, 1); }
 int count_row(int node_idx) { return count(node_idx, 0); }
 
+point side_check(int now, int d, int cross_hatch_crop_half_with, int w, int h,
+                 const vector<int>& imageData) {
+    point zero_res;
+    zero_res.x = zero_res.y = 0;
+    auto dp = getCoordinates(deg[d], median_dis[d]);
+    int x = dp.x + nodes[now].p.x, y = dp.y + nodes[now].p.y;
+    if (x < cross_hatch_crop_half_with or x >= w - cross_hatch_crop_half_with or
+        y < cross_hatch_crop_half_with or y >= h - cross_hatch_crop_half_with)
+        return zero_res;
+    // cout << "new pos " << x << "," << y << endl;
+    auto p =
+        crop_and_cross_hatch(x, y, cross_hatch_crop_half_with, imageData, w, h);
+    if (pos_visited.find(make_pair(p.x, p.y)) != pos_visited.end())
+        return zero_res;
+    pos_visited.insert(make_pair(p.x, p.y));
+    double deltaX = (double)(p.x - nodes[now].p.x);
+    double deltaY = (double)(p.y - nodes[now].p.y);
+    double angle = getAngleToXAxis((double)deltaX, (double)deltaY);
+    double dis = hypot(deltaX, deltaY);
+    if (angle < max_d[d] and angle > min_d[d] and dis < median_dis[d] * 1.05 and
+        dis > median_dis[d] * .95)
+        return p;
+    return zero_res;
+}
+
 vector<point> find121crossHairs(const vector<int>& imageData, int w, int h,
                                 int ratio = 10) {
     int newH, newW;
@@ -147,7 +172,6 @@ vector<point> find121crossHairs(const vector<int>& imageData, int w, int h,
                 all_dis[d].push_back(get_dis(res, i));
         }
     }
-    double median_dis[4];
     for (int d = 0; d < 4; d++) {
         sort(all_dis[d].begin(), all_dis[d].end());
         median_dis[d] = all_dis[d][all_dis[d].size() / 2];
@@ -191,70 +215,24 @@ vector<point> find121crossHairs(const vector<int>& imageData, int w, int h,
                             nodes[j].good = 1;
                             s.push(j);
                         }
-                    }
-                }
-            }
-        }
-    }
-    memset(vis, 0, sizeof(vis));
-    for (int i = 1; i < n_tail; i++) {
-        if (vis[i])
-            continue;
-        if (nodes[i].good) {
-            stack<int> s;
-            s.push(i);
-            vis[i] = 1;
-            while (s.size()) {
-                int now = s.top();
-                s.pop();
-                for (int d = 0; d < 4; d++) {
-                    int j = nodes[now].neighbor[d];
-                    if (j > 0) {
-                        if (vis[j] == 0) {
-                            vis[j] = 1;
-                            nodes[j].good = 1;
-                            s.push(j);
-                        }
                     } else {
-                        auto dp = getCoordinates(deg[d], median_dis[d]);
-                        int x = dp.x + nodes[now].p.x,
-                            y = dp.y + nodes[now].p.y;
-                        if (x < cross_hatch_crop_half_with or
-                            x >= w - cross_hatch_crop_half_with or
-                            y < cross_hatch_crop_half_with or
-                            y >= h - cross_hatch_crop_half_with)
+                        auto p = side_check(now, d, cross_hatch_crop_half_with,
+                                            w, h, imageData);
+                        if (p.x == 0 or n_tail >= 1000)
                             continue;
-                        // cout << "new pos " << x << "," << y << endl;
-                        auto p = crop_and_cross_hatch(
-                            x, y, cross_hatch_crop_half_with, imageData, w, h);
-                        if (pos_visited.find(make_pair(p.x, p.y)) !=
-                            pos_visited.end())
-                            continue;
-                        pos_visited.insert(make_pair(p.x, p.y));
-                        double deltaX = (double)(p.x - nodes[now].p.x);
-                        double deltaY = (double)(p.y - nodes[now].p.y);
-                        double angle =
-                            getAngleToXAxis((double)deltaX, (double)deltaY);
-                        double dis = hypot(deltaX, deltaY);
-                        if (angle < max_d[d] and angle > min_d[d] and
-                            dis < median_dis[d] * 1.05 and
-                            dis > median_dis[d] * .95) {
-                            if (n_tail >= 1000)
+                        j = n_tail++;
+                        nodes[j].p = p;
+                        vis[j] = 1;
+                        nodes[j].good = 1;
+                        s.push(j);
+                        for (int d = 0; d < 4; d++) {
+                            int res = find_neighbor_in5degree(j, d, true);
+                            double dis = get_dis(res, j);
+                            if (dis > median_dis[d] * 1.05 or
+                                dis < median_dis[d] * .95)
                                 continue;
-                            j = n_tail++;
-                            nodes[j].p = p;
-                            vis[j] = 1;
-                            nodes[j].good = 1;
-                            s.push(j);
-                            for (int d = 0; d < 4; d++) {
-                                int res = find_neighbor_in5degree(j, d);
-                                double dis = get_dis(res, j);
-                                if (dis > median_dis[d] * 1.05 or
-                                    dis < median_dis[d] * .95)
-                                    continue;
-                                nodes[j].neighbor[d] = res;
-                                nodes[res].neighbor[opposite_direction[d]] = j;
-                            }
+                            nodes[j].neighbor[d] = res;
+                            nodes[res].neighbor[opposite_direction[d]] = j;
                         }
                     }
                 }
@@ -271,35 +249,10 @@ vector<point> find121crossHairs(const vector<int>& imageData, int w, int h,
             }
         }
     res.clear();
-    vector<int> cols;
-    vector<int> rows;
     for (int i = 1; i < n_tail; i++)
-        if (nodes[i].good) {
-            if (count_row(i) < 8 or count_col(i) < 8)
-                nodes[i].good = 0;
-            else {
-                cols.push_back(nodes[i].p.x);
-                rows.push_back(nodes[i].p.y);
-            }
-        }
-    sort(cols.begin(), cols.end());
-    sort(rows.begin(), rows.end());
-    for (int i = 0; i < rows.size();) {
-        int row = i, gap = (int)(median_dis[2] * .2);
-        while (rows[row] + gap > rows[i] and i < rows.size())
-            i++;
-        int mid_y = (rows[row] + rows[i - 1]) / 2;
-        for (int j = 0; j < cols.size();) {
-            int col = j, gap = (int)(median_dis[0] * .2);
-            while (cols[col] + gap > cols[j] and j < cols.size())
-                j++;
-            int mid_x = (cols[col] + cols[j - 1]) / 2;
-            res.push_back(crop_and_cross_hatch(
-                mid_x, mid_y, cross_hatch_crop_half_with, imageData, w, h));
-        }
-    }
-
-    // res.push_back(nodes[i].p);
+        if (nodes[i].good)
+            // if (count_row(i) > 8 and count_col(i) > 8)
+                res.push_back(nodes[i].p);
 
     return res;
 }
@@ -355,41 +308,27 @@ string removeBeforeLastSlash(const std::string& input) {
     return input; // Return the original string if no '/' is found
 }
 
-int main(int argc, char* argv[]) {
-    // int main() {
+int main() {
     int w, h;
     string filename;
     cin >> filename;
 
-    // vector<int> imageData_orig = read_tiff_file(filename.c_str(), w, h, 100);
-    vector<int> imageData = read_tiff_file(filename.c_str(), w, h, 100);
+    vector<int> imageData_orig = read_tiff_file(filename.c_str(), w, h, 100);
     if (w == 0) {
         std::cerr << "Could not open the TIFF file." << std::endl;
         return -1;
     }
 
-    // vector<int> imageData = cropImage(imageData_orig, w, h, w / 10 * 2, h /
-    // 10,
-    //                                   w / 10 * 8, h / 10 * 9);
-    //
-    // w = w / 10 * 6 + 1;
-    // h = h / 10 * 8 + 1;
+    vector<int> imageData = cropImage(imageData_orig, w, h, w / 10 * 2, h / 10,
+                                      w / 10 * 8, h / 10 * 9);
+
+    w = w / 10 * 6 + 1;
+    h = h / 10 * 8 + 1;
 
     vector<point> res = find121crossHairs(imageData, w, h);
 
-    cout << "[";
-    for (auto p : res)
-        cout << "[" << p.x << "," << p.y << "],";
-    cout << "]" << endl;
-    bool debug_mode = false;
-    for (int i = 0; i < argc; ++i) {
-        std::string arg = argv[i];
-        if (arg == "--debug")
-            debug_mode = true;
-    }
-    if (debug_mode)
-        output_image_x5(imageData, w, h, res,
-                        "output" + removeBeforeLastSlash(filename));
+    output_image_x5(imageData, w, h, res,
+                    "output" + removeBeforeLastSlash(filename));
 
     return 0;
 }

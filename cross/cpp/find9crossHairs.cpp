@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cmath>
 #include <iostream>
 #include <numeric>
 #include <stack>
@@ -191,92 +192,122 @@ findIntersection(const std::tuple<double, double, double>& line1,
 
         // throw std::runtime_error(
         //     "The lines are parallel and do not intersect.");
+    } else {
+        // Calculate intersection point
+        x = (B1 * C2 - B2 * C1) / determinant;
+        y = (C1 * A2 - C2 * A1) / determinant;
     }
-
-    // Calculate intersection point
-    x = (B1 * C2 - B2 * C1) / determinant;
-    y = (C1 * A2 - C2 * A1) / determinant;
-
     return std::make_tuple(x, y);
 }
 
+std::tuple<double, double, double> fitLine(const std::vector<int>& x,
+                                           const std::vector<int>& y) {
+    int n = x.size();
+
+    // Calculate means
+    double mean_x = std::accumulate(x.begin(), x.end(), 0.0) / n;
+    double mean_y = std::accumulate(y.begin(), y.end(), 0.0) / n;
+
+    // Calculate the slope (m) and y-intercept (b)
+    double numerator = 0.0, denominator = 0.0;
+    for (int i = 0; i < n; ++i) {
+        numerator += (x[i] - mean_x) * (y[i] - mean_y);
+        denominator += (x[i] - mean_x) * (x[i] - mean_x);
+    }
+
+    if (denominator == 0)
+        return make_tuple(1, 0, -x[0]); // It's a vertical line
+    double m = numerator / denominator;
+    double b = mean_y - m * mean_x;
+
+    // Convert y = mx + b to Ax + By + C = 0
+    double A = m;
+    double B = -1;
+    double C = b;
+
+    // Normalize coefficients
+    double norm = std::sqrt(A * A + B * B);
+    A /= norm;
+    B /= norm;
+    C /= norm;
+
+    return std::make_tuple(A, B, C);
+}
+
+struct Cross_Section {
+    vector<int> data;
+    int y, FWHM, max_value, max_idx;
+};
+
+void set_cross_section_max_FWHM(Cross_Section& a) {
+    a.max_idx =
+        distance(a.data.begin(), max_element(a.data.begin(), a.data.end()));
+    a.max_value = a.data[a.max_idx];
+    int left, right;
+    for (left = a.max_idx; left >= 0 and a.data[left] >= a.max_value / 2;
+         left--)
+        ;
+    for (right = a.max_idx;
+         right < a.data.size() and a.data[right] >= a.max_value / 2; right++)
+        ;
+    // cout << " FWHM = " << right - left << endl;
+    a.FWHM = right - left;
+}
+
+bool cmp_FWHM(const Cross_Section& a, const Cross_Section& b) {
+    return a.FWHM < b.FWHM;
+}
+
 point cross_hatch(const vector<int>& im, int W, int H, int step = 10) {
-    struct Cross_Section {
-        vector<int> data;
-        int y, FWHM, max_value, max_idx;
-    };
     auto max_it = max_element(im.begin(), im.end());
-    auto thd = (*max_it) / 10;
+    auto thd = (*max_it) / 20;
     vector<Cross_Section> cross_sections;
     for (int y = 0; y < H; y += step) {
         Cross_Section tmp;
         tmp.y = y;
-        tmp.max_value = 0;
-        for (int x = 0; x < W; x++) {
+        // tmp.max_value = 0;
+        for (int x = 0; x < W; x++)
             tmp.data.push_back(im[W * y + x]);
-            if (tmp.data.back() > tmp.max_value) {
-                tmp.max_value = tmp.data.back();
-                tmp.max_idx = tmp.data.size() - 1;
-            }
-        }
+        set_cross_section_max_FWHM(tmp);
         if (tmp.max_value < thd)
             continue;
-        // cout << "get cross section at y=" << y
-        //      << " with max value = " << tmp.max_value << " at idx "
-        //      << tmp.max_idx;
-        // int left, right;
-        // for (left = tmp.max_idx;
-        //      left >= 0 and tmp.data[left] >= tmp.max_value / 2; left--)
-        //     ;
-        // for (right = tmp.max_idx;
-        //      right < tmp.data.size() and tmp.data[right] >= tmp.max_value /
-        //      2; right++)
-        //     ;
-        // // cout << " FWHM = " << right - left << endl;
-        // tmp.FWHM = right - left;
         cross_sections.push_back(tmp);
     }
+    sort(cross_sections.begin(), cross_sections.end(), cmp_FWHM);
+    // vector<int> x, y;
+    // for (int i = 0; i < cross_sections.size() * 3 / 4; i++) {
+    //     x.push_back(cross_sections[i].max_idx);
+    //     y.push_back(cross_sections[i].y);
+    // }
+    // auto vertical_line = fitLine(x, y);
     auto vertical_line = calculateLineCoefficients(
         cross_sections[1].max_idx, cross_sections[1].y,
         cross_sections[cross_sections.size() - 2].max_idx,
         cross_sections[cross_sections.size() - 2].y);
-
-    vector<Cross_Section> cross_sections2;
+    cross_sections.clear();
+    // vector<Cross_Section> cross_sections2;
     for (int x = 0; x < W; x += step) {
         Cross_Section tmp;
         tmp.y = x;
-        tmp.max_value = 0;
-        for (int y = 0; y < H; y++) {
+        // tmp.max_value = 0;
+        for (int y = 0; y < H; y++)
             tmp.data.push_back(im[W * y + x]);
-            if (tmp.data.back() > tmp.max_value) {
-                tmp.max_value = tmp.data.back();
-                tmp.max_idx = tmp.data.size() - 1;
-            }
-        }
+        set_cross_section_max_FWHM(tmp);
         if (tmp.max_value < thd)
             continue;
-        // cout << "get cross section at y=" << y
-        //      << " with max value = " << max_value;
-        // cout << "get cross section at x=" << x
-        //      << " with max value = " << tmp.max_value << " at idx "
-        //      << tmp.max_idx;
-        // int left, right;
-        // for (left = tmp.max_idx;
-        //      left >= 0 and tmp.data[left] >= tmp.max_value / 2; left--)
-        //     ;
-        // for (right = tmp.max_idx;
-        //      right < tmp.data.size() and tmp.data[right] >= tmp.max_value /
-        //      2; right++)
-        //     ;
-        // // cout << " FWHM = " << right - left << endl;
-        // tmp.FWHM = right - left;
-        cross_sections2.push_back(tmp);
+        cross_sections.push_back(tmp);
     }
-
+    // x.clear();
+    // y.clear();
+    // for (int i = 0; i < cross_sections.size() * 3 / 4; i++) {
+    //     x.push_back(cross_sections[i].y);
+    //     y.push_back(cross_sections[i].max_idx);
+    // }
+    // auto horizontal_line = fitLine(x, y);
     auto horizontal_line = calculateLineCoefficients(
-        cross_sections2[1].y, cross_sections2[1].max_idx,
-        cross_sections2[cross_sections2.size() - 2].y,
-        cross_sections2[cross_sections2.size() - 2].max_idx);
+        cross_sections[1].y, cross_sections[1].max_idx,
+        cross_sections[cross_sections.size() - 2].y,
+        cross_sections[cross_sections.size() - 2].max_idx);
 
     auto intersect = findIntersection(horizontal_line, vertical_line);
     point res;

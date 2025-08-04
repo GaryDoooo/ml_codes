@@ -10,10 +10,10 @@ from os import environ
 
 
 def run(playwright: Playwright, url):
-    #  iphone_13 = playwright.devices['iPhone 13']
-    browser = playwright.webkit.launch(headless=False)
+    # iphone_13 = playwright.devices['iPhone 13']
+    browser = playwright.chromium.launch(headless=False)
     context = browser.new_context(
-        #  **iphone_13,
+        # **iphone_13,
         locale='zh-CN'
     )
     page = context.new_page()

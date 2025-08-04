@@ -15,7 +15,8 @@ with sync_playwright() as playwright:
             response.request.url))
     #  page.setDefaultTimeout(10000)
     #  page.setDefaultNavigationTimeout(30000)
-    page.goto("https://www.iyf.tv/play/SXCR45KNqi2")
+    #  page.goto("https://www.iyf.tv/play/SXCR45KNqi2")
+    page.goto('https://www.iyf.tv/play/hKG1siPNBqB?id=ZkWnRhwxeu4')
     try:
         ua = page.locator("video_player")
         print(ua.get_attribute('src'))

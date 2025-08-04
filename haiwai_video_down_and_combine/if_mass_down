@@ -16,7 +16,7 @@ print("get url:",url)
 print("get episodes selections:",s)
 
 with sync_playwright() as p:
-    browser = p.webkit.launch()
+    browser = p.chromium.launch()
     page = browser.new_page()
     page.goto(url,
               wait_until="networkidle", timeout=10000)

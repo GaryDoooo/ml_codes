@@ -12,7 +12,7 @@ url=inp.split(' ')[0].replace('\'','').replace(' ','')
 print("get url:",url)
 
 with sync_playwright() as p:
-    browser = p.webkit.launch()
+    browser = p.firefox.launch()
     page = browser.new_page()
     page.goto(url, wait_until="networkidle", timeout=10000)
     #  ua = page.query_selector("01")

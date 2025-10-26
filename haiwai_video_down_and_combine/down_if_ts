@@ -37,7 +37,7 @@ fi
 
 # make a tmp dir and put all the downloads there
  workingdir=$(pwd)
- tmpdir=$(mktemp -d -t downhaiwai-XXXXXXXXXX)
+ tmpdir=$(mktemp -d ./tmp.XXXXXX)
  cd $tmpdir
 
 # for i in {1..100}
@@ -60,9 +60,14 @@ fi
 # done
 
 prefix=$(echo $1 |  sed 's/?.*//' | sed 's/[0-9]*.ts$//')
-suffix=$(echo $1 | sed 's/^.*?/?/')
+suffix=$(echo $1 | sed -E 's/.*\/[0-9]+\.ts(.*)/\1/' )
 
 filelist=""
+
+echo "Prefix :"$prefix
+echo 'suffix :'$suffix
+
+# exit 0
 
 for i in {1..100000}
 do

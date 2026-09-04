@@ -1,0 +1,93 @@
+#!/bin/bash
+
+# 检查是否传入了 URL 参数，如果没有，则使用你提供的默认示例网址
+if [ -z "$1" ]; then
+    URL="https://www.duboku.lv/p/95899-1-3.html"
+    echo "未提供网址，使用默认网址: $URL"
+else
+    URL="$1"
+fi
+
+# 检查 python3 是否存在
+if ! command -v python3 &> /dev/null; then
+    echo "错误: 未找到 python3，请先安装 Python 3。"
+    exit 1
+fi
+
+# 检查并自动安装依赖环境 (playwright)
+python3 -c "import playwright" 2>/dev/null
+if [ $? -ne 0 ]; then
+    echo "正在自动安装依赖 playwright..."
+    pip install playwright > /dev/null 2>&1
+    playwright install chromium > /dev/null 2>&1
+fi
+
+echo "正在启动无头浏览器并加载页面，请稍候..."
+
+# 使用带引号的 'EOF'，防止 bash 自动转义 python 中的 $ 和反斜杠等字符
+python3 - "$URL" << 'EOF'
+import sys
+import re
+from playwright.sync_api import sync_playwright
+
+def main():
+    url = sys.argv[1]
+
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page()
+        
+        try:
+            # 导航至页面，等待 DOM 树构建完成
+            page.goto(url, wait_until="domcontentloaded", timeout=30000)
+            # 额外等待 2 秒，确保右侧列表的动态渲染完成
+            page.wait_for_timeout(2000)
+        except Exception as e:
+            print(f"网页加载提示: {e}")
+            
+        # 使用 JavaScript 提取页面中所有的 <a> 标签信息
+        links = page.evaluate('''() => {
+            return Array.from(document.querySelectorAll('a')).map(a => ({
+                text: a.innerText.trim(),
+                href: a.href
+            }));
+        }''')
+        
+        browser.close()
+
+        print("\n================ 剧集列表 ================")
+        
+        seen_hrefs = set()
+        episode_list = []
+        
+        for item in links:
+            # 清理文本中的换行符等冗余空格
+            text = item['text'].replace('\n', '').replace('\r', '').strip()
+            href = item['href']
+            
+            # 同时兼容 "第01集" 格式以及截图中的纯数字形式 "1", "2", "15"
+            match = re.search(r'(?:第\s*(\d+)\s*集)|^\s*(\d+)\s*$', text)
+            if match:
+                num_str = match.group(1) or match.group(2)
+                num = int(num_str)
+                # 统一转换并格式化为标准输出样式（如第01集），完美对接你后续的管道脚本
+                formatted_text = f"第{num:02d}集"
+                
+                # 过滤确保是有效的集数链接并去重
+                if '.html' in href and href not in seen_hrefs:
+                    seen_hrefs.add(href)
+                    episode_list.append((num, formatted_text, href))
+                    
+        # 按照集数大小进行数字排序，防止网页顺序错乱
+        episode_list.sort(key=lambda x: x[0])
+        
+        if not episode_list:
+            print("未能找到符合的剧集列表。请检查网页结构是否变更。")
+        else:
+            for _, text, href in episode_list:
+                print(f"{text}: {href}")
+
+if __name__ == "__main__":
+    main()
+EOF
+

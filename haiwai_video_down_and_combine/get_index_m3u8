@@ -1,0 +1,61 @@
+#!/bin/bash
+
+# 检查是否传入了 URL 参数
+if [ -z "$1" ]; then
+    echo "用法: $0 <网页URL>"
+    echo "示例: $0 https://www.duboku.lv/p/95899-1-2.html"
+    exit 1
+fi
+
+URL="$1"
+
+# 检查 python3 是否存在
+if ! command -v python3 &> /dev/null; then
+    echo "错误: 未找到 python3，请先安装 Python。"
+    exit 1
+fi
+
+# 检查并自动安装依赖环境 (playwright)
+python3 -c "import playwright" 2>/dev/null
+if [ $? -ne 0 ]; then
+    echo "正在自动安装依赖 playwright..."
+    pip install playwright > /dev/null 2>&1
+    playwright install chromium > /dev/null 2>&1
+fi
+
+echo "正在加载并分析网页: $URL ..."
+
+# 通过内联 Python 脚本执行无头浏览器网络监听
+python3 - <<EOF
+import sys
+from playwright.sync_api import sync_playwright
+
+url = "$URL"
+
+with sync_playwright() as p:
+    browser = p.chromium.launch(headless=True)
+    page = browser.new_page()
+    m3u8_urls = []
+
+    def on_request(request):
+        if ".m3u8" in request.url:
+            m3u8_urls.append(request.url)
+            print(f"[拦截到请求] -> {request.url}")
+
+    page.on("request", on_request)
+
+    try:
+        page.goto(url, wait_until="domcontentloaded", timeout=30000)
+        page.wait_for_timeout(5000)
+    except Exception as e:
+        pass
+
+    browser.close()
+
+    if not m3u8_urls:
+        print("\n未能拦截到任何 m3u8 链接，可能是页面结构已更改或需要验证码。")
+    else:
+        print("\n================ 抓取结果 ================")
+        for idx, link in enumerate(set(m3u8_urls), 1):
+            print(f"{idx}. {link}")
+EOF

@@ -1,0 +1,49 @@
+#!/bin/bash
+
+# 循环读取标准输入（管道传过来的文本）的每一行
+while read -r line || [ -n "$line" ]; do
+    # 忽略空行
+    if [ -z "$line" ]; then
+        continue
+    fi
+
+    # 1. 拿到数字（提取文本中的第一组连续数字，例如 01, 12）
+    NUM=$(echo "$line" | grep -o -E '[0-9]+' | head -n 1)
+
+    # 2. 拿到后面的链接URL（以空格为分隔符的第二部分）
+    URL=$(echo "$line" | awk '{print $2}')
+
+    # 如果数字或URL提取失败，跳过该行
+    if [ -z "$NUM" ] || [ -z "$URL" ]; then
+        echo "[警告] 无法解析该行: $line"
+        continue
+    fi
+
+    echo "=================================================="
+    echo "[1/4] 开始处理 第 $NUM 集"
+    echo "      网页链接: $URL"
+
+    # 3 & 4. 调用系统程序 get_index_m3u8，提取最后一行作为 URL2
+    # tr -d '\r' 是为了防止由于回车符导致的拼接格式混乱
+    URL2=$(get_index_m3u8 "$URL" | tail -n 1 | tr -d '\r' | sed 's/^[^ ]* *//')
+
+    if [ -z "$URL2" ]; then
+        echo "[错误] 无法获取 第 $NUM 集 的 m3u8 链接，跳过。"
+        continue
+    fi
+
+    echo "[2/4] 获取到 m3u8 链接: $URL2"
+
+    # 5. 调用下载命令，保存为 数字.mp4
+    FILENAME="${NUM}.mp4"
+    echo "[3/4] 开始下载，保存至: $FILENAME"
+    echo "link: $URL2"
+
+    down_with_ffmpeg_m3u8 "$URL2" "$FILENAME" < /dev/null
+
+    # 6. 下载命令执行完毕后，循环会自动进入下一行
+    echo "[4/4] 第 $NUM 集 处理完成！"
+    echo "=================================================="
+    echo ""
+
+done
